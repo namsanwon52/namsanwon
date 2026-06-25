@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  category  String
+  title     String
+  content   String
+  author    String
+  password  String?
+  isAdmin   Boolean  @default(false)
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  files     File[]
+
+  @@index([category])
+}
+
+model File {
+  id       Int    @id @default(autoincrement())
+  postId   Int
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  url      String
+  filename String
+}
+
+model DonationRecord {
+  id        Int      @id @default(autoincrement())
+  year      Int
+  month     Int
+  content   String
+  createdAt DateTime @default(now())
+
+  @@unique([year, month])
+}
+
+model SliderImage {
+  id     Int     @id @default(autoincrement())
+  url    String
+  alt    String
+  order  Int
+  active Boolean @default(true)
+}
