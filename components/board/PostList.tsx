@@ -9,7 +9,7 @@ export default async function PostList({ category, page }: Props) {
 
   const [posts, total] = await Promise.all([
     prisma.post.findMany({
-      where: { category },
+      where: { code: category },
       orderBy: { createdAt: 'desc' },
       skip,
       take: limit,
@@ -22,7 +22,7 @@ export default async function PostList({ category, page }: Props) {
         isAdmin: true,
       },
     }),
-    prisma.post.count({ where: { category } }),
+    prisma.post.count({ where: { code: category } }),
   ])
 
   const totalPages = Math.ceil(total / limit)

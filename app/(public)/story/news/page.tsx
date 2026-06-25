@@ -8,7 +8,7 @@ export const revalidate = 600
 
 export default async function StoryNewsPage() {
   const posts = await prisma.post.findMany({
-    where: { category: 'free' },
+    where: { code: 'liv1' },
     orderBy: { createdAt: 'desc' },
     take: 15,
     select: { id: true, title: true, author: true, createdAt: true, views: true },
@@ -35,7 +35,7 @@ export default async function StoryNewsPage() {
                 posts.map((p) => (
                   <tr key={p.id} className="border-b hover:bg-[#FFF8F0] transition-colors">
                     <td className="py-3 px-4">
-                      <Link href={`/board/free/${p.id}`} className="hover:text-[#E8863A]">{p.title}</Link>
+                      <Link href={`/board/liv1/${p.id}`} className="hover:text-[#E8863A]">{p.title}</Link>
                     </td>
                     <td className="py-3 px-4 text-center text-gray-500">{p.author}</td>
                     <td className="py-3 px-4 text-center text-gray-400">{p.createdAt.toLocaleDateString('ko-KR')}</td>

@@ -10,8 +10,8 @@ const RichEditor = dynamic(() => import('@/components/editor/RichEditor'), { ssr
 function AdminWriteForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const category = searchParams.get('category') ?? 'notice'
-  const meta = BOARD_META[category] ?? BOARD_META['notice']
+  const category = searchParams.get('category') ?? 'nt1'
+  const meta = BOARD_META[category] ?? BOARD_META['nt1']
 
   const [form, setForm] = useState({ title: '', content: '', author: '관리자' })
   const [loading, setLoading] = useState(false)

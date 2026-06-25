@@ -7,14 +7,14 @@ import { getBoardMeta } from '@/lib/board'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const category = searchParams.get('category') ?? 'notice'
+  const category = searchParams.get('category') ?? 'nt1'
   const page = Math.max(1, Number(searchParams.get('page') ?? '1'))
   const limit = 10
   const skip = (page - 1) * limit
 
   const [posts, total] = await Promise.all([
     prisma.post.findMany({
-      where: { category },
+      where: { code: category },
       orderBy: { createdAt: 'desc' },
       skip,
       take: limit,
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
         isAdmin: true,
       },
     }),
-    prisma.post.count({ where: { category } }),
+    prisma.post.count({ where: { code: category } }),
   ])
 
   return NextResponse.json({
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   const post = await prisma.post.create({
     data: {
-      category,
+      code: category,
       title,
       content,
       author: author || '익명',

@@ -9,7 +9,7 @@ export const revalidate = 600
 
 export default async function AlbumPage() {
   const posts = await prisma.post.findMany({
-    where: { category: 'gallery' },
+    where: { code: 'com3' },
     orderBy: { createdAt: 'desc' },
     take: 12,
     include: { files: { take: 1 } },
@@ -26,7 +26,7 @@ export default async function AlbumPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {posts.map((post) => (
-              <Link key={post.id} href={`/board/gallery/${post.id}`} className="group">
+              <Link key={post.id} href={`/board/com3/${post.id}`} className="group">
                 <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden relative">
                   {post.files[0] ? (
                     <Image

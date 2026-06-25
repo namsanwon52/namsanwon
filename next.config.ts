@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
       { pathname: '/images/**' },
       { pathname: '/uploads/**' },
     ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+      },
+    ],
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,

@@ -1,12 +1,14 @@
-import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import './namsanwon-theme.css'
+import SiteHeader from '@/components/namsanwon/SiteHeader'
+import SiteFooter from '@/components/namsanwon/SiteFooter'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFF8F0]">
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
+    <>
+      <a className="skipLink" href="#main">본문 바로가기</a>
+      <SiteHeader />
+      <main id="main">{children}</main>
+      <SiteFooter />
+    </>
   )
 }

@@ -14,7 +14,7 @@ export default async function CorporationBoardPage({ searchParams }: Props) {
       <PageHeader title="법인게시판" breadcrumb={['사회복지법인 남산원', '법인게시판']} />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <PostList category="corporation" page={page} />
+          <PostList category="nt4" page={page} />
         </div>
       </div>
     </>

@@ -6,13 +6,13 @@ export default async function AdminDashboard() {
     Object.keys(BOARD_META).map(async (cat) => ({
       category: cat,
       label: BOARD_META[cat].label,
-      count: await prisma.post.count({ where: { category: cat } }),
+      count: await prisma.post.count({ where: { code: cat } }),
     }))
   )
   const recentPosts = await prisma.post.findMany({
     orderBy: { createdAt: 'desc' },
     take: 10,
-    select: { id: true, category: true, title: true, createdAt: true },
+    select: { id: true, code: true, title: true, createdAt: true },
   })
 
   return (
@@ -39,7 +39,7 @@ export default async function AdminDashboard() {
           <tbody>
             {recentPosts.map((p) => (
               <tr key={p.id} className="border-b last:border-0">
-                <td className="py-2 text-gray-500">{BOARD_META[p.category]?.label ?? p.category}</td>
+                <td className="py-2 text-gray-500">{BOARD_META[p.code]?.label ?? p.code}</td>
                 <td className="py-2">{p.title}</td>
                 <td className="py-2 text-right text-gray-400">
                   {p.createdAt.toLocaleDateString('ko-KR')}

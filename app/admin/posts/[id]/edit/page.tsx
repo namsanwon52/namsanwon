@@ -19,7 +19,7 @@ export default function AdminEditPage() {
       .then((r) => r.json())
       .then((post) => {
         setForm({ title: post.title, content: post.content, author: post.author })
-        setCategory(post.category)
+        setCategory(post.code)
       })
       .finally(() => setFetching(false))
   }, [id])

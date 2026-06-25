@@ -16,10 +16,11 @@ model Admin {
 
 model Post {
   id        Int      @id @default(autoincrement())
-  category  String
+  code      String   // 게시판 코드 (nt1:공지, nt2:예산, nt3:결산, nt4:법인, com1:자유게시판, com3:갤러리, liv1:아동, liv2:영아, dus3:학교)
   title     String
-  content   String
-  author    String
+  content   String   @db.Text
+  author    String?
+  email     String?
   password  String?
   isAdmin   Boolean  @default(false)
   views     Int      @default(0)
@@ -27,7 +28,8 @@ model Post {
   updatedAt DateTime @updatedAt
   files     File[]
 
-  @@index([category])
+  @@index([code])
+  @@index([createdAt])
 }
 
 model File {

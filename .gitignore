@@ -13,6 +13,8 @@ out/
 dist/
 build/
 
+public/crawled
+
 # OS
 .DS_Store
 Thumbs.db

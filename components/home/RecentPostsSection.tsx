@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 async function getRecentPosts(category: string, limit = 5) {
   return prisma.post.findMany({
-    where: { category },
+    where: { code: category },
     orderBy: { createdAt: 'desc' },
     take: limit,
     select: { id: true, title: true, createdAt: true },
@@ -70,8 +70,8 @@ function PostCard({
 
 export default async function RecentPostsSection() {
   const [notices, frees] = await Promise.all([
-    getRecentPosts('notice'),
-    getRecentPosts('free'),
+    getRecentPosts('nt1'),
+    getRecentPosts('com1'),
   ])
 
   return (
@@ -84,15 +84,15 @@ export default async function RecentPostsSection() {
         <PostCard
           title="공지사항"
           posts={notices}
-          href="/board/notice"
-          category="notice"
+          href="/board/nt1"
+          category="nt1"
           accentColor="bg-[#3B9EDA]"
         />
         <PostCard
           title="자유게시판"
           posts={frees}
-          href="/board/free"
-          category="free"
+          href="/board/com1"
+          category="com1"
           accentColor="bg-[#FF7A59]"
         />
       </div>

@@ -7,20 +7,20 @@ type Props = { searchParams: Promise<{ category?: string; page?: string }> }
 
 export default async function AdminPostsPage({ searchParams }: Props) {
   const { category: rawCategory, page: rawPage } = await searchParams
-  const category = rawCategory ?? 'notice'
+  const category = rawCategory ?? 'nt1'
   const page = Number(rawPage ?? '1')
   const limit = 20
   const skip = (page - 1) * limit
 
   const [posts, total] = await Promise.all([
     prisma.post.findMany({
-      where: { category },
+      where: { code: category },
       orderBy: { createdAt: 'desc' },
       skip,
       take: limit,
       select: { id: true, title: true, author: true, createdAt: true, views: true },
     }),
-    prisma.post.count({ where: { category } }),
+    prisma.post.count({ where: { code: category } }),
   ])
 
   return (
