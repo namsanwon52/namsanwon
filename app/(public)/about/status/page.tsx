@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/layout/PageHeader'
+import PageBanner from '@/components/namsanwon/PageBanner'
 
 export const metadata: Metadata = { title: '현황' }
 
@@ -34,17 +34,21 @@ const STATUS_SECTIONS = [
 export default function StatusPage() {
   return (
     <>
-      <PageHeader title="현황" breadcrumb={['기관소개', '현황']} />
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
+      <PageBanner
+        title="현황"
+        desc="남산원의 기관·아동·직원 현황을 안내해 드립니다."
+        crumbs={['남산원소개', '현황']}
+      />
+      <div className="subContent">
         {STATUS_SECTIONS.map((section) => (
-          <div key={section.title} className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <h2 className="text-lg font-bold text-white bg-[#E8863A] px-6 py-3">{section.title}</h2>
-            <table className="w-full text-sm">
+          <div key={section.title} className="sectionCard">
+            <h2>{section.title}</h2>
+            <table>
               <tbody>
                 {section.rows.map((row, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FFF8F0]'}>
-                    <th className="py-3 px-6 text-left text-[#3D2B1F] font-medium w-32 border-r border-gray-100">{row.label}</th>
-                    <td className="py-3 px-6 text-[#3D2B1F]/80">{row.value}</td>
+                  <tr key={i}>
+                    <th scope="row">{row.label}</th>
+                    <td>{row.value}</td>
                   </tr>
                 ))}
               </tbody>

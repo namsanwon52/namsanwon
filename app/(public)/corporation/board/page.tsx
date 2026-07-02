@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/layout/PageHeader'
+import PageBanner from '@/components/namsanwon/PageBanner'
 import PostList from '@/components/board/PostList'
 
 export const metadata: Metadata = { title: '법인게시판' }
@@ -11,11 +11,13 @@ export default async function CorporationBoardPage({ searchParams }: Props) {
   const page = Math.max(1, Number(rawPage ?? '1'))
   return (
     <>
-      <PageHeader title="법인게시판" breadcrumb={['사회복지법인 남산원', '법인게시판']} />
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <PostList category="nt4" page={page} />
-        </div>
+      <PageBanner
+        title="법인게시판"
+        desc="사회복지법인 남산원의 법인 관련 소식입니다."
+        crumbs={['사회복지법인 남산원', '법인게시판']}
+      />
+      <div className="subContent">
+        <PostList category="nt4" page={page} />
       </div>
     </>
   )

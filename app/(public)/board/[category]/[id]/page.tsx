@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getBoardMeta, findBoardContext } from '@/lib/board'
+import { rewritePostContent } from '@/lib/content'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import PostActionsPublic from '@/components/board/PostActionsPublic'
@@ -69,7 +70,7 @@ export default async function PostDetailPage({ params }: Props) {
 
           <div
             className="postDetailBody"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: rewritePostContent(post.content, category, post.files) }}
           />
 
           {post.files.length > 0 && (

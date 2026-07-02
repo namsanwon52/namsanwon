@@ -54,49 +54,39 @@ export default function PostActionsPublic({ id, category, isAdmin, hasPassword }
 
   return (
     <>
-      <div className="flex items-center gap-3">
-        <Link
-          href={editHref}
-          className="text-sm text-[#3B9EDA] hover:underline"
-        >
+      <div className="postActions">
+        <Link href={editHref} className="editLink">
           수정
         </Link>
-        <span className="text-gray-200">|</span>
-        <button
-          onClick={onDeleteClick}
-          className="text-sm text-red-400 hover:text-red-600"
-        >
+        <span className="sep">|</span>
+        <button onClick={onDeleteClick} className="deleteBtn">
           삭제
         </button>
       </div>
 
       {/* 비밀번호 삭제 모달 */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-80 space-y-4">
-            <h3 className="font-bold text-[#3D2B1F]">게시글 삭제</h3>
+        <div className="modalOverlay">
+          <div className="modalCard">
+            <h3>게시글 삭제</h3>
             <input
               type="password"
               placeholder="비밀번호 입력"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleDelete()}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+              className="formField"
               autoFocus
             />
-            {error && <p className="text-xs text-red-500">{error}</p>}
-            <div className="flex gap-2 justify-end">
+            {error && <p className="formError">{error}</p>}
+            <div className="formActions">
               <button
                 onClick={() => { setShowDeleteModal(false); setPassword(''); setError('') }}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="btnGhost"
               >
                 취소
               </button>
-              <button
-                onClick={handleDelete}
-                disabled={loading || !password}
-                className="px-3 py-1.5 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50"
-              >
+              <button onClick={handleDelete} disabled={loading || !password} className="btnDanger">
                 {loading ? '삭제 중...' : '삭제'}
               </button>
             </div>

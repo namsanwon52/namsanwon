@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/layout/PageHeader'
+import PageBanner from '@/components/namsanwon/PageBanner'
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,29 +17,26 @@ export default async function AlbumPage() {
 
   return (
     <>
-      <PageHeader title="아동 사진첩" breadcrumb={['남산 이야기', '아동 사진첩']} />
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <PageBanner
+        title="아동 사진첩"
+        desc="사진으로 전하는 남산원 아이들의 행복한 순간들입니다."
+        crumbs={['남산 이야기', '아동 사진첩']}
+      />
+      <div className="subContent">
         {posts.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm p-12 text-center text-[#3D2B1F]/60">
-            등록된 사진이 없습니다.
+          <div className="contentCard">
+            <p className="emptyNote">등록된 사진이 없습니다.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="albumGrid">
             {posts.map((post) => (
-              <Link key={post.id} href={`/board/com3/${post.id}`} className="group">
-                <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden relative">
+              <Link key={post.id} href={`/board/com3/${post.id}`} className="albumCard">
+                <span className="albumThumb">
                   {post.files[0] ? (
-                    <Image
-                      src={post.files[0].url}
-                      alt={post.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">이미지 없음</div>
-                  )}
-                </div>
-                <p className="mt-2 text-sm text-[#3D2B1F] truncate px-1">{post.title}</p>
+                    <Image src={post.files[0].url} alt={post.title} fill sizes="(max-width: 560px) 50vw, 25vw" />
+                  ) : null}
+                </span>
+                <strong>{post.title}</strong>
               </Link>
             ))}
           </div>

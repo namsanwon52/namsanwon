@@ -6,19 +6,37 @@ import sharp from 'sharp';
 
 const prisma = new PrismaClient();
 
-const IMAGE_DIR = path.join(__dirname, '../public/crawled/bbs_com3');
+// 대상 게시판 코드: 첫 번째 인자로 지정 (기본 com3)
+const CODE = process.argv[2] || 'com3';
+const IMAGE_DIR = path.join(__dirname, `../public/crawled/bbs_${CODE}`);
 const MAX_WIDTH = 1600; // 이보다 크면 리사이즈
 const SIZE_THRESHOLD = 300 * 1024; // 300KB 초과 시 재인코딩
 const JPEG_QUALITY = 82;
 const CONCURRENCY = 6; // 동시 업로드 수
 
-/** content HTML에서 첫 번째 이미지 파일명 추출 */
-function extractFirstImage(content: string): string | null {
-  const m = content.match(/viewImg\('([^']+)'\)/);
-  if (m) return m[1];
-  // 폴백: img src의 M 접두사 제거
-  const s = content.match(/src='[^']*\/bbs\/com3\/M?([^']+)'/);
-  return s ? s[1] : null;
+/** 확장자를 뺀 기준 이름 (png→jpg 리사이즈 대비 중복 판정용) */
+function baseName(name: string): string {
+  return name.replace(/\.[^.]+$/, '');
+}
+
+/** content HTML에서 모든 이미지 파일명 추출 (등장 순서 유지, base 기준 중복 제거) */
+function extractAllImages(content: string, code: string): string[] {
+  const found: string[] = [];
+  for (const m of content.matchAll(/viewImg\('([^']+)'\)/g)) found.push(m[1]);
+  if (found.length === 0) {
+    // 폴백: img src의 M(썸네일) 접두사 제거
+    const re = new RegExp(`src='[^']*/bbs/${code}/M?([^']+)'`, 'g');
+    for (const m of content.matchAll(re)) found.push(m[1]);
+  }
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const f of found) {
+    const b = baseName(f);
+    if (seen.has(b)) continue;
+    seen.add(b);
+    out.push(f);
+  }
+  return out;
 }
 
 /** 큰 이미지는 리사이즈/재인코딩, 작은 이미지는 원본 그대로 반환 */
@@ -53,83 +71,109 @@ async function processImage(
   }
 }
 
-async function uploadOne(post: { id: number; content: string }): Promise<
-  'uploaded' | 'no-image' | 'missing-file' | 'error'
-> {
-  const filename = extractFirstImage(post.content);
-  if (!filename) return 'no-image';
+type Stats = { uploaded: number; missing: number; error: number };
 
-  const filePath = path.join(IMAGE_DIR, filename);
-  if (!fs.existsSync(filePath)) return 'missing-file';
+/** 한 게시물의 모든 이미지를 업로드. 이미 연결된 파일(base 기준)은 건너뜀 */
+async function uploadPost(
+  post: { id: number; content: string },
+  existingBases: Set<string>,
+  stats: Stats
+): Promise<boolean> {
+  const filenames = extractAllImages(post.content, CODE);
+  if (filenames.length === 0) return false; // no-image 게시물
 
-  try {
-    const buffer = fs.readFileSync(filePath);
-    const ext = path.extname(filename).slice(1);
-    const { data, contentType, resized } = await processImage(buffer, ext);
+  let changed = false;
+  for (const filename of filenames) {
+    if (existingBases.has(baseName(filename))) continue; // 이미 업로드됨
 
-    // 리사이즈된 경우 확장자를 jpg로 통일
-    const outName = resized ? filename.replace(/\.[^.]+$/, '.jpg') : filename;
-    const blobPath = `gallery/com3/${post.id}-${outName}`;
+    const filePath = path.join(IMAGE_DIR, filename);
+    if (!fs.existsSync(filePath)) {
+      stats.missing++;
+      continue;
+    }
 
-    const blob = await put(blobPath, data, {
-      access: 'public',
-      contentType,
-      addRandomSuffix: false,
-      allowOverwrite: true,
-    });
+    try {
+      const buffer = fs.readFileSync(filePath);
+      const ext = path.extname(filename).slice(1);
+      const { data, contentType, resized } = await processImage(buffer, ext);
 
-    await prisma.file.create({
-      data: { postId: post.id, url: blob.url, filename: outName },
-    });
+      // 리사이즈된 경우 확장자를 jpg로 통일
+      const outName = resized ? filename.replace(/\.[^.]+$/, '.jpg') : filename;
+      const blobPath = `gallery/${CODE}/${post.id}-${outName}`;
 
-    return 'uploaded';
-  } catch (e) {
-    console.error(`  ❌ [${post.id}] ${filename}:`, e instanceof Error ? e.message : e);
-    return 'error';
+      const blob = await put(blobPath, data, {
+        access: 'public',
+        contentType,
+        addRandomSuffix: false,
+        allowOverwrite: true,
+      });
+
+      await prisma.file.create({
+        data: { postId: post.id, url: blob.url, filename: outName },
+      });
+      existingBases.add(baseName(filename));
+      stats.uploaded++;
+      changed = true;
+    } catch (e) {
+      stats.error++;
+      console.error(`  ❌ [${post.id}] ${filename}:`, e instanceof Error ? e.message : e);
+    }
   }
+  return changed;
 }
 
 async function main() {
-  console.log('🖼️  갤러리 썸네일 업로드 시작...\n');
+  console.log(`🖼️  [${CODE}] 갤러리 썸네일 업로드 시작...\n`);
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     console.error('❌ BLOB_READ_WRITE_TOKEN 환경변수가 없습니다.');
     process.exit(1);
   }
 
-  // 테스트용 limit (예: `npx tsx ... 5` → 5개만)
-  const limit = process.argv[2] ? parseInt(process.argv[2]) : undefined;
+  if (!fs.existsSync(IMAGE_DIR)) {
+    console.error(`❌ 이미지 디렉터리가 없습니다: ${IMAGE_DIR}`);
+    process.exit(1);
+  }
 
-  // File이 아직 없는 com3 게시물만
+  // 테스트용 limit (예: `npx tsx ... liv1 5` → 5개만)
+  const limit = process.argv[3] ? parseInt(process.argv[3]) : undefined;
+
+  // 이미지 참조가 있는 해당 코드 게시물 (기존 File은 base 기준 중복 제거로 스킵)
   const posts = await prisma.post.findMany({
-    where: { code: 'com3', files: { none: {} } },
-    select: { id: true, content: true },
+    where: {
+      code: CODE,
+      OR: [{ content: { contains: 'viewImg(' } }, { content: { contains: '<img' } }],
+    },
+    select: { id: true, content: true, files: { select: { filename: true } } },
     orderBy: { createdAt: 'desc' },
     ...(limit ? { take: limit } : {}),
   });
 
   console.log(`대상 게시물: ${posts.length}개\n`);
 
-  const stats = { uploaded: 0, 'no-image': 0, 'missing-file': 0, error: 0 };
+  const stats: Stats = { uploaded: 0, missing: 0, error: 0 };
 
   // 동시성 제한 배치 처리
   for (let i = 0; i < posts.length; i += CONCURRENCY) {
     const batch = posts.slice(i, i + CONCURRENCY);
-    const results = await Promise.all(batch.map((p) => uploadOne(p)));
-    for (const r of results) stats[r]++;
+    await Promise.all(
+      batch.map((p) => {
+        const bases = new Set(p.files.map((f) => baseName(f.filename)));
+        return uploadPost(p, bases, stats);
+      })
+    );
 
     const done = Math.min(i + CONCURRENCY, posts.length);
     if (done % 60 === 0 || done === posts.length) {
       console.log(
-        `진행: ${done}/${posts.length} | 업로드 ${stats.uploaded}, 이미지없음 ${stats['no-image']}, 파일없음 ${stats['missing-file']}, 에러 ${stats.error}`
+        `진행: ${done}/${posts.length} | 업로드 ${stats.uploaded}, 파일없음 ${stats.missing}, 에러 ${stats.error}`
       );
     }
   }
 
   console.log('\n✨ 완료!');
   console.log(`  ✅ 업로드: ${stats.uploaded}개`);
-  console.log(`  ⏭️  이미지 참조 없음: ${stats['no-image']}개`);
-  console.log(`  ⚠️  로컬 파일 없음: ${stats['missing-file']}개`);
+  console.log(`  ⚠️  로컬 파일 없음: ${stats.missing}개`);
   console.log(`  ❌ 에러: ${stats.error}개`);
 
   const totalFiles = await prisma.file.count();

@@ -1387,45 +1387,59 @@ button {
 
 /* ===================== 서브페이지 게시판 (화면목록 IA) ===================== */
 
-/* 페이지 배너 */
+/* 페이지 배너 (Figma: 배경 사진 + 그린 오버레이) */
 .pageBanner {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(120deg, var(--secondary) 0%, var(--primary) 100%);
+  background: #2e3328 url("/namsanwon/page-banner.jpg") center / cover no-repeat;
   color: var(--text-inverse);
+}
+.pageBanner::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(37, 40, 30, 0.78) 0%, rgba(51, 61, 24, 0.6) 46%, rgba(69, 104, 5, 0.32) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.28) 100%);
+  content: "";
 }
 .pageBannerInner {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   width: min(1200px, calc(100% - 80px));
-  min-height: 220px;
+  min-height: 300px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 48px 0;
+  padding-right: 38%;
+  text-align: center;
 }
 .pageBanner h1 {
   margin: 0;
   font-size: var(--font-display-sm);
   font-weight: 700;
   line-height: var(--line-display-sm);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
 }
 .pageBanner p {
-  max-width: 640px;
+  max-width: 520px;
   margin: 12px 0 0;
   font-size: var(--font-h3);
   font-weight: 500;
   line-height: var(--line-h3);
-  opacity: 0.88;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.24);
+  opacity: 0.92;
 }
 .pageBanner .breadcrumb {
   display: flex;
   gap: 6px;
   align-items: center;
+  justify-content: center;
   margin-top: 18px;
   font-size: var(--font-h5);
-  opacity: 0.8;
+  opacity: 0.86;
 }
 .pageBanner .breadcrumb span + span::before {
   margin-right: 6px;
@@ -1705,8 +1719,12 @@ button {
     width: min(100%, calc(100% - 40px));
   }
 }
+@media (max-width: 900px) {
+  .pageBannerInner { padding-right: 0; }
+}
 @media (max-width: 820px) {
   .pageBanner h1 { font-size: var(--font-h1); line-height: var(--line-h1); }
+  .pageBannerInner { min-height: 240px; }
   .boardGalleryGrid { grid-template-columns: repeat(2, 1fr); }
   .boardTable .colAuthor, .boardTable .colViews { display: none; }
   .boardTable .colTitle .titleText { max-width: 60vw; }
@@ -1738,4 +1756,508 @@ button {
 }
 @media (max-width: 820px) {
   .footerLogo .footerLogoImg { height: 50px; }
+}
+
+/* ===================== 서브페이지 콘텐츠 블록 (Figma 그린 테마) ===================== */
+.subContent {
+  width: min(1200px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 56px 0 88px;
+}
+.subContent > * + * {
+  margin-top: 24px;
+}
+
+/* 콘텐츠 카드 */
+.contentCard {
+  padding: 36px 40px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+}
+.contentCard > h2,
+.cardTitle {
+  margin: 0 0 20px;
+  color: var(--text-point);
+  font-size: var(--font-h2);
+  font-weight: 700;
+  line-height: var(--line-h2);
+  letter-spacing: var(--tracking-default);
+}
+.contentCard p {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: var(--font-h3);
+  line-height: 1.75;
+}
+.contentCard p:last-child {
+  margin-bottom: 0;
+}
+.leadText {
+  color: var(--text-sub);
+}
+.signRight {
+  margin-top: 28px;
+  color: var(--text);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* 불릿 리스트 */
+.bulletList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bulletList li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--text);
+  font-size: var(--font-h3);
+  line-height: var(--line-h3);
+}
+.bulletList li::before {
+  position: absolute;
+  top: 9px;
+  left: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  content: "";
+}
+
+/* 인포 그리드 (라벨 + 값 박스) */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 0;
+}
+.infoBox {
+  padding: 20px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  background: var(--surface-select, rgba(69, 104, 5, 0.05));
+}
+.infoBox dt,
+.infoBox .infoLabel {
+  margin: 0 0 6px;
+  color: var(--text-point);
+  font-size: var(--font-h5);
+  font-weight: 700;
+}
+.infoBox dd,
+.infoBox .infoValue {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-h4);
+}
+
+/* 스텝 리스트 (번호형) */
+.stepList {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stepList li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--text);
+  font-size: var(--font-h4);
+  line-height: var(--line-h3);
+}
+.stepList .stepNo {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-size: var(--font-b1);
+  font-weight: 700;
+}
+
+/* 정의형 테이블 (라벨-값) */
+.defTable {
+  width: 100%;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+.defTable th[scope="row"] {
+  width: 140px;
+  padding: 14px 20px;
+  background: var(--surface-select, rgba(69, 104, 5, 0.05));
+  color: var(--text);
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 1px solid var(--line-muted);
+}
+.defTable td {
+  padding: 14px 20px;
+  color: var(--text-sub);
+  border-bottom: 1px solid var(--line-muted);
+}
+.defTable tr:last-child th,
+.defTable tr:last-child td {
+  border-bottom: 0;
+}
+
+/* 섹션 카드 (제목바 + 표) */
+.sectionCard {
+  overflow: hidden;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+}
+.sectionCard > h2 {
+  margin: 0;
+  padding: 14px 24px;
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-size: var(--font-h3);
+  font-weight: 700;
+  line-height: var(--line-h3);
+}
+.sectionCard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.sectionCard th[scope="row"] {
+  width: 140px;
+  padding: 12px 24px;
+  color: var(--text);
+  font-weight: 600;
+  text-align: left;
+  border-right: 1px solid var(--line-muted);
+}
+.sectionCard td {
+  padding: 12px 24px;
+  color: var(--text-sub);
+}
+.sectionCard tbody tr:nth-child(even) {
+  background: var(--surface-select, rgba(69, 104, 5, 0.05));
+}
+
+/* 타임라인 (연혁) */
+.timeline {
+  display: grid;
+  gap: 28px;
+  margin: 0;
+  padding: 0 0 0 28px;
+  border-left: 2px solid var(--primary);
+  list-style: none;
+}
+.timeline li {
+  position: relative;
+}
+.timeline li::before {
+  position: absolute;
+  top: 2px;
+  left: -37px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 4px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--line-muted);
+  content: "";
+}
+.timeline .tlYear {
+  margin: 0 0 6px;
+  color: var(--text-point);
+  font-size: var(--font-h2);
+  font-weight: 700;
+  line-height: var(--line-h2);
+}
+.timeline .tlEvents {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.timeline .tlEvents li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--text);
+  font-size: var(--font-h4);
+}
+.timeline .tlEvents li::before {
+  position: absolute;
+  top: 9px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-sub);
+  content: "";
+}
+
+/* 지도 자리표시자 */
+.mapBox {
+  display: grid;
+  width: 100%;
+  height: 320px;
+  margin-bottom: 24px;
+  place-items: center;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  background: var(--surface-select, rgba(69, 104, 5, 0.05));
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+}
+
+/* 빈 상태 안내 */
+.emptyNote {
+  padding: 80px 0;
+  color: var(--text-sub);
+  font-size: var(--font-h4);
+  text-align: center;
+}
+
+/* 앨범 그리드 */
+.albumGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.albumCard {
+  display: block;
+  min-width: 0;
+}
+.albumThumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--surface-select, rgba(69, 104, 5, 0.05));
+  box-shadow: var(--shadow-boardcard);
+}
+.albumThumb img {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.albumCard:hover .albumThumb img {
+  transform: scale(1.05);
+}
+.albumCard strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 10px;
+  padding: 0 4px;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===================== 폼 (글쓰기 / 수정 / 본인확인) ===================== */
+.formCard {
+  display: grid;
+  gap: 16px;
+  padding: 28px 32px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+}
+.formRow2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.formField {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--font-h4);
+  outline: none;
+  transition: border-color 0.18s ease;
+}
+.formField:focus {
+  border-color: var(--primary);
+}
+.formActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.btnGhost {
+  display: inline-flex;
+  height: 42px;
+  align-items: center;
+  padding: 0 20px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-sm);
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+  font-weight: 600;
+  transition: background-color 0.18s ease;
+}
+.btnGhost:hover {
+  background: var(--surface-select, rgba(69, 104, 5, 0.05));
+}
+.btnPrimary {
+  display: inline-flex;
+  height: 42px;
+  align-items: center;
+  padding: 0 22px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-size: var(--font-h5);
+  font-weight: 700;
+  transition: background-color 0.18s ease;
+}
+.btnPrimary:hover {
+  background: var(--secondary);
+}
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btnDanger {
+  display: inline-flex;
+  height: 38px;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  background: #d64545;
+  color: var(--text-inverse);
+  font-size: var(--font-h5);
+  font-weight: 700;
+}
+.btnDanger:disabled {
+  opacity: 0.5;
+}
+.formError {
+  color: #d64545;
+  font-size: var(--font-h5);
+}
+.formTitle {
+  margin: 0 0 4px;
+  color: var(--text);
+  font-size: var(--font-h1);
+  font-weight: 700;
+  line-height: var(--line-h1);
+}
+.verifyWrap {
+  display: grid;
+  min-height: 60vh;
+  place-items: center;
+  padding: 40px 20px;
+}
+.verifyCard {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 360px;
+  padding: 28px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-maincard);
+}
+.verifyCard h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-h1);
+  font-weight: 700;
+}
+.verifyCard p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+}
+
+/* 모달 (비밀번호 삭제) */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+}
+.modalCard {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 320px;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
+.modalCard h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-h2);
+  font-weight: 700;
+}
+
+/* 게시글 상세 액션 (수정/삭제) */
+.postActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.postActions .editLink {
+  color: var(--text-point);
+  font-size: var(--font-h5);
+  font-weight: 600;
+}
+.postActions .editLink:hover {
+  text-decoration: underline;
+}
+.postActions .deleteBtn {
+  color: #d64545;
+  font-size: var(--font-h5);
+  font-weight: 600;
+}
+.postActions .sep {
+  color: var(--line-muted);
+}
+
+@media (max-width: 1100px) {
+  .subContent {
+    width: min(100%, calc(100% - 40px));
+  }
+}
+@media (max-width: 820px) {
+  .albumGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .contentCard {
+    padding: 24px;
+  }
+  .infoGrid,
+  .formRow2 {
+    grid-template-columns: 1fr;
+  }
+  .albumGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

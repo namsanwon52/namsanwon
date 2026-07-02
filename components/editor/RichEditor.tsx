@@ -27,7 +27,7 @@ function ToolbarBtn({ onClick, active, title, children }: BtnProps) {
       title={title}
       onMouseDown={(e) => { e.preventDefault(); onClick() }}
       className={`w-7 h-7 flex items-center justify-center rounded transition-colors ${
-        active ? 'bg-[#E8863A] text-white' : 'text-slate-500 hover:bg-slate-200'
+        active ? 'bg-[#88b04b] text-white' : 'text-slate-500 hover:bg-slate-200'
       }`}
     >
       {children}
@@ -121,7 +121,7 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
       Underline,
-      Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-[#3B9EDA] underline' } }),
+      Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-[#456805] underline' } }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({ placeholder }),
     ],
@@ -131,7 +131,7 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
     },
     editorProps: {
       attributes: {
-        class: 'prose max-w-none min-h-[160px] px-4 py-3 focus:outline-none text-[#3D2B1F] leading-relaxed',
+        class: 'prose max-w-none min-h-[160px] px-4 py-3 focus:outline-none text-[#1b1c1c] leading-relaxed',
       },
     },
   })
@@ -154,7 +154,7 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
   if (!editor) return null
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#E8863A] transition-colors">
+    <div className="border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#88b04b] transition-colors">
       {/* 툴바 */}
       <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5 bg-slate-50 border-b border-gray-200">
         <ToolbarBtn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="굵게">

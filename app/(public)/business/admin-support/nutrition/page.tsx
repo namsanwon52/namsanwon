@@ -1,15 +1,19 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/layout/PageHeader'
+import PageBanner from '@/components/namsanwon/PageBanner'
 
 export const metadata: Metadata = { title: '영양소식' }
 
 export default function NutritionPage() {
   return (
     <>
-      <PageHeader title="영양소식" breadcrumb={['사업소개', '행정지원', '영양소식']} />
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-xl shadow-sm p-8">
-          <p className="text-[#3D2B1F]/60 text-center py-12">영양 관련 소식을 등록해주세요.</p>
+      <PageBanner
+        title="영양소식"
+        desc="아이들의 건강한 식생활을 위한 영양 정보입니다."
+        crumbs={['사업소개', '행정지원팀', '영양소식']}
+      />
+      <div className="subContent">
+        <div className="contentCard">
+          <p className="emptyNote">영양 관련 소식을 등록해주세요.</p>
         </div>
       </div>
     </>

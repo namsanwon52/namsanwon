@@ -56,32 +56,24 @@ export default function PublicEditPage() {
 
   if (step === 'verify') {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <form onSubmit={handleVerify} className="bg-white rounded-xl shadow-sm p-6 w-full max-w-sm space-y-4">
-          <h2 className="font-bold text-[#3D2B1F]">본인 확인</h2>
-          <p className="text-sm text-gray-500">게시글 작성 시 입력한 비밀번호를 입력하세요.</p>
+      <div className="verifyWrap">
+        <form onSubmit={handleVerify} className="verifyCard">
+          <h2>본인 확인</h2>
+          <p>게시글 작성 시 입력한 비밀번호를 입력하세요.</p>
           <input
             type="password"
             placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="formField"
             autoFocus
           />
-          {verifyError && <p className="text-xs text-red-500">{verifyError}</p>}
-          <div className="flex gap-2 justify-end">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
+          {verifyError && <p className="formError">{verifyError}</p>}
+          <div className="formActions">
+            <button type="button" onClick={() => router.back()} className="btnGhost">
               취소
             </button>
-            <button
-              type="submit"
-              disabled={loading || !password}
-              className="px-3 py-1.5 text-sm bg-[#E8863A] text-white rounded-lg hover:bg-[#d4762e] disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading || !password} className="btnPrimary">
               {loading ? '확인 중...' : '확인'}
             </button>
           </div>
@@ -91,39 +83,28 @@ export default function PublicEditPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-4">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">게시글 수정</h1>
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+    <div className="subContent">
+      <h1 className="formTitle">게시글 수정</h1>
+      <form onSubmit={handleSubmit} className="formCard">
         <input
-          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+          className="formField"
           placeholder="제목"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
         />
         <input
-          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+          className="formField"
           placeholder="작성자"
           value={form.author}
           onChange={(e) => setForm({ ...form, author: e.target.value })}
         />
-        <RichEditor
-          value={form.content}
-          onChange={(html) => setForm({ ...form, content: html })}
-        />
-        <div className="flex gap-3 justify-end">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
+        <RichEditor value={form.content} onChange={(html) => setForm({ ...form, content: html })} />
+        <div className="formActions">
+          <button type="button" onClick={() => router.back()} className="btnGhost">
             취소
           </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-4 py-2 text-sm bg-[#E8863A] text-white rounded-lg hover:bg-[#d4762e] disabled:opacity-50"
-          >
+          <button type="submit" disabled={loading} className="btnPrimary">
             {loading ? '저장 중...' : '수정 완료'}
           </button>
         </div>

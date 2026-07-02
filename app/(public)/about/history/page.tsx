@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/layout/PageHeader'
+import PageBanner from '@/components/namsanwon/PageBanner'
 
 export const metadata: Metadata = { title: '연혁' }
 
@@ -18,23 +18,25 @@ const HISTORY = [
 export default function HistoryPage() {
   return (
     <>
-      <PageHeader title="연혁" breadcrumb={['기관소개', '연혁']} />
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="relative border-l-4 border-[#E8863A] pl-8 space-y-8">
-          {HISTORY.map((item) => (
-            <div key={item.year} className="relative">
-              <div className="absolute -left-[2.65rem] w-5 h-5 bg-[#E8863A] rounded-full border-4 border-white shadow" />
-              <h3 className="text-xl font-bold text-[#E8863A] mb-1">{item.year}</h3>
-              <ul className="space-y-1">
-                {item.events.map((e) => (
-                  <li key={e} className="text-[#3D2B1F]/80 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#E8863A] rounded-full inline-block flex-shrink-0" />
-                    {e}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+      <PageBanner
+        title="연혁"
+        desc="1953년부터 이어온 남산원의 발자취입니다."
+        crumbs={['남산원소개', '연혁']}
+      />
+      <div className="subContent">
+        <div className="contentCard">
+          <ul className="timeline">
+            {HISTORY.map((item) => (
+              <li key={item.year}>
+                <p className="tlYear">{item.year}</p>
+                <ul className="tlEvents">
+                  {item.events.map((e) => (
+                    <li key={e}>{e}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </>
