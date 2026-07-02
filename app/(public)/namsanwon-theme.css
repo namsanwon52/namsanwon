@@ -1391,15 +1391,14 @@ button {
 .pageBanner {
   position: relative;
   overflow: hidden;
-  background: #2e3328 url("/namsanwon/page-banner.jpg") center / cover no-repeat;
+  background: #6f7a5a url("/namsanwon/page-banner.png") center / cover no-repeat;
   color: var(--text-inverse);
 }
+/* 배너 이미지에 좌측 어둡기가 내장되어 있어 오버레이는 텍스트 가독성용으로만 가볍게 */
 .pageBanner::before {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(37, 40, 30, 0.78) 0%, rgba(51, 61, 24, 0.6) 46%, rgba(69, 104, 5, 0.32) 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.28) 100%);
+  background: linear-gradient(90deg, rgba(20, 24, 14, 0.55) 0%, rgba(20, 24, 14, 0.28) 42%, rgba(20, 24, 14, 0) 70%);
   content: "";
 }
 .pageBannerInner {
@@ -1407,14 +1406,14 @@ button {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: min(1200px, calc(100% - 80px));
   min-height: 300px;
   margin: 0 auto;
   padding: 48px 0;
-  padding-right: 38%;
-  text-align: center;
+  padding-right: 42%;
+  text-align: left;
 }
 .pageBanner h1 {
   margin: 0;
@@ -1436,7 +1435,7 @@ button {
   display: flex;
   gap: 6px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   margin-top: 18px;
   font-size: var(--font-h5);
   opacity: 0.86;
