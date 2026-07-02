@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
     if (res?.ok) {
       router.push('/admin')
     } else {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.')
+      setError('아이디 또는 비밀번호가 올바르지 않습니다.')
     }
   }
 
@@ -24,9 +24,9 @@ export default function AdminLoginPage() {
         <h1 className="text-2xl font-bold text-[#3D2B1F] text-center mb-6">관리자 로그인</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="email"
+            type="text"
             className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-[#E8863A]"
-            placeholder="이메일"
+            placeholder="아이디"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
