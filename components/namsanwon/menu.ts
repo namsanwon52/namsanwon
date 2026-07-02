@@ -4,7 +4,7 @@ export type MenuGroup = { label: string; items: MenuItem[] }
 
 export const MENU: MenuGroup[] = [
   {
-    label: '남산원소개',
+    label: '남산원',
     items: [
       { label: '인사말', href: '/about/greeting' },
       { label: '연혁', href: '/about/history' },

@@ -56,7 +56,7 @@ export default function SiteHeader() {
       <div className="globalNavInner">
         <Link className="logo" href="/" aria-label="남산원 홈">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="logoImg" src="/logo.jpg" alt="남산원" />
+          <img className="logoImg" src="/logo-namsanwon.svg" alt="사회복지법인 아동복지시설 남산원" />
         </Link>
 
         <button
@@ -105,11 +105,13 @@ export default function SiteHeader() {
           ))}
           <div className="mobileUtilityNav" aria-label="회원 메뉴">
             <Link href="/admin/login" onClick={closeAll}>로그인</Link>
+            <Link href="/admin/login" onClick={closeAll}>회원가입</Link>
           </div>
         </nav>
 
         <div className="utilityNav" aria-label="회원 메뉴">
           <Link href="/admin/login">로그인</Link>
+          <Link href="/admin/login">회원가입</Link>
         </div>
 
         <button

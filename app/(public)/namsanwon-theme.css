@@ -1746,29 +1746,46 @@ button {
   .boardGalleryGrid { grid-template-columns: 1fr; }
 }
 
-/* 헤더 로고 이미지 (logo.jpg) */
+/* 헤더 로고 (Figma logo-namsanwon.svg, 143x40) */
 .logo .logoImg {
+  display: block;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+@media (max-width: 820px) {
+  .logo .logoImg { height: 34px; }
+}
+
+/* 푸터 로고 - 다크 배경용 흰색 처리 */
+.footerLogo .footerLogoImg {
   display: block;
   height: 44px;
   width: auto;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 @media (max-width: 820px) {
-  .logo .logoImg { height: 38px; }
+  .footerLogo .footerLogoImg { height: 40px; }
 }
 
-/* 푸터 로고 이미지 (logo.jpg) - 다크 배경용 흰색 라운드 박스 */
-.footerLogo .footerLogoImg {
-  display: block;
-  height: 56px;
-  width: auto;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  object-fit: contain;
+/* 푸터 SNS(페이스북) 버튼 */
+.footerSns {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: background 0.2s, color 0.2s;
 }
-@media (max-width: 820px) {
-  .footerLogo .footerLogoImg { height: 50px; }
+.footerSns:hover,
+.footerSns:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
 
 /* ===================== 서브페이지 콘텐츠 블록 (Figma 그린 테마) ===================== */
