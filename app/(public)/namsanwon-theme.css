@@ -1683,6 +1683,19 @@ button {
   line-height: 1.8;
 }
 .postDetailBody img { max-width: 100%; height: auto; }
+.postImages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 4px 24px;
+  border-bottom: 1px solid var(--line-muted);
+}
+.postImages img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 0 auto;
+}
 .postNav {
   margin-top: 24px;
   border-top: 1px solid var(--line-muted);

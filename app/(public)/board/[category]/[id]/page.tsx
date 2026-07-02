@@ -52,6 +52,14 @@ export default async function PostDetailPage({ params }: Props) {
   const meta = getBoardMeta(category)
   const crumbs = ctx ? [ctx.section.title, ctx.localItem.label] : [meta.label]
 
+  // 첨부 분류: 이미지 중 본문에 아직 삽입되지 않은 것은 인라인으로, 문서 첨부는 다운로드 링크로
+  const isImg = (n: string) => /\.(jpe?g|png|gif|bmp|webp)$/i.test(n)
+  const baseNoExt = (n: string) => n.replace(/^.*[\\/]/, '').replace(/\.[^.]+$/, '')
+  const inlineImages = post.files.filter(
+    (f) => isImg(f.filename) && !post.content.includes(baseNoExt(f.filename)),
+  )
+  const docFiles = post.files.filter((f) => !isImg(f.filename))
+
   return (
     <>
       <PageBanner title={ctx?.section.title ?? meta.label} desc={ctx?.section.desc} crumbs={crumbs} />
@@ -73,11 +81,20 @@ export default async function PostDetailPage({ params }: Props) {
             dangerouslySetInnerHTML={{ __html: rewritePostContent(post.content, category, post.files) }}
           />
 
-          {post.files.length > 0 && (
+          {inlineImages.length > 0 && (
+            <div className="postImages">
+              {inlineImages.map((f) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={f.id} src={f.url} alt={f.filename} loading="lazy" />
+              ))}
+            </div>
+          )}
+
+          {docFiles.length > 0 && (
             <div style={{ padding: '16px 4px', borderBottom: '1px solid var(--line-muted)' }}>
               <h3 style={{ fontSize: 'var(--font-h5)', fontWeight: 700, margin: '0 0 8px' }}>첨부파일</h3>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 4 }}>
-                {post.files.map((f) => (
+                {docFiles.map((f) => (
                   <li key={f.id}>
                     <a href={f.url} download={f.filename} style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}>
                       📎 {f.filename}

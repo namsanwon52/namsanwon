@@ -9,6 +9,19 @@ export const BOARD_META: Record<string, { label: string; adminOnly: boolean }> =
   liv1: { label: '아동생활',   adminOnly: true },
   liv2: { label: '영아방',     adminOnly: true },
   dus3: { label: '학교생활',   adminOnly: true },
+  // ── 사업소개 팀별 게시판 ──
+  bus1:     { label: '행정지원팀 소식', adminOnly: true },
+  schedule: { label: '자원봉사 소식',   adminOnly: true },
+  cus1:     { label: '후원·금품현황',   adminOnly: true },
+  cus2:     { label: '홍보부 소식',     adminOnly: true },
+  bus2:     { label: '위생·영양 소식',  adminOnly: true },
+  bus3:     { label: '안전관리 소식',   adminOnly: true },
+  bus7:     { label: '상담 소식',       adminOnly: true },
+  eus1:     { label: '자립지원팀 소식', adminOnly: true },
+  dus1:     { label: '교육부 소식',     adminOnly: true },
+  dus2:     { label: '도서부 소식',     adminOnly: true },
+  cus11:    { label: '영유아프로그램',  adminOnly: true },
+  cus21:    { label: '보건 소식',       adminOnly: true },
 }
 
 export function getBoardMeta(category: string) {
@@ -32,6 +45,46 @@ export type BoardSection = {
 }
 
 export const BOARD_SECTIONS: BoardSection[] = [
+  {
+    key: 'business',
+    title: '사업소개',
+    desc: '남산원 각 지원팀의 활동 소식과 현황을 안내해 드립니다.',
+    localNav: [
+      {
+        label: '행정지원팀',
+        code: 'bus1',
+        type: 'list',
+        subTabs: [
+          { label: '행정지원팀 소식', code: 'bus1' },
+          { label: '자원봉사 소식', code: 'schedule' },
+          { label: '후원·금품현황', code: 'cus1' },
+          { label: '홍보부 소식', code: 'cus2' },
+          { label: '위생·영양 소식', code: 'bus2' },
+          { label: '안전관리 소식', code: 'bus3' },
+          { label: '상담 소식', code: 'bus7' },
+        ],
+      },
+      { label: '자립지원팀', code: 'eus1', type: 'list' },
+      {
+        label: '교육지원팀',
+        code: 'dus1',
+        type: 'list',
+        subTabs: [
+          { label: '교육부 소식', code: 'dus1' },
+          { label: '도서부 소식', code: 'dus2' },
+        ],
+      },
+      {
+        label: '보육지원팀',
+        code: 'cus11',
+        type: 'list',
+        subTabs: [
+          { label: '영유아프로그램', code: 'cus11' },
+          { label: '보건 소식', code: 'cus21' },
+        ],
+      },
+    ],
+  },
   {
     key: 'community',
     title: '커뮤니티',

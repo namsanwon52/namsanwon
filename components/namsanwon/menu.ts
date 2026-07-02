@@ -17,10 +17,10 @@ export const MENU: MenuGroup[] = [
   {
     label: '사업소개',
     items: [
-      { label: '행정지원팀', href: '/business/admin-support/donation' },
-      { label: '자립지원팀', href: '/business/independence' },
-      { label: '교육지원팀', href: '/business/child-support/education' },
-      { label: '보육지원팀', href: '/business/child-support/care' },
+      { label: '행정지원팀', href: '/board/bus1' },
+      { label: '자립지원팀', href: '/board/eus1' },
+      { label: '교육지원팀', href: '/board/dus1' },
+      { label: '보육지원팀', href: '/board/cus11' },
     ],
   },
   {
