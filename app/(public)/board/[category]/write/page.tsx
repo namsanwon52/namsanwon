@@ -12,7 +12,7 @@ export default function WritePage() {
   const category = params.category as string
   const meta = getBoardMeta(category)
   const router = useRouter()
-  const [form, setForm] = useState({ title: '', content: '', author: '', password: '' })
+  const [form, setForm] = useState({ title: '', content: '', author: '', password: '', isSecret: false })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -82,6 +82,14 @@ export default function WritePage() {
             onChange={(html) => setForm({ ...form, content: html })}
             placeholder="내용을 입력하세요."
           />
+          <label className="secretCheck">
+            <input
+              type="checkbox"
+              checked={form.isSecret}
+              onChange={(e) => setForm({ ...form, isSecret: e.target.checked })}
+            />
+            <span>🔒 비밀글로 작성 (작성자와 관리자만 열람 가능)</span>
+          </label>
           {error && <p className="formError">{error}</p>}
           <div className="formActions">
             <button type="button" onClick={() => router.back()} className="btnGhost">

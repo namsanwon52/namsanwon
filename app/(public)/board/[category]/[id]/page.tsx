@@ -8,6 +8,8 @@ import { rewritePostContent } from '@/lib/content'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import PostActionsPublic from '@/components/board/PostActionsPublic'
+import Comments from '@/components/board/Comments'
+import SecretPost from '@/components/board/SecretPost'
 
 type Props = { params: Promise<{ category: string; id: string }> }
 
@@ -60,6 +62,9 @@ export default async function PostDetailPage({ params }: Props) {
   )
   const docFiles = post.files.filter((f) => !isImg(f.filename))
 
+  const isLocked = post.isSecret && !session // 비밀글 & 비관리자 → 게이트
+  const allowComments = !meta.adminOnly // 자유게시판 등 공개 게시판에만 댓글
+
   return (
     <>
       <PageBanner title={ctx?.section.title ?? meta.label} desc={ctx?.section.desc} crumbs={crumbs} />
@@ -76,33 +81,41 @@ export default async function PostDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <div
-            className="postDetailBody"
-            dangerouslySetInnerHTML={{ __html: rewritePostContent(post.content, category, post.files) }}
-          />
+          {isLocked ? (
+            <SecretPost id={id} category={category} />
+          ) : (
+            <>
+              <div
+                className="postDetailBody"
+                dangerouslySetInnerHTML={{ __html: rewritePostContent(post.content, category, post.files) }}
+              />
 
-          {inlineImages.length > 0 && (
-            <div className="postImages">
-              {inlineImages.map((f) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={f.id} src={f.url} alt={f.filename} loading="lazy" />
-              ))}
-            </div>
-          )}
+              {inlineImages.length > 0 && (
+                <div className="postImages">
+                  {inlineImages.map((f) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={f.id} src={f.url} alt={f.filename} loading="lazy" />
+                  ))}
+                </div>
+              )}
 
-          {docFiles.length > 0 && (
-            <div style={{ padding: '16px 4px', borderBottom: '1px solid var(--line-muted)' }}>
-              <h3 style={{ fontSize: 'var(--font-h5)', fontWeight: 700, margin: '0 0 8px' }}>첨부파일</h3>
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 4 }}>
-                {docFiles.map((f) => (
-                  <li key={f.id}>
-                    <a href={f.url} download={f.filename} style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}>
-                      📎 {f.filename}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {docFiles.length > 0 && (
+                <div style={{ padding: '16px 4px', borderBottom: '1px solid var(--line-muted)' }}>
+                  <h3 style={{ fontSize: 'var(--font-h5)', fontWeight: 700, margin: '0 0 8px' }}>첨부파일</h3>
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 4 }}>
+                    {docFiles.map((f) => (
+                      <li key={f.id}>
+                        <a href={f.url} download={f.filename} style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}>
+                          📎 {f.filename}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {allowComments && <Comments postId={id} isAdmin={!!session} />}
+            </>
           )}
         </article>
 

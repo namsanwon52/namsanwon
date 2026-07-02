@@ -1526,35 +1526,60 @@ button {
   color: var(--text-inverse);
 }
 
-/* 검색바 */
+/* 검색바 (Figma: 전체 드롭다운 | 입력 | 녹색 사각버튼) */
 .boardSearch {
   display: flex;
   align-items: center;
-  height: 38px;
-  padding: 0 6px 0 14px;
+  gap: 2px;
+  height: 48px;
+  padding: 4px 4px 4px 6px;
   border: 1px solid var(--line-muted);
   border-radius: var(--radius-full);
   background: var(--surface);
 }
+.boardSearch .boardSearchField {
+  height: 38px;
+  padding: 0 6px 0 12px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+.boardSearch .boardSearchDivider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background: var(--line-muted);
+}
 .boardSearch input {
-  width: 180px;
+  flex: 1;
+  min-width: 150px;
   height: 100%;
+  padding: 0 10px;
   border: 0;
   background: none;
   color: var(--text);
   font-size: var(--font-h5);
   outline: none;
 }
+.boardSearch input::placeholder { color: var(--text-sub); }
 .boardSearch button {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   place-items: center;
-  border-radius: 50%;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
   background: var(--primary);
   color: var(--text-inverse);
-  font-size: 13px;
 }
+.boardSearch button:hover { background: var(--secondary); }
+.boardSearch button svg { width: 18px; height: 18px; }
 
 /* 게시판 메타 (총 N건) */
 .boardCount {
@@ -2289,4 +2314,96 @@ button {
   .albumGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ===================== 자유게시판 확장 (Figma): 검색/처리현황/아이콘/비밀글/댓글 ===================== */
+/* 제목 아이콘 (비밀글/첨부) */
+.boardTable .colTitle .iconLock,
+.boardTable .colTitle .iconImage {
+  margin: 0 4px;
+  font-size: 0.85em;
+  vertical-align: middle;
+}
+
+/* 처리현황 배지 */
+.boardTable .colStatus { width: 96px; text-align: center; }
+.statusBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(116, 121, 104, 0.14);
+  color: var(--text-sub, #73786b);
+}
+.statusBadge.isDone {
+  background: var(--primary, #88b04b);
+  color: #fff;
+}
+
+/* 비밀글 작성 체크박스 */
+.secretCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-h5);
+  color: var(--text-sub, #73786b);
+  cursor: pointer;
+}
+.secretCheck input { width: 16px; height: 16px; accent-color: var(--primary, #88b04b); }
+
+/* 비밀글 열람 게이트 */
+.secretGate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--text-sub, #73786b);
+}
+.secretGate .secretGateIcon { font-size: 32px; }
+.secretGateForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(320px, 100%);
+}
+
+/* 댓글 */
+.commentSection { margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--line-muted); }
+.commentTitle { margin: 0 0 16px; font-size: var(--font-h3); font-weight: 700; color: var(--text); }
+.commentTitle span { color: var(--primary, #88b04b); }
+.commentList { list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; }
+.commentEmpty { padding: 24px 0; text-align: center; color: var(--text-sub, #73786b); }
+.commentItem { padding: 16px 4px; border-bottom: 1px solid var(--line-muted); }
+.commentMeta { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: var(--font-h5); }
+.commentAuthor { font-weight: 700; color: var(--text); }
+.commentAuthor .adminBadge {
+  margin-right: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--secondary, #456805);
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+}
+.commentDate { color: var(--text-sub, #73786b); }
+.commentDelete {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-sub, #73786b);
+  font-size: var(--font-h5);
+  cursor: pointer;
+}
+.commentDelete:hover { color: #d64545; text-decoration: underline; }
+.commentBody { margin: 0; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
+.commentForm { display: flex; flex-direction: column; gap: 10px; background: var(--surface-muted, #f7f8f4); padding: 16px; border-radius: var(--radius-md, 12px); }
+.commentFormRow { display: flex; gap: 10px; }
+.commentFormRow .formField { flex: 1; }
+.commentTextarea { resize: vertical; min-height: 72px; }
+.commentFormActions { display: flex; justify-content: flex-end; }
+@media (max-width: 640px) {
+  .commentFormRow { flex-direction: column; }
 }

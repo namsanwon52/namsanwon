@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { category, title, content, author, password } = body
+  const { category, title, content, author, password, isSecret } = body
 
   if (!category || !title || !content) {
     return NextResponse.json({ error: '필수 항목 누락' }, { status: 400 })
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
       author: author || '익명',
       password: hashedPassword,
       isAdmin: !!session,
+      isSecret: !!isSecret,
     },
   })
 

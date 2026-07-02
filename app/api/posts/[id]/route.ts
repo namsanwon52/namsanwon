@@ -20,6 +20,12 @@ export async function GET(
   // 조회수 증가 (await 생략으로 응답 속도 최적화)
   prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})
 
+  // 비밀글은 관리자가 아니면 본문/첨부를 숨긴다 (비밀번호 확인은 verify 경유)
+  const session = await getServerSession(authOptions)
+  if (post.isSecret && !session) {
+    return NextResponse.json({ ...post, content: '', files: [], locked: true })
+  }
+
   return NextResponse.json(post)
 }
 
