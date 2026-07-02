@@ -6,6 +6,7 @@ export const BOARD_META: Record<string, { label: string; adminOnly: boolean }> =
   nt4:  { label: '법인게시판', adminOnly: true },
   com1: { label: '자유게시판', adminOnly: false },
   com3: { label: '갤러리',     adminOnly: true },
+  com6: { label: '남산원 역사사진', adminOnly: true },
   liv1: { label: '아동생활',   adminOnly: true },
   liv2: { label: '영아방',     adminOnly: true },
   dus3: { label: '학교생활',   adminOnly: true },

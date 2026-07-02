@@ -1,26 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { put } from '@vercel/blob'
 
+// 관리자 에디터 이미지 업로드 → Vercel Blob (서버리스 환경에서 로컬 파일시스템 대신)
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: '권한 없음' }, { status: 401 })
 
   const formData = await req.formData()
-  const file = formData.get('file') as File
+  const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: '파일 없음' }, { status: 400 })
 
-  const bytes = await file.arrayBuffer()
-  const buffer = Buffer.from(bytes)
+  const bytes = Buffer.from(new Uint8Array(await file.arrayBuffer()))
+  const safeName = file.name.replace(/\s+/g, '_')
+  const blobPath = `editor/${Date.now()}-${safeName}`
 
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads')
-  await mkdir(uploadDir, { recursive: true })
+  const blob = await put(blobPath, bytes, {
+    access: 'public',
+    contentType: file.type || 'application/octet-stream',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  })
 
-  const filename = `${Date.now()}-${file.name.replace(/\s/g, '_')}`
-  const filepath = path.join(uploadDir, filename)
-  await writeFile(filepath, buffer)
-
-  return NextResponse.json({ url: `/uploads/${filename}`, filename: file.name })
+  return NextResponse.json({ url: blob.url, filename: file.name })
 }

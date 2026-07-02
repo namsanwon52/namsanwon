@@ -5,7 +5,8 @@ import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import Placeholder from '@tiptap/extension-placeholder'
-import { useEffect, useCallback } from 'react'
+import Image from '@tiptap/extension-image'
+import { useEffect, useCallback, useRef, useState } from 'react'
 
 interface Props {
   value: string
@@ -104,6 +105,11 @@ const Icons = {
       <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
     </svg>
   ),
+  Image: () => (
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+      <path d="M21 3H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H3V5h18v14zM8.5 11l2.5 3.01L14.5 9.5l4.5 6H5l3.5-4.5z"/>
+    </svg>
+  ),
   Undo: () => (
     <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
       <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>
@@ -124,6 +130,7 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
       Link.configure({ openOnClick: false, HTMLAttributes: { class: 'text-[#456805] underline' } }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({ placeholder }),
+      Image.configure({ HTMLAttributes: { class: 'max-w-full h-auto rounded' } }),
     ],
     content: value,
     onUpdate({ editor }) {
@@ -150,6 +157,30 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
     if (url === '') { editor.chain().focus().extendMarkRange('link').unsetLink().run(); return }
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }, [editor])
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+
+  const handleImageFile = useCallback(
+    async (file: File) => {
+      if (!editor) return
+      setUploading(true)
+      try {
+        const fd = new FormData()
+        fd.append('file', file)
+        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+        if (!res.ok) {
+          alert('이미지 업로드에 실패했습니다.')
+          return
+        }
+        const { url } = await res.json()
+        editor.chain().focus().setImage({ src: url }).run()
+      } finally {
+        setUploading(false)
+      }
+    },
+    [editor],
+  )
 
   if (!editor) return null
 
@@ -214,6 +245,20 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
         <ToolbarBtn onClick={setLink} active={editor.isActive('link')} title="링크">
           <Icons.Link />
         </ToolbarBtn>
+        <ToolbarBtn onClick={() => fileInputRef.current?.click()} title={uploading ? '업로드 중...' : '이미지'}>
+          <Icons.Image />
+        </ToolbarBtn>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            if (f) handleImageFile(f)
+            e.target.value = ''
+          }}
+        />
 
         <Divider />
 

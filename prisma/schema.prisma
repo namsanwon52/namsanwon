@@ -57,3 +57,13 @@ model SliderImage {
   order  Int
   active Boolean @default(true)
 }
+
+// 남산원소개 하위 소개 페이지 콘텐츠 (인사말/연혁/현황/시설안내/오시는길)
+// slug로 페이지 식별, content는 관리자가 WYSIWYG로 편집하는 HTML
+model PageContent {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt
+}

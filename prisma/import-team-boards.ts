@@ -16,13 +16,15 @@ const prisma = new PrismaClient();
 const DUMP = path.join(__dirname, '../docs/sql/260513_namsan.sql');
 
 // 팀별 게시판 코드 (자원봉사 소식 schedule 포함)
-const TEAM_CODES = new Set([
+// argv[2]로 특정 코드만 지정 가능 (예: com6 역사사진)
+const DEFAULT_CODES = [
   'bus1', 'bus2', 'bus3', 'bus7', // 행정지원팀 계열
   'cus1', 'cus2', 'cus11', 'cus21', // 후원/홍보/보육
   'dus1', 'dus2', // 교육지원팀
   'eus1', // 자립지원팀
   'schedule', // 자원봉사 소식(달력 → 일반 목록)
-]);
+];
+const TEAM_CODES = new Set(process.argv[2] ? [process.argv[2]] : DEFAULT_CODES);
 
 // wiz_bbs 컬럼 인덱스 (60컬럼)
 const COL = { idx: 0, code: 1, name: 9, email: 11, subject: 16, content: 17, count: 54, wdate: 58 };

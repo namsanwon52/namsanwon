@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
+import DbPageContent from '@/components/namsanwon/DbPageContent'
 
 export const metadata: Metadata = { title: '시설안내' }
-
-const ROOMS = ['생활실', '교육실', '도서실', '식당', '운동장', '상담실']
+export const dynamic = 'force-dynamic'
 
 export default function FacilityPage() {
   return (
@@ -14,17 +14,7 @@ export default function FacilityPage() {
         crumbs={['남산원소개', '시설안내']}
       />
       <div className="subContent">
-        <div className="contentCard">
-          <h2>시설 안내</h2>
-          <div className="infoGrid">
-            {ROOMS.map((room) => (
-              <div key={room} className="infoBox">
-                <div className="infoLabel">{room}</div>
-                <div className="infoValue">시설 설명을 입력해주세요.</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <DbPageContent slug="facility" />
       </div>
     </>
   )
