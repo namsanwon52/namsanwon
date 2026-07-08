@@ -9,7 +9,7 @@ export const revalidate = 600
 const listSelect = { id: true, title: true, createdAt: true } as const
 
 export default async function HomePage() {
-  const [notice, budget, qna, gallery] = await Promise.all([
+  const [notice, budget, qna, gallery, sliderImages] = await Promise.all([
     prisma.post.findMany({ where: { code: 'nt1' }, orderBy: { createdAt: 'desc' }, take: 5, select: listSelect }),
     prisma.post.findMany({ where: { code: 'nt2' }, orderBy: { createdAt: 'desc' }, take: 5, select: listSelect }),
     prisma.post.findMany({ where: { code: 'com1' }, orderBy: { createdAt: 'desc' }, take: 5, select: listSelect }),
@@ -19,6 +19,7 @@ export default async function HomePage() {
       take: 3,
       select: { id: true, title: true, files: { take: 1, select: { url: true } } },
     }),
+    prisma.sliderImage.findMany({ where: { active: true }, orderBy: { order: 'asc' } }),
   ])
 
   const toBoard = (rows: { id: number; title: string; createdAt: Date }[]) =>
@@ -38,7 +39,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSlider />
+      <HeroSlider slides={sliderImages} />
       <QuickAction />
       <section className="contentArea" id="community">
         <BoardPanel data={boardData} />

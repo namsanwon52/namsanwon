@@ -2,31 +2,23 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-const SLIDES = [
-  {
-    title: ['아이들의 들꽃 같은 미소가', '푸른 미래로 자라납니다'],
-    desc: [
-      '1952년부터 이어온 따뜻한 돌봄과 사랑으로 아이들의 오늘을 지키고,',
-      '희망으로 가득한 내일을 함께 만들어갑니다.',
-    ],
-  },
-  {
-    title: ['아이들의 들꽃 같은 미소가', '푸른 미래로 자라납니다'],
-    desc: [
-      '1952년부터 이어온 따뜻한 돌봄과 사랑으로 아이들의 오늘을 지키고,',
-      '희망으로 가득한 내일을 함께 만들어갑니다.',
-    ],
-  },
-]
+export type HeroSlide = {
+  id: number
+  url: string
+  alt: string
+  title: string
+  desc: string
+}
 
-export default function HeroSlider() {
+export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [active, setActive] = useState(0)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const startLoop = () => {
     if (timer.current) clearInterval(timer.current)
+    if (slides.length <= 1) return
     timer.current = setInterval(() => {
-      setActive((i) => (i + 1) % SLIDES.length)
+      setActive((i) => (i + 1) % slides.length)
     }, 4000)
   }
 
@@ -35,12 +27,14 @@ export default function HeroSlider() {
     return () => {
       if (timer.current) clearInterval(timer.current)
     }
-  }, [])
+  }, [slides.length])
 
   const goTo = (i: number) => {
     setActive(i)
     startLoop()
   }
+
+  if (slides.length === 0) return null
 
   return (
     <section
@@ -50,38 +44,34 @@ export default function HeroSlider() {
       data-hero-active={active}
       aria-label="메인 비주얼"
     >
-      <div className={`heroImage heroImage01${active === 0 ? ' isActive' : ''}`} aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="heroBase" src="/namsanwon/hero-figma-01-base.png" alt="" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="heroForeground" src="/namsanwon/hero-figma-01-image.png" alt="" />
-      </div>
-      <div className={`heroImage heroImage02${active === 1 ? ' isActive' : ''}`} aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="heroBase" src="/namsanwon/hero-figma-02.jpg" alt="" />
-      </div>
+      {slides.map((slide, i) => (
+        <div key={slide.id} className={`heroImage${active === i ? ' isActive' : ''}`} aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="heroBase" src={slide.url} alt={slide.alt} />
+        </div>
+      ))}
       <div className="heroDim" aria-hidden="true"></div>
 
       <div className="heroSlides">
-        {SLIDES.map((slide, i) => (
+        {slides.map((slide, i) => (
           <div
             className={`heroContent${active === i ? ' isActive' : ''}`}
-            key={i}
+            key={slide.id}
             aria-hidden={active !== i}
           >
             <h1>
-              {slide.title.map((line, idx) => (
+              {slide.title.split('\n').map((line, idx, arr) => (
                 <span key={idx}>
                   {line}
-                  {idx < slide.title.length - 1 && <br />}
+                  {idx < arr.length - 1 && <br />}
                 </span>
               ))}
             </h1>
             <p>
-              {slide.desc.map((line, idx) => (
+              {slide.desc.split('\n').map((line, idx, arr) => (
                 <span key={idx}>
                   {line}
-                  {idx < slide.desc.length - 1 && <br />}
+                  {idx < arr.length - 1 && <br />}
                 </span>
               ))}
             </p>
@@ -90,10 +80,10 @@ export default function HeroSlider() {
       </div>
 
       <div className="heroPager" aria-label="메인 비주얼 현재 위치">
-        {SLIDES.map((_, i) => (
+        {slides.map((slide, i) => (
           <button
             type="button"
-            key={i}
+            key={slide.id}
             className={active === i ? 'isActive' : ''}
             aria-label={`메인 비주얼 ${i + 1}번 보기`}
             aria-current={active === i ? 'true' : 'false'}

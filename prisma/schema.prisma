@@ -69,6 +69,8 @@ model SliderImage {
   id     Int     @id @default(autoincrement())
   url    String
   alt    String
+  title  String  @default("")
+  desc   String  @default("") @db.Text
   order  Int
   active Boolean @default(true)
 }

@@ -136,3 +136,36 @@ export function findBoardContext(code: string): BoardContext | null {
   }
   return null
 }
+
+// ── 관리자 게시글 관리 화면 전용 그룹 구조 ──
+// BOARD_SECTIONS를 재사용하되, 어느 섹션에도 속하지 않은 게시판(com6, liv2 등)은 "기타" 그룹으로 모음
+export type AdminBoardGroup = { key: string; title: string; items: { code: string; label: string }[] }
+
+export function getAdminBoardGroups(): AdminBoardGroup[] {
+  const groups: AdminBoardGroup[] = BOARD_SECTIONS.map((section) => {
+    const items: { code: string; label: string }[] = []
+    const seen = new Set<string>()
+
+    for (const localItem of section.localNav) {
+      const tabs = localItem.subTabs ?? [{ label: localItem.label, code: localItem.code }]
+      for (const tab of tabs) {
+        if (seen.has(tab.code)) continue
+        seen.add(tab.code)
+        items.push({ code: tab.code, label: BOARD_META[tab.code]?.label ?? tab.label })
+      }
+    }
+
+    return { key: section.key, title: section.title, items }
+  })
+
+  const coveredCodes = new Set(groups.flatMap((g) => g.items.map((i) => i.code)))
+  const etcItems = Object.entries(BOARD_META)
+    .filter(([code]) => !coveredCodes.has(code))
+    .map(([code, meta]) => ({ code, label: meta.label }))
+
+  if (etcItems.length > 0) {
+    groups.push({ key: 'etc', title: '기타', items: etcItems })
+  }
+
+  return groups
+}
