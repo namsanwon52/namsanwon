@@ -138,30 +138,24 @@ export function findBoardContext(code: string): BoardContext | null {
 }
 
 // ── 관리자 게시글 관리 화면 전용 그룹 구조 ──
-// BOARD_SECTIONS를 재사용하되, 어느 섹션에도 속하지 않은 게시판(com6, liv2 등)은 "기타" 그룹으로 모음
-export type AdminBoardGroup = { key: string; title: string; items: { code: string; label: string }[] }
+// BOARD_SECTIONS의 대분류(그룹) → 팀(localNav) → 세부게시판(subTabs) 구조를 그대로 재사용.
+// 공개 사이트의 BoardLocalNav와 동일한 계층을 유지해야, 팀 단위 탭(예: 교육지원팀)이 사라지지 않음.
+// 어느 섹션에도 속하지 않은 게시판(com6, liv2 등)은 "기타" 그룹으로 모음.
+export type AdminBoardGroup = { key: string; title: string; items: BoardLocalItem[] }
 
 export function getAdminBoardGroups(): AdminBoardGroup[] {
-  const groups: AdminBoardGroup[] = BOARD_SECTIONS.map((section) => {
-    const items: { code: string; label: string }[] = []
-    const seen = new Set<string>()
+  const groups: AdminBoardGroup[] = BOARD_SECTIONS.map((section) => ({
+    key: section.key,
+    title: section.title,
+    items: section.localNav,
+  }))
 
-    for (const localItem of section.localNav) {
-      const tabs = localItem.subTabs ?? [{ label: localItem.label, code: localItem.code }]
-      for (const tab of tabs) {
-        if (seen.has(tab.code)) continue
-        seen.add(tab.code)
-        items.push({ code: tab.code, label: BOARD_META[tab.code]?.label ?? tab.label })
-      }
-    }
-
-    return { key: section.key, title: section.title, items }
-  })
-
-  const coveredCodes = new Set(groups.flatMap((g) => g.items.map((i) => i.code)))
-  const etcItems = Object.entries(BOARD_META)
+  const coveredCodes = new Set(
+    groups.flatMap((g) => g.items.flatMap((i) => [i.code, ...(i.subTabs?.map((t) => t.code) ?? [])]))
+  )
+  const etcItems: BoardLocalItem[] = Object.entries(BOARD_META)
     .filter(([code]) => !coveredCodes.has(code))
-    .map(([code, meta]) => ({ code, label: meta.label }))
+    .map(([code, meta]) => ({ label: meta.label, code, type: 'list' }))
 
   if (etcItems.length > 0) {
     groups.push({ key: 'etc', title: '기타', items: etcItems })

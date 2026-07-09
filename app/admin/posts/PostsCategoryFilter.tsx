@@ -16,6 +16,10 @@ export default function PostsCategoryFilter({
   const [groupKey, setGroupKey] = useState(activeGroupKey)
 
   const currentGroup = groups.find((g) => g.key === groupKey) ?? groups[0]
+  const activeItem =
+    currentGroup.items.find(
+      (i) => i.code === activeCategory || i.subTabs?.some((t) => t.code === activeCategory)
+    ) ?? currentGroup.items[0]
 
   function handleGroupChange(nextKey: string) {
     setGroupKey(nextKey)
@@ -43,7 +47,7 @@ export default function PostsCategoryFilter({
             key={item.code}
             href={`/admin/posts?category=${item.code}`}
             className={`px-3 py-1.5 rounded-full text-sm ${
-              item.code === activeCategory
+              item.code === activeItem?.code
                 ? 'bg-[#E8863A] text-white'
                 : 'bg-white border text-gray-600 hover:border-[#E8863A]'
             }`}
@@ -52,6 +56,23 @@ export default function PostsCategoryFilter({
           </a>
         ))}
       </div>
+      {activeItem?.subTabs && (
+        <div className="flex gap-2 flex-wrap pl-2 border-l-2 border-gray-100">
+          {activeItem.subTabs.map((tab) => (
+            <a
+              key={tab.code}
+              href={`/admin/posts?category=${tab.code}`}
+              className={`px-3 py-1 rounded-full text-xs ${
+                tab.code === activeCategory
+                  ? 'bg-[#3D2B1F] text-white'
+                  : 'bg-gray-50 border text-gray-500 hover:border-[#3D2B1F]'
+              }`}
+            >
+              {tab.label}
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

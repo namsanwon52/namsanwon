@@ -14,7 +14,9 @@ export default async function AdminPostsPage({ searchParams }: Props) {
   const skip = (page - 1) * limit
 
   const groups = getAdminBoardGroups()
-  const activeGroupKey = groups.find((g) => g.items.some((i) => i.code === category))?.key ?? groups[0].key
+  const activeGroupKey =
+    groups.find((g) => g.items.some((i) => i.code === category || i.subTabs?.some((t) => t.code === category)))
+      ?.key ?? groups[0].key
 
   const [posts, total] = await Promise.all([
     prisma.post.findMany({
