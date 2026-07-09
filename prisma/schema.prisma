@@ -71,6 +71,8 @@ model SliderImage {
   alt    String
   order  Int
   active Boolean @default(true)
+  title  String  @default("")
+  desc   String  @default("")
 }
 
 // 남산원소개 하위 소개 페이지 콘텐츠 (인사말/연혁/현황/시설안내/오시는길)
@@ -81,4 +83,50 @@ model PageContent {
   title     String
   content   String   @db.Text
   updatedAt DateTime @updatedAt
+}
+
+// AS-IS wiz_member (resno 제외)
+model Member {
+  idx         Int       @id @default(autoincrement())
+  id          String    @unique
+  passwd      String?
+  name        String?
+  photo       String?
+  icon        String?
+  nick        String?
+  email       String?
+  tphone      String?
+  hphone      String?
+  comtel      String?
+  homepage    String?
+  post        String?
+  address1    String?
+  address2    String?
+  reemail     String?
+  resms       String?
+  birthday    String?
+  bgubun      String?
+  marriage    String?
+  memorial    String?
+  scholarship String?
+  job         String?
+  income      String?
+  car         String?
+  hobby       String?
+  consph      String?
+  conprd      String?
+  level       String?
+  recom       String?
+  visit       Int?
+  visitTime   DateTime? @map("visit_time")
+  intro       String?   @db.Text
+  memo        String?   @db.Text
+  addinfo1    String?   @db.Text
+  addinfo2    String?   @db.Text
+  addinfo3    String?   @db.Text
+  addinfo4    String?   @db.Text
+  addinfo5    String?   @db.Text
+  wdate       DateTime?
+
+  @@map("member")
 }

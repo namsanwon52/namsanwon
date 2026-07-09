@@ -83,4 +83,4 @@ yarn.lock
 .netlify/
 dist/
 
-docs/
+docs/db_backup_*.sql
