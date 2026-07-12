@@ -2,14 +2,19 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { MENU } from './menu'
 
-export default function SiteHeader() {
+type Member = { id: string; name: string }
+
+export default function SiteHeader({ member }: { member: Member | null }) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [openItem, setOpenItem] = useState<number | null>(null)
   const [sitemapOpen, setSitemapOpen] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
+  const router = useRouter()
 
   // 스크롤 시 헤더 스타일
   useEffect(() => {
@@ -45,6 +50,18 @@ export default function SiteHeader() {
     setMobileNavOpen(false)
     setOpenItem(null)
     setSitemapOpen(false)
+  }
+
+  async function handleLogout() {
+    setLoggingOut(true)
+    try {
+      await fetch('/api/member/logout', { method: 'POST' })
+      closeAll()
+      router.push('/')
+      router.refresh()
+    } finally {
+      setLoggingOut(false)
+    }
   }
 
   return (
@@ -104,14 +121,36 @@ export default function SiteHeader() {
             </div>
           ))}
           <div className="mobileUtilityNav" aria-label="회원 메뉴">
-            <Link href="/admin/login" onClick={closeAll}>로그인</Link>
-            <Link href="/admin/login" onClick={closeAll}>회원가입</Link>
+            {member ? (
+              <>
+                <span>{member.name}님</span>
+                <button type="button" onClick={handleLogout} disabled={loggingOut}>
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/member/login" onClick={closeAll}>로그인</Link>
+                <Link href="/member/join" onClick={closeAll}>회원가입</Link>
+              </>
+            )}
           </div>
         </nav>
 
         <div className="utilityNav" aria-label="회원 메뉴">
-          <Link href="/admin/login">로그인</Link>
-          <Link href="/admin/login">회원가입</Link>
+          {member ? (
+            <>
+              <span>{member.name}님</span>
+              <button type="button" onClick={handleLogout} disabled={loggingOut}>
+                {loggingOut ? '로그아웃 중...' : '로그아웃'}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/member/login">로그인</Link>
+              <Link href="/member/join">회원가입</Link>
+            </>
+          )}
         </div>
 
         <button

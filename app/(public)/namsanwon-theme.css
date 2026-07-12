@@ -235,7 +235,9 @@ button {
   margin-right: 24px;
 }
 
-.utilityNav a {
+.utilityNav a,
+.utilityNav button,
+.utilityNav span {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -248,7 +250,7 @@ button {
   letter-spacing: var(--tracking-tight);
 }
 
-.utilityNav a + a::before {
+.utilityNav > *:not(:first-child)::before {
   position: absolute;
   top: 50%;
   left: 0;
@@ -260,9 +262,16 @@ button {
 }
 
 .utilityNav a:hover,
-.utilityNav a:focus-visible {
+.utilityNav a:focus-visible,
+.utilityNav button:hover,
+.utilityNav button:focus-visible {
   color: var(--secondary);
   outline: none;
+}
+
+.utilityNav button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .mobileUtilityNav {
@@ -272,7 +281,9 @@ button {
 .navTrigger:focus-visible,
 .primaryNav > a:focus-visible,
 .utilityNav a:focus-visible,
+.utilityNav button:focus-visible,
 .mobileUtilityNav a:focus-visible,
+.mobileUtilityNav button:focus-visible,
 .quickCard:focus-visible,
 .moreButton:focus-visible,
 .galleryCard:focus-visible,
@@ -1165,7 +1176,9 @@ button {
     border-top: 1px solid var(--line-muted);
   }
 
-  .mobileUtilityNav a {
+  .mobileUtilityNav a,
+  .mobileUtilityNav button,
+  .mobileUtilityNav span {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -1178,7 +1191,7 @@ button {
     letter-spacing: var(--tracking-default);
   }
 
-  .mobileUtilityNav a + a::before {
+  .mobileUtilityNav > *:not(:first-child)::before {
     position: absolute;
     top: 50%;
     left: 0;
@@ -1187,6 +1200,11 @@ button {
     background: rgba(116, 121, 104, 0.35);
     content: "";
     transform: translateY(-50%);
+  }
+
+  .mobileUtilityNav button:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 
   .navItem {
@@ -2406,4 +2424,556 @@ button {
 .commentFormActions { display: flex; justify-content: flex-end; }
 @media (max-width: 640px) {
   .commentFormRow { flex-direction: column; }
+}
+
+/* ===================== 회원가입 위자드 (약관동의 / 정보입력 / 가입완료) ===================== */
+
+/* 멤버 섹션 상단 탭 (회원가입 | 로그인 | 아이디/비밀번호 찾기) */
+.memberTopNav {
+  border-bottom: 1px solid var(--line-muted);
+  background: var(--surface);
+}
+.memberTopNavInner {
+  display: flex;
+  gap: 28px;
+  width: min(1200px, calc(100% - 80px));
+  margin: 0 auto;
+}
+.memberTopNav a {
+  position: relative;
+  display: inline-flex;
+  height: 52px;
+  align-items: center;
+  color: var(--text-sub);
+  font-size: var(--font-h4);
+  font-weight: 600;
+}
+.memberTopNav a.isActive {
+  color: var(--text);
+  font-weight: 700;
+}
+.memberTopNav a.isActive::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--secondary);
+  content: "";
+}
+
+/* 페이지 타이틀 + 브레드크럼 행 */
+.memberPageHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(1200px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 32px 0 24px;
+}
+.memberPageHead h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-h1);
+  font-weight: 700;
+  line-height: var(--line-h1);
+}
+.memberBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+}
+.memberBreadcrumb svg {
+  display: block;
+}
+.memberBreadcrumb span + span::before {
+  margin-right: 6px;
+  content: "›";
+}
+
+.joinWrap {
+  width: min(760px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 0 0 88px;
+}
+
+.joinStepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.joinStep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-sub);
+}
+.joinStepNo {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--line-muted);
+  color: var(--text-sub);
+  font-size: var(--font-b1);
+  font-weight: 700;
+}
+.joinStepLabel {
+  font-size: var(--font-h5);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.joinStep.isActive .joinStepNo {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+.joinStep.isActive .joinStepLabel {
+  color: var(--text);
+  font-weight: 700;
+}
+.joinStepLine {
+  width: 40px;
+  height: 1px;
+  margin: 0 4px;
+  background: var(--line-muted);
+}
+
+.joinCard {
+  display: grid;
+  gap: 28px;
+  padding: 40px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+}
+
+.joinCardTitle {
+  margin: 0 0 4px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line-muted);
+  color: var(--text);
+  font-size: var(--font-h1);
+  font-weight: 700;
+  line-height: var(--line-h1);
+}
+
+.joinSection h2 {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: var(--font-h2);
+  font-weight: 700;
+  line-height: var(--line-h2);
+}
+.joinSection h3 {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: var(--font-h4);
+  font-weight: 700;
+}
+.joinSection h3 .req {
+  margin-left: 2px;
+  color: #d64545;
+}
+
+.termsBox {
+  max-height: 160px;
+  padding: 16px 18px;
+  overflow-y: auto;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  background: var(--surface-select, rgba(69, 104, 5, 0.04));
+  color: var(--text-sub);
+  font-size: var(--font-b1);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.termsCheckRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 600;
+}
+.termsCheckRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.joinAllCheckRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 700;
+}
+.joinAllCheckRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.btnPrimaryBlock {
+  display: flex;
+  width: 100%;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-size: var(--font-h3);
+  font-weight: 700;
+  transition: background-color 0.18s ease;
+}
+.btnPrimaryBlock:hover {
+  background: var(--secondary);
+}
+.btnPrimaryBlock:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.joinFieldGroup {
+  display: grid;
+  gap: 6px;
+}
+.joinFieldGroup label {
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 700;
+}
+.joinFieldGroup label .req {
+  margin-left: 2px;
+  color: #d64545;
+}
+.joinFieldHint {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: var(--font-b1);
+}
+.joinFieldRow {
+  display: flex;
+  gap: 8px;
+}
+.joinFieldRow .formField {
+  flex: 1;
+}
+.joinRadioRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 600;
+}
+.joinRadioRow .radioOption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+.joinRadioRow input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--primary);
+}
+
+.joinAddressRow {
+  display: flex;
+  gap: 8px;
+}
+.joinAddressRow .formField:first-child {
+  flex: 1;
+}
+.joinAddressRow .btnGhostDark {
+  flex: 0 0 auto;
+}
+
+.btnGhostDark {
+  display: inline-flex;
+  height: 44px;
+  align-items: center;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: var(--font-h5);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.btnGhostDark:hover {
+  background: var(--secondary);
+}
+
+/* ===================== 로그인 ===================== */
+.loginCard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+}
+
+.loginFormRow {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+.loginFields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+.loginFieldInline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.loginFieldInline label {
+  width: 68px;
+  flex: 0 0 auto;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 700;
+}
+.loginFieldInline .formField {
+  width: 100%;
+  max-width: 280px;
+}
+.loginSubmitBtn {
+  display: flex;
+  width: 140px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-size: var(--font-h4);
+  font-weight: 700;
+  transition: background-color 0.18s ease;
+}
+.loginSubmitBtn:hover {
+  background: var(--secondary);
+}
+.loginSubmitBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.loginLinksRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+}
+.loginLinksRow a:hover {
+  color: var(--secondary);
+}
+.loginLinksRow .sep {
+  color: var(--line-muted);
+}
+
+.loginDivider {
+  height: 1px;
+  margin: 0;
+  border: none;
+  background: var(--line-muted);
+}
+
+.loginFooterRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+}
+.loginFooterRow a {
+  color: var(--secondary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* ===================== 아이디/비밀번호 찾기 ===================== */
+.findWrap {
+  width: min(1104px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 0 0 88px;
+}
+.findGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.findCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 36px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+}
+.findCardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.findCardHead h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: var(--font-h2);
+  font-weight: 700;
+}
+.findCardHead p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: var(--font-b1);
+  line-height: 1.6;
+}
+.findCardIcon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-select, rgba(69, 104, 5, 0.06));
+  font-size: 20px;
+}
+.findDivider {
+  height: 1px;
+  margin: 0;
+  border: none;
+  background: var(--line-muted);
+}
+.findFields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.findFieldInline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.findFieldInline label {
+  width: 68px;
+  flex: 0 0 auto;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 700;
+}
+.findFieldInline .formField {
+  flex: 1;
+}
+.findResult {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface-select, rgba(69, 104, 5, 0.06));
+  color: var(--text);
+  font-size: var(--font-h5);
+  line-height: 1.6;
+}
+.findResult strong {
+  color: var(--text-point);
+}
+
+@media (max-width: 700px) {
+  .findGrid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .loginFormRow {
+    flex-direction: column;
+  }
+  .loginSubmitBtn {
+    width: 100%;
+    height: 44px;
+  }
+  .loginFieldInline .formField {
+    max-width: none;
+  }
+}
+
+.joinDoneWrap {
+  display: grid;
+  gap: 14px;
+  padding: 40px 24px;
+  text-align: center;
+}
+.joinDoneIcon {
+  margin: 0 auto;
+  font-size: 44px;
+  line-height: 1;
+}
+.joinDoneWrap h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-h1);
+  font-weight: 700;
+}
+.joinDoneWrap p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: var(--font-h4);
+}
+.joinDoneActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.joinDoneActions .btnPrimary {
+  height: 46px;
+  padding: 0 32px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-h4);
+}
+
+@media (max-width: 1100px) {
+  .memberTopNavInner,
+  .memberPageHead {
+    width: min(100%, calc(100% - 40px));
+  }
+}
+
+@media (max-width: 560px) {
+  .joinCard {
+    padding: 24px;
+  }
+  .joinStepLabel {
+    display: none;
+  }
+  .joinStepLine {
+    width: 20px;
+  }
+  .joinAddressRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
