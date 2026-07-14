@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
-import DbPageContent from '@/components/namsanwon/DbPageContent'
+import PageBlocks from '@/components/namsanwon/PageBlocks'
 
 export const metadata: Metadata = { title: '연혁' }
 export const dynamic = 'force-dynamic'
@@ -14,7 +14,7 @@ export default function HistoryPage() {
         crumbs={['남산원소개', '연혁']}
       />
       <div className="subContent">
-        <DbPageContent slug="history" />
+        <PageBlocks page="history" />
       </div>
     </>
   )
