@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { BOARD_META } from '@/lib/board'
 
@@ -20,10 +21,14 @@ export default async function AdminDashboard() {
       <h1 className="text-2xl font-bold text-[#3D2B1F]">대시보드</h1>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {counts.map((c) => (
-          <div key={c.category} className="bg-white rounded-xl p-5 shadow-sm">
+          <Link
+            key={c.category}
+            href={`/admin/posts?category=${c.category}`}
+            className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+          >
             <p className="text-sm text-gray-500">{c.label}</p>
             <p className="text-3xl font-bold text-[#E8863A] mt-1">{c.count}</p>
-          </div>
+          </Link>
         ))}
       </div>
       <div className="bg-white rounded-xl p-5 shadow-sm">
@@ -38,11 +43,21 @@ export default async function AdminDashboard() {
           </thead>
           <tbody>
             {recentPosts.map((p) => (
-              <tr key={p.id} className="border-b last:border-0">
-                <td className="py-2 text-gray-500">{BOARD_META[p.code]?.label ?? p.code}</td>
-                <td className="py-2">{p.title}</td>
+              <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50">
+                <td className="py-2 text-gray-500">
+                  <Link href={`/admin/posts/${p.id}/edit`} className="block">
+                    {BOARD_META[p.code]?.label ?? p.code}
+                  </Link>
+                </td>
+                <td className="py-2">
+                  <Link href={`/admin/posts/${p.id}/edit`} className="block">
+                    {p.title}
+                  </Link>
+                </td>
                 <td className="py-2 text-right text-gray-400">
-                  {p.createdAt.toLocaleDateString('ko-KR')}
+                  <Link href={`/admin/posts/${p.id}/edit`} className="block">
+                    {p.createdAt.toLocaleDateString('ko-KR')}
+                  </Link>
                 </td>
               </tr>
             ))}
