@@ -8,6 +8,7 @@ const ADMIN_MENU = [
   { label: '페이지 관리', href: '/admin/pages' },
   { label: '게시글 관리', href: '/admin/posts' },
   { label: '슬라이더 관리', href: '/admin/slider' },
+  { label: '사용자 관리', href: '/admin/users' },
   { label: '후원금품현황', href: '/admin/donation-records' },
 ]
 

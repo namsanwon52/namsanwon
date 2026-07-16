@@ -7,6 +7,13 @@
       "runtimeArgs": ["run", "dev", "--", "-p", "3100"],
       "port": 3100,
       "autoPort": false
+    },
+    {
+      "name": "namsanwon-studio",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["prisma", "studio", "--port", "5555"],
+      "port": 5555,
+      "autoPort": false
     }
   ]
 }

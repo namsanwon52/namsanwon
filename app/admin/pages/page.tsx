@@ -1,16 +1,19 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
-import { ABOUT_PAGES } from '@/lib/pages'
+import { MANAGED_PAGES } from '@/lib/managed-pages'
 
 export default async function AdminPagesList() {
-  const rows = await prisma.pageContent.findMany({ select: { slug: true, updatedAt: true } })
-  const updatedBySlug = new Map(rows.map((r) => [r.slug, r.updatedAt]))
+  const rows = await prisma.contentBlock.groupBy({
+    by: ['page'],
+    _max: { updatedAt: true },
+  })
+  const updatedByPage = new Map(rows.map((r) => [r.page, r._max.updatedAt]))
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-[#3D2B1F]">페이지 관리</h1>
-        <p className="text-sm text-gray-500 mt-1">남산원소개 하위 소개 페이지의 내용을 편집합니다.</p>
+        <p className="text-sm text-gray-500 mt-1">남산원소개 하위 소개 페이지 및 후원/자원봉사 안내 페이지의 내용을 편집합니다.</p>
       </div>
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">
@@ -23,16 +26,20 @@ export default async function AdminPagesList() {
             </tr>
           </thead>
           <tbody>
-            {ABOUT_PAGES.map((p) => (
+            {MANAGED_PAGES.map((p) => (
               <tr key={p.slug} className="border-b last:border-0">
-                <td className="p-3 font-medium text-[#3D2B1F]">{p.title}</td>
+                <td className="p-3 font-medium text-[#3D2B1F]">
+                  <span className="text-gray-400 font-normal">{p.parent}</span>
+                  <span className="text-gray-300 mx-1">/</span>
+                  {p.title}
+                </td>
                 <td className="p-3 text-gray-500">
-                  <Link href={`/about/${p.route}`} target="_blank" className="hover:underline">
-                    /about/{p.route}
+                  <Link href={p.publicPath} target="_blank" className="hover:underline">
+                    {p.publicPath}
                   </Link>
                 </td>
                 <td className="p-3 text-right text-gray-400">
-                  {updatedBySlug.get(p.slug)?.toLocaleDateString('ko-KR') ?? '-'}
+                  {updatedByPage.get(p.slug)?.toLocaleDateString('ko-KR') ?? '-'}
                 </td>
                 <td className="p-3 text-right">
                   <Link

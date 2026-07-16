@@ -47,6 +47,12 @@ export type BoardSection = {
 
 export const BOARD_SECTIONS: BoardSection[] = [
   {
+    key: 'namsanwon',
+    title: '남산원',
+    desc: '사회복지법인 남산원의 역사와 발자취를 사진으로 소개합니다.',
+    localNav: [{ label: '남산원 역사사진', code: 'com6', type: 'gallery' }],
+  },
+  {
     key: 'business',
     title: '사업소개',
     desc: '남산원 각 지원팀의 활동 소식과 현황을 안내해 드립니다.',
@@ -87,6 +93,15 @@ export const BOARD_SECTIONS: BoardSection[] = [
     ],
   },
   {
+    key: 'children',
+    title: '아동생활',
+    desc: '남산원 아이들의 건강하고 행복한 일상을 전해 드립니다.',
+    localNav: [
+      { label: '아동생활', code: 'liv1', type: 'list' },
+      { label: '학교생활', code: 'dus3', type: 'list' },
+    ],
+  },
+  {
     key: 'community',
     title: '커뮤니티',
     desc: '남산원의 주요 소식과 공지사항, 활동 현황을 안내해 드립니다.',
@@ -104,15 +119,6 @@ export const BOARD_SECTIONS: BoardSection[] = [
       },
       { label: '자유게시판', code: 'com1', type: 'list' },
       { label: '갤러리', code: 'com3', type: 'gallery' },
-    ],
-  },
-  {
-    key: 'children',
-    title: '아동생활',
-    desc: '남산원 아이들의 건강하고 행복한 일상을 전해 드립니다.',
-    localNav: [
-      { label: '아동생활', code: 'liv1', type: 'list' },
-      { label: '학교생활', code: 'dus3', type: 'list' },
     ],
   },
 ]
@@ -135,4 +141,31 @@ export function findBoardContext(code: string): BoardContext | null {
     }
   }
   return null
+}
+
+// ── 관리자 게시글 관리 화면 전용 그룹 구조 ──
+// BOARD_SECTIONS의 대분류(그룹) → 팀(localNav) → 세부게시판(subTabs) 구조를 그대로 재사용.
+// 공개 사이트의 BoardLocalNav와 동일한 계층을 유지해야, 팀 단위 탭(예: 교육지원팀)이 사라지지 않음.
+// 어느 섹션에도 속하지 않은 게시판(liv2 등, 현재 사용하지 않는 게시판)은 "기타" 그룹으로 모음.
+export type AdminBoardGroup = { key: string; title: string; items: BoardLocalItem[] }
+
+export function getAdminBoardGroups(): AdminBoardGroup[] {
+  const groups: AdminBoardGroup[] = BOARD_SECTIONS.map((section) => ({
+    key: section.key,
+    title: section.title,
+    items: section.localNav,
+  }))
+
+  const coveredCodes = new Set(
+    groups.flatMap((g) => g.items.flatMap((i) => [i.code, ...(i.subTabs?.map((t) => t.code) ?? [])]))
+  )
+  const etcItems: BoardLocalItem[] = Object.entries(BOARD_META)
+    .filter(([code]) => !coveredCodes.has(code))
+    .map(([code, meta]) => ({ label: meta.label, code, type: 'list' }))
+
+  if (etcItems.length > 0) {
+    groups.push({ key: 'etc', title: '기타', items: etcItems })
+  }
+
+  return groups
 }

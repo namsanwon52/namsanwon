@@ -490,25 +490,6 @@ button {
   object-fit: cover;
 }
 
-.heroImage01 .heroBase {
-  object-position: center;
-}
-
-.heroImage01 .heroForeground {
-  top: -51px;
-  left: -32px;
-  width: 116.25%;
-  height: 635px;
-  max-width: none;
-  object-position: center;
-}
-
-.heroImage02 .heroBase {
-  top: -182px;
-  height: 732px;
-  object-position: center;
-}
-
 .heroDim {
   background:
     linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 100%),
@@ -1338,10 +1319,6 @@ button {
 
   .heroSection {
     min-height: 430px;
-  }
-
-  .heroImage02 .heroBase {
-    object-position: 62% center;
   }
 
   .heroContent h1 {

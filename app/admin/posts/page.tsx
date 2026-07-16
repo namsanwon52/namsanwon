@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma'
-import { BOARD_META } from '@/lib/board'
+import { getAdminBoardGroups } from '@/lib/board'
 import Link from 'next/link'
 import PostActions from './PostActions'
+import PostsCategoryFilter from './PostsCategoryFilter'
 
 type Props = { searchParams: Promise<{ category?: string; page?: string }> }
 
@@ -11,6 +12,11 @@ export default async function AdminPostsPage({ searchParams }: Props) {
   const page = Number(rawPage ?? '1')
   const limit = 20
   const skip = (page - 1) * limit
+
+  const groups = getAdminBoardGroups()
+  const activeGroupKey =
+    groups.find((g) => g.items.some((i) => i.code === category || i.subTabs?.some((t) => t.code === category)))
+      ?.key ?? groups[0].key
 
   const [posts, total] = await Promise.all([
     prisma.post.findMany({
@@ -34,19 +40,7 @@ export default async function AdminPostsPage({ searchParams }: Props) {
           글쓰기
         </Link>
       </div>
-      <div className="flex gap-2 flex-wrap">
-        {Object.entries(BOARD_META).map(([cat, meta]) => (
-          <Link
-            key={cat}
-            href={`/admin/posts?category=${cat}`}
-            className={`px-3 py-1.5 rounded-full text-sm ${
-              cat === category ? 'bg-[#E8863A] text-white' : 'bg-white border text-gray-600 hover:border-[#E8863A]'
-            }`}
-          >
-            {meta.label}
-          </Link>
-        ))}
-      </div>
+      <PostsCategoryFilter groups={groups} activeCategory={category} activeGroupKey={activeGroupKey} />
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">

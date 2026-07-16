@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { rewritePostContent } from '@/lib/content'
 
 const RichEditor = dynamic(() => import('@/components/editor/RichEditor'), { ssr: false })
 
@@ -18,7 +19,8 @@ export default function AdminEditPage() {
     fetch(`/api/posts/${id}`)
       .then((r) => r.json())
       .then((post) => {
-        setForm({ title: post.title, content: post.content, author: post.author })
+        const content = rewritePostContent(post.content, post.code, post.files ?? [])
+        setForm({ title: post.title, content, author: post.author })
         setCategory(post.code)
       })
       .finally(() => setFetching(false))

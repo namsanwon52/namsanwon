@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
-import DbPageContent from '@/components/namsanwon/DbPageContent'
+import PageBlocks from '@/components/namsanwon/PageBlocks'
 
 export const metadata: Metadata = { title: '시설안내' }
 export const dynamic = 'force-dynamic'
@@ -14,7 +14,7 @@ export default function FacilityPage() {
         crumbs={['남산원소개', '시설안내']}
       />
       <div className="subContent">
-        <DbPageContent slug="facility" />
+        <PageBlocks page="facility" />
       </div>
     </>
   )
