@@ -127,6 +127,7 @@ model Member {
   addinfo4    String?   @db.Text
   addinfo5    String?   @db.Text
   wdate       DateTime?
+  isAdmin     Boolean   @default(false)
 
   @@map("member")
 }
