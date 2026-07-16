@@ -36,16 +36,17 @@ export default function DirectionsPage() {
       />
      
       <div className="subContent">
-<<<<<<< HEAD
-          <div style={containerStyle}>
-          <iframe src="https://www.google.com/maps/embed?pb=!1m5!3m3!1m2!1s0x357ca2fbd4336449%3A0xfeb7be3fc57a269b!2z7ISc7Jq47Yq567OE7IucIOykkeq1rCDshoztjIzroZwy6ri4IDMx!5e0!3m2!1sko!2skr!4v1783489845869!5m2!1sko!2skr" 
-         style={iframeStyle} allowFullScreen={true} loading="lazy" referrerPolicy='no-referrer-when-downgrade' title='구글지도'></iframe>
-         </div>
-        <DbPageContent slug="directions" />
-       
-=======
+        <div style={containerStyle}>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m5!3m3!1m2!1s0x357ca2fbd4336449%3A0xfeb7be3fc57a269b!2z7ISc7Jq47Yq567OE7IucIOykkeq1rCDshoztjIzroZwy6ri4IDMx!5e0!3m2!1sko!2skr!4v1783489845869!5m2!1sko!2skr"
+            style={iframeStyle}
+            allowFullScreen={true}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="구글지도"
+          ></iframe>
+        </div>
         <PageBlocks page="directions" />
->>>>>>> origin/feature/slider-db-integration
       </div>
     </>
   )
