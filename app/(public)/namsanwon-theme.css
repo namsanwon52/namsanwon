@@ -55,6 +55,8 @@
   --line-b2: 16px;
   --tracking-default: 0;
   --tracking-tight: -0.3px;
+  --form-control-height: 40px;
+  --form-text-y-adjust: 2px;
 
   /* Effect */
   --shadow-boardcard: 0 4px 18px rgba(136, 176, 75, 0.12);
@@ -2476,131 +2478,478 @@ button {
   padding: 0 0 88px;
 }
 
-.joinStepper {
+.joinFlow {
+  display: flex;
+  width: min(800px, 100%);
+  flex-direction: column;
+  gap: 48px;
+  align-items: stretch;
+  margin: 0 auto;
+}
+
+.joinSteps {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.joinStep {
+
+.joinSteps li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--text-sub);
-}
-.joinStepNo {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--line-muted);
-  color: var(--text-sub);
-  font-size: var(--font-b1);
-  font-weight: 700;
-}
-.joinStepLabel {
-  font-size: var(--font-h5);
-  font-weight: 600;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+  opacity: 0.5;
   white-space: nowrap;
 }
-.joinStep.isActive .joinStepNo {
-  background: var(--primary);
-  color: var(--text-inverse);
-}
-.joinStep.isActive .joinStepLabel {
-  color: var(--text);
-  font-weight: 700;
-}
-.joinStepLine {
-  width: 40px;
+
+.joinSteps li + li::before {
+  display: block;
+  width: 48px;
   height: 1px;
-  margin: 0 4px;
+  margin-right: 4px;
   background: var(--line-muted);
+  content: "";
 }
 
-.joinCard {
-  display: grid;
-  gap: 28px;
-  padding: 40px;
+.joinSteps span {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #a9ada3;
+  color: var(--text-nav);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  padding-top: 3px;
+}
+
+.joinSteps strong {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  font: inherit;
+  line-height: 1;
+  padding-top: 4px;
+}
+
+.joinSteps .isActive {
+  color: var(--secondary);
+  font-weight: 700;
+  opacity: 1;
+}
+
+.joinSteps .isActive span {
+  background: var(--secondary);
+  color: var(--surface);
+}
+
+.joinTermsCard,
+.joinFormCard,
+.joinCompleteCard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 49px;
   border: 1px solid var(--line-muted);
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   background: var(--surface);
-  box-shadow: var(--shadow-boardcard);
+  box-shadow: 0 4px 9px rgba(136, 176, 75, 0.12);
 }
 
-.joinCardTitle {
-  margin: 0 0 4px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--line-muted);
-  color: var(--text);
-  font-size: var(--font-h1);
-  font-weight: 700;
-  line-height: var(--line-h1);
+.joinFormCard {
+  align-items: stretch;
 }
 
-.joinSection h2 {
-  margin: 0 0 12px;
-  color: var(--text);
-  font-size: var(--font-h2);
-  font-weight: 700;
-  line-height: var(--line-h2);
-}
-.joinSection h3 {
-  margin: 0 0 10px;
-  color: var(--text);
-  font-size: var(--font-h4);
-  font-weight: 700;
-}
-.joinSection h3 .req {
-  margin-left: 2px;
-  color: #d64545;
-}
-
-.termsBox {
-  max-height: 160px;
-  padding: 16px 18px;
-  overflow-y: auto;
-  border: 1px solid var(--line-muted);
-  border-radius: var(--radius-md);
-  background: var(--surface-select, rgba(69, 104, 5, 0.04));
-  color: var(--text-sub);
-  font-size: var(--font-b1);
-  line-height: 1.7;
-  white-space: pre-line;
-}
-
-.termsCheckRow {
-  display: flex;
+.joinCompleteCard {
+  min-height: 338px;
   align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 12px;
+  justify-content: center;
+  text-align: center;
+}
+
+.joinCompleteIcon {
+  width: 160px;
+  height: auto;
+}
+
+.joinCompleteCard h3 {
+  margin: 0;
   color: var(--text);
-  font-size: var(--font-h5);
+  font-size: 26px;
   font-weight: 600;
-}
-.termsCheckRow input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--primary);
+  line-height: 1.4;
 }
 
-.joinAllCheckRow {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  color: var(--text);
-  font-size: var(--font-h5);
-  font-weight: 700;
+.joinCompleteCard p {
+  max-width: none;
+  margin: -14px 0 14px;
+  color: var(--text-sub);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
 }
-.joinAllCheckRow input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--primary);
+
+.joinConfirmButton {
+  display: inline-flex;
+  min-width: 100px;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 26px;
+  border-radius: 9999px;
+  background: var(--secondary);
+  color: var(--surface);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 26px;
+}
+
+.joinTermsHeader {
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line-muted);
+}
+
+.joinTermsHeader h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-default);
+}
+
+.joinTermsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.joinTermsGroup h4 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: var(--tracking-default);
+}
+
+.joinTermsGroup h4 em {
+  color: #ba1a1a;
+  font-style: normal;
+}
+
+.joinTermsBox {
+  height: 160px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f9f8f8;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: var(--tracking-default);
+}
+
+.joinTermsBox p {
+  max-width: none;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.joinTermsBox p + p {
+  margin-top: 18px;
+}
+
+.joinCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-end;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.joinCheck input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.joinCheck span {
+  display: inline-flex;
+  flex: 0 0 auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.joinCheckSmall span {
+  width: 16px;
+  height: 16px;
+  background-image: url("/namsanwon/icon_check_S.svg");
+}
+
+.joinCheckSmall input:checked + span {
+  background-image: url("/namsanwon/icon_check_S_active.svg");
+}
+
+.joinCheckAll span {
+  width: 20px;
+  height: 20px;
+  background-image: url("/namsanwon/icon_check_M.svg");
+}
+
+.joinCheckAll input:checked + span {
+  background-image: url("/namsanwon/icon_check_M_active.svg");
+}
+
+.joinCheck input:focus-visible + span {
+  outline: 2px solid rgba(69, 104, 5, 0.3);
+  outline-offset: 2px;
+}
+
+.joinCheck b {
+  display: inline-flex;
+  align-items: center;
+  font-weight: inherit;
+  line-height: 1;
+  padding-top: 3px;
+}
+
+.joinCheckSmall {
+  height: 24px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.3px;
+}
+
+.joinCheckAll {
+  gap: 8px;
+  height: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: var(--tracking-default);
+}
+
+.joinNextButton {
+  display: inline-flex;
+  width: 100%;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--secondary);
+  color: var(--surface);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 26px;
+  letter-spacing: var(--tracking-default);
+  cursor: pointer;
+}
+
+.joinNextButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.joinNextButton:focus-visible {
+  outline: 3px solid rgba(69, 104, 5, 0.25);
+  outline-offset: 3px;
+}
+
+.buttonText {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.joinField,
+.joinFieldGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.joinFieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.joinField label,
+.joinField > span {
+  color: #201a18;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: var(--tracking-default);
+}
+
+.joinField em {
+  color: #ba1a1a;
+  font-style: normal;
+}
+
+.joinField input[type="text"],
+.joinField input[type="password"],
+.joinField input[type="email"],
+.joinField input[type="tel"] {
+  width: 100%;
+  height: var(--form-control-height);
+  padding: var(--form-text-y-adjust) 12px 0;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.joinField input::placeholder {
+  color: var(--text-sub);
+  opacity: 1;
+}
+
+.joinField input:focus-visible {
+  border-color: var(--secondary);
+  outline: 3px solid rgba(69, 104, 5, 0.12);
+}
+
+.joinField p {
+  max-width: none;
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.joinInputRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.joinInputRow input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.joinInputRow button {
+  display: inline-flex;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 0 28px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--text-nav);
+  color: var(--surface);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.joinInputRow button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.joinRadioLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: center;
+}
+
+.joinRadioLine > span {
+  margin-right: 8px;
+  color: var(--text-sub);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.joinRadioLine label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.joinRadio {
+  cursor: pointer;
+}
+
+.joinRadio input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.joinRadio span {
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin-right: 8px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.joinRadio b {
+  display: inline-flex;
+  align-items: center;
+  font-weight: inherit;
+  line-height: 1;
+  padding-top: 2px;
+  white-space: nowrap;
+}
+
+.joinRadioMedium span {
+  width: 20px;
+  height: 20px;
+  background-image: url("/namsanwon/icon_radio_M.svg");
+}
+
+.joinRadioMedium input:checked + span {
+  background-image: url("/namsanwon/icon_radio_M_active.svg");
+}
+
+.joinRadio input:focus-visible + span {
+  outline: 2px solid rgba(69, 104, 5, 0.3);
+  outline-offset: 2px;
 }
 
 .btnPrimaryBlock {
@@ -2622,63 +2971,6 @@ button {
 .btnPrimaryBlock:disabled {
   opacity: 0.45;
   cursor: default;
-}
-
-.joinFieldGroup {
-  display: grid;
-  gap: 6px;
-}
-.joinFieldGroup label {
-  color: var(--text);
-  font-size: var(--font-h5);
-  font-weight: 700;
-}
-.joinFieldGroup label .req {
-  margin-left: 2px;
-  color: #d64545;
-}
-.joinFieldHint {
-  margin: 0;
-  color: var(--text-sub);
-  font-size: var(--font-b1);
-}
-.joinFieldRow {
-  display: flex;
-  gap: 8px;
-}
-.joinFieldRow .formField {
-  flex: 1;
-}
-.joinRadioRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 8px;
-  color: var(--text);
-  font-size: var(--font-h5);
-  font-weight: 600;
-}
-.joinRadioRow .radioOption {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 500;
-}
-.joinRadioRow input {
-  width: 17px;
-  height: 17px;
-  accent-color: var(--primary);
-}
-
-.joinAddressRow {
-  display: flex;
-  gap: 8px;
-}
-.joinAddressRow .formField:first-child {
-  flex: 1;
-}
-.joinAddressRow .btnGhostDark {
-  flex: 0 0 auto;
 }
 
 .btnGhostDark {
@@ -2897,41 +3189,6 @@ button {
   }
 }
 
-.joinDoneWrap {
-  display: grid;
-  gap: 14px;
-  padding: 40px 24px;
-  text-align: center;
-}
-.joinDoneIcon {
-  margin: 0 auto;
-  font-size: 44px;
-  line-height: 1;
-}
-.joinDoneWrap h2 {
-  margin: 0;
-  color: var(--text);
-  font-size: var(--font-h1);
-  font-weight: 700;
-}
-.joinDoneWrap p {
-  margin: 0;
-  color: var(--text-sub);
-  font-size: var(--font-h4);
-}
-.joinDoneActions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-.joinDoneActions .btnPrimary {
-  height: 46px;
-  padding: 0 32px;
-  border-radius: var(--radius-md);
-  font-size: var(--font-h4);
-}
-
 @media (max-width: 1100px) {
   .memberTopNavInner,
   .memberPageHead {
@@ -2943,14 +3200,118 @@ button {
   .joinCard {
     padding: 24px;
   }
-  .joinStepLabel {
+
+  .joinFieldGrid {
+    grid-template-columns: 1fr;
+  }
+  .joinInputRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .joinInputRow button {
+    width: 100%;
+  }
+
+  .joinFlow {
+    gap: 28px;
+    margin-top: 24px;
+  }
+
+  .joinSteps {
+    gap: 8px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .joinSteps::-webkit-scrollbar {
     display: none;
   }
-  .joinStepLine {
-    width: 20px;
+
+  .joinSteps li {
+    gap: 6px;
+    min-height: 28px;
+    font-size: 15px;
+    line-height: 22px;
   }
-  .joinAddressRow {
-    flex-direction: column;
-    align-items: stretch;
+
+  .joinSteps li + li::before {
+    width: 24px;
+    margin-right: 0;
+  }
+
+  .joinSteps span {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .joinSteps strong {
+    min-height: 28px;
+    padding-top: 3px;
+  }
+
+  .joinTermsCard,
+  .joinFormCard,
+  .joinCompleteCard {
+    gap: 20px;
+    padding: 27px 20px;
+    border-radius: 12px;
+  }
+
+  .joinTermsHeader h3 {
+    font-size: 22px;
+    line-height: 31px;
+  }
+
+  .joinCompleteCard {
+    min-height: 300px;
+  }
+
+  .joinCompleteCard h3 {
+    font-size: 22px;
+    line-height: 31px;
+  }
+
+  .joinCompleteCard p {
+    margin-top: -8px;
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .joinTermsGroup h4 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .joinTermsBox {
+    height: 156px;
+    font-size: 13px;
+    line-height: 19px;
+  }
+
+  .joinCheck {
+    align-self: flex-start;
+  }
+
+  .joinCheckSmall,
+  .joinCheckAll {
+    height: auto;
+    align-items: flex-start;
+    white-space: normal;
+  }
+
+  .joinCheck b {
+    align-items: flex-start;
+    line-height: 1.35;
+    padding-top: 1px;
+  }
+
+  .joinNextButton {
+    min-height: 54px;
+    padding: 15px 24px;
+    font-size: 16px;
+    line-height: 24px;
   }
 }
