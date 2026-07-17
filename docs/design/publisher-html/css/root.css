@@ -1,0 +1,64 @@
+:root {
+  /* Color */
+  --primary: #88b04b;
+  --secondary: #456805;
+  --bg: #fbfbf8;
+  --surface: #ffffff;
+  --surface-inverse: #25190c;
+  --text: #1b1c1c;
+  --text-sub: #73786b;
+  --text-point: #456805;
+  --text-nav: #44493a;
+  --text-inverse: #ffffff;
+  --line-muted: rgba(116, 121, 104, 0.2);
+  --line-inverse: rgba(255, 255, 255, 0.2);
+  --badge-notice: #d4af37;
+
+  /* Spacing */
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-88: 88px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+
+  /* Typography */
+  --font-display-lg: 48px;
+  --line-display-lg: 72px;
+  --font-display-sm: 36px;
+  --line-display-sm: 44px;
+  --font-h1: 26px;
+  --line-h1: 140%;
+  --font-h2: 18px;
+  --line-h2: 26px;
+  --font-h3: 16px;
+  --line-h3: 24px;
+  --font-h4: 15px;
+  --line-h4: 20px;
+  --font-h5: 14px;
+  --line-h5: 20px;
+  --font-b1: 13px;
+  --line-b1: 18px;
+  --font-b2: 12px;
+  --line-b2: 16px;
+  --tracking-default: 0;
+  --tracking-tight: -0.3px;
+  --form-control-height: 40px;
+  --form-text-y-adjust: 2px;
+
+  /* Effect */
+  --shadow-boardcard: 0 4px 18px rgba(136, 176, 75, 0.12);
+  --shadow-maincard: 0 3px 9px rgba(0, 0, 0, 0.08), 0 2px 3px rgba(0, 0, 0, 0.12);
+}

@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
