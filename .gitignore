@@ -84,5 +84,3 @@ yarn.lock
 dist/
 
 docs/db_backup_*.sql
-
-docs/
