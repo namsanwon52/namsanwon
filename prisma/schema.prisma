@@ -132,6 +132,20 @@ model Member {
   @@map("member")
 }
 
+model PasswordResetCode {
+  id        Int      @id @default(autoincrement())
+  memberIdx Int
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  verified  Boolean  @default(false)
+  consumed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([memberIdx])
+  @@map("password_reset_code")
+}
+
 // 관리자가 블럭 단위로 편집하는 페이지 콘텐츠 (인사말 등 소개 페이지 + 후원신청 안내/자원봉사 안내).
 // page로 대상 페이지를 식별(slug). '추가' 버튼을 누를 때마다 블럭이 하나씩 생성되고,
 // 각 블럭은 콘텐츠 블럭(RichEditor) 또는 배너 이미지(페이지 전체를 차지하는 단일 이미지) 중 하나.

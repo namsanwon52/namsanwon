@@ -3085,80 +3085,252 @@ button {
 }
 
 /* ===================== 아이디/비밀번호 찾기 ===================== */
-.findWrap {
-  width: min(1104px, calc(100% - 40px));
-  margin: 0 auto;
+.findAccountPanel {
+  width: min(1104px, 100%);
+  margin: 32px auto 0;
   padding: 0 0 88px;
 }
-.findGrid {
+
+.findAccountCards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
 }
-.findCard {
+
+.findAccountCard {
   display: flex;
+  min-height: 510px;
   flex-direction: column;
-  gap: 20px;
-  padding: 36px;
+  padding: 48px;
   border: 1px solid var(--line-muted);
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   background: var(--surface);
-  box-shadow: var(--shadow-boardcard);
+  box-shadow: 0 8px 24px rgba(136, 176, 75, 0.12);
 }
-.findCardHead {
+
+.findAccountHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24px;
 }
-.findCardHead h2 {
-  margin: 0 0 8px;
-  color: var(--text);
-  font-size: var(--font-h2);
-  font-weight: 700;
+
+.findAccountHeader h3 {
+  margin: 0 0 5px;
+  color: var(--secondary);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 36.4px;
+  letter-spacing: var(--tracking-default);
 }
-.findCardHead p {
+
+.findAccountHeader p {
+  max-width: none;
   margin: 0;
   color: var(--text-sub);
-  font-size: var(--font-b1);
-  line-height: 1.6;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: var(--tracking-default);
 }
-.findCardIcon {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--surface-select, rgba(69, 104, 5, 0.06));
-  font-size: 20px;
+
+.findAccountForm {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(215, 194, 185, 0.5);
 }
-.findDivider {
-  height: 1px;
-  margin: 0;
-  border: none;
-  background: var(--line-muted);
-}
-.findFields {
+
+.findAccountFields {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 24px;
 }
-.findFieldInline {
-  display: flex;
+
+.findAccountField {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
+}
+
+.findAccountField label {
+  display: inline-flex;
+  min-height: var(--form-control-height);
+  align-items: center;
+  justify-self: end;
+  white-space: nowrap;
+  color: #201a18;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--tracking-default);
+  padding-top: var(--form-text-y-adjust);
+}
+
+.findAccountField input,
+.findAccountResetField input {
+  min-width: 0;
+  width: 100%;
+  height: var(--form-control-height);
+  padding: var(--form-text-y-adjust) 12px 0;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.findAccountField input::placeholder,
+.findAccountResetField input::placeholder {
+  color: var(--text-sub);
+  opacity: 1;
+}
+
+.findAccountField input:focus-visible,
+.findAccountResetField input:focus-visible {
+  border-color: var(--secondary);
+  outline: 3px solid rgba(69, 104, 5, 0.12);
+}
+
+.findAccountButton {
+  display: inline-flex;
+  width: 100%;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  padding: 16px 24px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--secondary);
+  color: var(--surface);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 26px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.findAccountButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.findAccountButton:focus-visible {
+  outline: 3px solid rgba(69, 104, 5, 0.25);
+  outline-offset: 3px;
+}
+
+.findAccountVerifyPanel {
+  width: min(528px, 100%);
+  margin: 32px auto 88px;
+}
+
+.findAccountVerifyCard {
+  min-height: 412px;
+}
+
+.findAccountVerifyForm {
   gap: 16px;
 }
-.findFieldInline label {
-  width: 68px;
-  flex: 0 0 auto;
-  color: var(--text);
-  font-size: var(--font-h5);
+
+.findAccountVerifyForm .findAccountButton {
+  margin-top: 0;
+}
+
+.findAccountCodeGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.findAccountCodeGroup input {
+  width: 50px;
+  height: 70px;
+  padding: 3px 0 0;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-sub);
+  font-size: 36px;
   font-weight: 700;
+  line-height: 1;
+  text-align: center;
 }
-.findFieldInline .formField {
-  flex: 1;
+
+.findAccountCodeGroup input:nth-child(4) {
+  margin-left: 28px;
 }
+
+.findAccountCodeGroup input:focus-visible {
+  border-color: var(--secondary);
+  outline: 3px solid rgba(69, 104, 5, 0.12);
+}
+
+.findAccountResend {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 14px;
+  text-align: center;
+}
+
+.findAccountResend button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--secondary);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.findAccountResetPanel {
+  width: min(536px, 100%);
+  margin: 32px auto 88px;
+}
+
+.findAccountResetCard {
+  min-height: 500px;
+}
+
+.findAccountResetForm {
+  gap: 24px;
+}
+
+.findAccountResetForm .findAccountButton {
+  margin-top: 16px;
+}
+
+.findAccountResetFields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.findAccountResetField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.findAccountResetField p {
+  max-width: none;
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: var(--tracking-default);
+}
+
 .findResult {
   padding: 14px 16px;
   border-radius: var(--radius-md);
@@ -3172,8 +3344,87 @@ button {
 }
 
 @media (max-width: 700px) {
-  .findGrid {
+  .findAccountCards {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .findAccountCard {
+    min-height: 0;
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  .findAccountHeader {
+    gap: 16px;
+  }
+
+  .findAccountHeader h3 {
+    font-size: 22px;
+    line-height: 31px;
+  }
+
+  .findAccountHeader p {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .findAccountForm {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .findAccountFields {
+    gap: 16px;
+  }
+
+  .findAccountField {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .findAccountField label {
+    justify-self: start;
+  }
+
+  .findAccountButton {
+    min-height: 54px;
+    margin-top: 28px;
+    padding: 15px 24px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .findAccountVerifyCard,
+  .findAccountResetCard {
+    min-height: 0;
+  }
+
+  .findAccountVerifyForm,
+  .findAccountResetForm {
+    gap: 16px;
+  }
+
+  .findAccountCodeGroup {
+    gap: 8px;
+  }
+
+  .findAccountCodeGroup input {
+    width: 40px;
+    height: 58px;
+    font-size: 28px;
+  }
+
+  .findAccountCodeGroup input:nth-child(4) {
+    margin-left: 12px;
+  }
+
+  .findAccountResetForm .findAccountButton {
+    margin-top: 8px;
+  }
+
+  .findAccountResetFields {
+    gap: 18px;
   }
 }
 @media (max-width: 560px) {
