@@ -8,6 +8,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [showPasswordNoticeModal, setShowPasswordNoticeModal] = useState(false)
   const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,6 +23,10 @@ export default function LoginForm() {
       })
       const data = await res.json()
       if (!res.ok) {
+        if (data.code === 'PASSWORD_NOT_SET') {
+          setShowPasswordNoticeModal(true)
+          return
+        }
         setError(data.error ?? '로그인에 실패했습니다.')
         return
       }
@@ -30,6 +35,10 @@ export default function LoginForm() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  function goToPasswordReset() {
+    router.push(`/member/find-account?id=${encodeURIComponent(id)}&reason=password-not-set`)
   }
 
   return (
@@ -80,6 +89,36 @@ export default function LoginForm() {
           <Link href="/member/join">회원가입</Link>
         </div>
       </form>
+
+      {showPasswordNoticeModal && (
+        <div className="modalOverlay">
+          <div className="modalCard passwordNoticeCard">
+            <h3>안내</h3>
+            <p>남산원을 찾아주시는 모든 분들께 감사드립니다.</p>
+            <p>
+              홈페이지 개편으로 서비스가 한층 더 편리해졌습니다.
+              <br />
+              회원님의 소중한 정보를 안전하게 보호하기 위해
+              <br />
+              비밀번호를 한 번만 새로 설정해 주시면 됩니다.
+            </p>
+            <p>
+              잠시만 함께해 주시면
+              <br />
+              앞으로 더 편안한 환경에서 남산원을 이용하실 수 있습니다.
+            </p>
+            <p>늘 회원님을 먼저 생각하는 남산원이 되겠습니다.</p>
+            <div className="formActions">
+              <button className="btnGhost" onClick={() => setShowPasswordNoticeModal(false)}>
+                닫기
+              </button>
+              <button className="btnPrimary" onClick={goToPasswordReset}>
+                비밀번호 변경하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

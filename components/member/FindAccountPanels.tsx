@@ -1,18 +1,23 @@
 'use client'
 import { useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 type PwStep = 'form' | 'code' | 'newPassword' | 'done'
 
 const CODE_LENGTH = 6
 
 export default function FindAccountPanels() {
+  const searchParams = useSearchParams()
+  const prefillId = searchParams.get('id') ?? ''
+  const isPasswordNotSet = searchParams.get('reason') === 'password-not-set'
+
   const [idForm, setIdForm] = useState({ name: '', email: '' })
   const [idResult, setIdResult] = useState('')
   const [idError, setIdError] = useState('')
   const [idSubmitting, setIdSubmitting] = useState(false)
 
   const [pwStep, setPwStep] = useState<PwStep>('form')
-  const [pwForm, setPwForm] = useState({ id: '', name: '', email: '' })
+  const [pwForm, setPwForm] = useState({ id: prefillId, name: '', email: '' })
   const [pwError, setPwError] = useState('')
   const [pwSubmitting, setPwSubmitting] = useState(false)
 
@@ -144,6 +149,11 @@ export default function FindAccountPanels() {
 
   return (
     <div className="findAccountPanel">
+      {pwStep === 'form' && isPasswordNotSet && (
+        <p className="findResult">
+          비밀번호가 설정되지 않은 계정입니다. 본인확인 후 새 비밀번호를 설정해주세요.
+        </p>
+      )}
       {pwStep === 'form' && (
         <div className="findAccountCards">
           <article className="findAccountCard">

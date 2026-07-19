@@ -12,6 +12,7 @@ export default function SiteHeader({ member }: { member: Member | null }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [openItem, setOpenItem] = useState<number | null>(null)
   const [sitemapOpen, setSitemapOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
   const router = useRouter()
@@ -29,6 +30,7 @@ export default function SiteHeader({ member }: { member: Member | null }) {
       if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
         setOpenItem(null)
         setSitemapOpen(false)
+        setUserMenuOpen(false)
       }
     }
     const onKey = (e: KeyboardEvent) => {
@@ -36,6 +38,7 @@ export default function SiteHeader({ member }: { member: Member | null }) {
         setOpenItem(null)
         setSitemapOpen(false)
         setMobileNavOpen(false)
+        setUserMenuOpen(false)
       }
     }
     document.addEventListener('click', onDocClick)
@@ -50,6 +53,7 @@ export default function SiteHeader({ member }: { member: Member | null }) {
     setMobileNavOpen(false)
     setOpenItem(null)
     setSitemapOpen(false)
+    setUserMenuOpen(false)
   }
 
   async function handleLogout() {
@@ -123,7 +127,25 @@ export default function SiteHeader({ member }: { member: Member | null }) {
           <div className="mobileUtilityNav" aria-label="회원 메뉴">
             {member ? (
               <>
-                <span>{member.name}님</span>
+                <div className={`userMenu${userMenuOpen ? ' isOpen' : ''}`}>
+                  <button
+                    className="userMenuTrigger"
+                    type="button"
+                    aria-expanded={userMenuOpen}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setUserMenuOpen((v) => !v)
+                      setOpenItem(null)
+                      setSitemapOpen(false)
+                    }}
+                  >
+                    {member.name}님
+                  </button>
+                  <div className="userMenuDropdown">
+                    <Link href="/member/mypage" onClick={closeAll}>개인정보변경</Link>
+                    <Link href="/member/change-password" onClick={closeAll}>비밀번호 변경</Link>
+                  </div>
+                </div>
                 <button type="button" onClick={handleLogout} disabled={loggingOut}>
                   로그아웃
                 </button>
@@ -140,7 +162,25 @@ export default function SiteHeader({ member }: { member: Member | null }) {
         <div className="utilityNav" aria-label="회원 메뉴">
           {member ? (
             <>
-              <span>{member.name}님</span>
+              <div className={`userMenu${userMenuOpen ? ' isOpen' : ''}`}>
+                <button
+                  className="userMenuTrigger"
+                  type="button"
+                  aria-expanded={userMenuOpen}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setUserMenuOpen((v) => !v)
+                    setOpenItem(null)
+                    setSitemapOpen(false)
+                  }}
+                >
+                  {member.name}님
+                </button>
+                <div className="userMenuDropdown">
+                  <Link href="/member/mypage" onClick={closeAll}>개인정보변경</Link>
+                  <Link href="/member/change-password" onClick={closeAll}>비밀번호 변경</Link>
+                </div>
+              </div>
               <button type="button" onClick={handleLogout} disabled={loggingOut}>
                 {loggingOut ? '로그아웃 중...' : '로그아웃'}
               </button>

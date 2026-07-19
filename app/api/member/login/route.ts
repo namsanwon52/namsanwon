@@ -16,7 +16,10 @@ export async function POST(req: NextRequest) {
   }
   if (!member.passwd) {
     return NextResponse.json(
-      { error: '비밀번호가 설정되지 않은 계정입니다. 비밀번호 재설정을 이용해주세요.' },
+      {
+        error: '비밀번호가 설정되지 않은 계정입니다. 비밀번호 재설정을 이용해주세요.',
+        code: 'PASSWORD_NOT_SET',
+      },
       { status: 401 },
     )
   }

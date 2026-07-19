@@ -71,12 +71,19 @@ html {
 }
 
 body {
+  display: flex;
   min-width: 320px;
+  min-height: 100vh;
   margin: 0;
+  flex-direction: column;
   background: var(--bg);
   color: var(--text);
   font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   letter-spacing: 0;
+}
+
+#main {
+  flex: 1 0 auto;
 }
 
 a {
@@ -334,6 +341,57 @@ button {
 
 .subMenu a:hover,
 .subMenu a:focus-visible {
+  background: rgba(69, 104, 5, 0.05);
+  color: var(--secondary);
+  outline: none;
+}
+
+.userMenu {
+  position: relative;
+}
+
+.userMenuTrigger {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.userMenuDropdown {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  z-index: 20;
+  display: none;
+  min-width: 140px;
+  padding: 10px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-maincard);
+  transform: translateX(-50%);
+}
+
+.userMenu.isOpen .userMenuDropdown {
+  display: grid;
+  gap: 2px;
+}
+
+.userMenuDropdown a {
+  display: block;
+  height: auto;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-nav);
+  font-size: var(--font-h5);
+  font-weight: 500;
+  line-height: var(--line-h5);
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+}
+
+.userMenuDropdown a:hover,
+.userMenuDropdown a:focus-visible {
   background: rgba(69, 104, 5, 0.05);
   color: var(--secondary);
   outline: none;
@@ -1228,6 +1286,20 @@ button {
   .subMenu a {
     padding: 9px 12px;
     font-size: var(--font-h5);
+  }
+
+  .userMenuDropdown {
+    position: static;
+    min-width: 0;
+    padding: 4px 0 0;
+    border: 0;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .userMenu.isOpen .userMenuDropdown {
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -2265,6 +2337,15 @@ button {
   color: var(--text);
   font-size: var(--font-h2);
   font-weight: 700;
+}
+.passwordNoticeCard {
+  max-width: 420px;
+}
+.passwordNoticeCard p {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: var(--font-b1);
+  line-height: 1.6;
 }
 
 /* 게시글 상세 액션 (수정/삭제) */
@@ -3332,6 +3413,7 @@ button {
 }
 
 .findResult {
+  margin: 0 0 24px;
   padding: 14px 16px;
   border-radius: var(--radius-md);
   background: var(--surface-select, rgba(69, 104, 5, 0.06));
