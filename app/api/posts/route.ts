@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { getMemberSession } from '@/lib/memberSession'
 import { hashPassword } from '@/lib/hash'
 import { getBoardMeta } from '@/lib/board'
 
@@ -49,18 +50,28 @@ export async function POST(req: NextRequest) {
   const meta = getBoardMeta(category)
   const session = await getServerSession(authOptions)
 
-  if (meta.adminOnly && !session) {
-    return NextResponse.json({ error: '관리자 권한 필요' }, { status: 401 })
+  if (meta.adminOnly) {
+    if (!session) {
+      return NextResponse.json({ error: '관리자 권한 필요' }, { status: 401 })
+    }
+  }
+
+  // 공개 게시판(자유게시판 등)은 로그인한 회원(또는 관리자)만 작성 가능
+  const member = meta.adminOnly ? null : await getMemberSession()
+  if (!meta.adminOnly && !session && !member) {
+    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
 
   const hashedPassword = password ? await hashPassword(password) : null
+  // 작성자명은 세션을 신뢰(회원 도용 방지). 관리자는 입력값 허용.
+  const authorName = session ? author || '관리자' : member?.name || '회원'
 
   const post = await prisma.post.create({
     data: {
       code: category,
       title,
       content,
-      author: author || '익명',
+      author: authorName,
       password: hashedPassword,
       isAdmin: !!session,
       isSecret: !!isSecret,

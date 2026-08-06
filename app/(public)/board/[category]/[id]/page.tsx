@@ -62,7 +62,9 @@ export default async function PostDetailPage({ params }: Props) {
   )
   const docFiles = post.files.filter((f) => !isImg(f.filename))
 
-  const isLocked = post.isSecret && !session // 비밀글 & 비관리자 → 게이트
+  // 비밀글은 관리자 세션 여부와 무관하게 공개 게시판에서는 비밀번호를 입력해야 본문 열람 가능.
+  // (관리자는 /admin/posts 에서 열람·관리)
+  const isLocked = post.isSecret
   const allowComments = !meta.adminOnly // 자유게시판 등 공개 게시판에만 댓글
 
   return (

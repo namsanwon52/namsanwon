@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { getMemberSession } from '@/lib/memberSession'
 import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
@@ -31,6 +32,9 @@ export default async function BoardPage({ params, searchParams }: Props) {
   const sf = (sp.sf ?? '전체') as '전체' | '제목' | '작성자'
   const ctx = findBoardContext(category)
   const meta = getBoardMeta(category)
+  // 자유게시판 등 공개 게시판(비관리자 전용 아님)은 로그인한 회원만 글쓰기 가능
+  const member = meta.adminOnly ? null : await getMemberSession()
+  const canWrite = !meta.adminOnly && !!member
   const isGallery = ctx?.localItem.type === 'gallery'
   const showStatus = category === 'com1' // 자유게시판: 처리현황(문의 답변) 표시
   const limit = isGallery ? 12 : 15
@@ -193,6 +197,14 @@ export default async function BoardPage({ params, searchParams }: Props) {
               )}
             </tbody>
           </table>
+        )}
+
+        {canWrite && (
+          <div className="boardWriteRow">
+            <Link href={`/board/${category}/write`} className="btnPrimary">
+              글쓰기
+            </Link>
+          </div>
         )}
 
         <Pagination page={page} totalPages={totalPages} basePath={`/board/${category}`} query={q} />

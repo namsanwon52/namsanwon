@@ -1803,6 +1803,12 @@ button {
 .postNav a:hover { background: rgba(136, 176, 75, 0.05); }
 .postNav .navLabel { width: 60px; flex: 0 0 auto; color: var(--text-sub); font-weight: 600; }
 .postNav .navTitle { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.boardWriteRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
 .boardBackRow {
   display: flex;
   justify-content: center;

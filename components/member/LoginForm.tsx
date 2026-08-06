@@ -30,7 +30,10 @@ export default function LoginForm() {
         setError(data.error ?? '로그인에 실패했습니다.')
         return
       }
-      router.push('/')
+      // 로그인 전 머물던 페이지(예: 글쓰기)로 복귀. 같은 사이트 경로만 허용.
+      const redirect = new URLSearchParams(window.location.search).get('redirect')
+      const dest = redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/'
+      router.push(dest)
       router.refresh()
     } finally {
       setSubmitting(false)
