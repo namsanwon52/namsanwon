@@ -89,11 +89,30 @@ export default async function BoardPage({ params, searchParams }: Props) {
       <PageBanner
         title={ctx?.section.title ?? meta.label}
         desc={ctx?.section.desc}
-        crumbs={crumbs}
       />
       {ctx && <BoardLocalNav section={ctx.section} activeCode={ctx.localItem.code} />}
 
       <div className="boardArea">
+        <div className="boardTitleRow">
+          <h2 className="boardTitle">{ctx?.localItem.label ?? meta.label}</h2>
+          <nav className="boardBreadcrumb" aria-label="현재 위치">
+            <span aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 11.5 12 4l8 7.5M6 10v9h12v-9"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+            {crumbs.map((c, i) => (
+              <span key={i}>{c}</span>
+            ))}
+          </nav>
+        </div>
+
         <div className="boardControlBar">
           {ctx?.localItem.subTabs ? (
             <div className="boardSubTabs">
@@ -110,27 +129,10 @@ export default async function BoardPage({ params, searchParams }: Props) {
           ) : (
             <div />
           )}
-          <form className="boardSearch" action={`/board/${category}`} method="get">
-            <select name="sf" defaultValue={sf} aria-label="검색 범위" className="boardSearchField">
-              <option value="전체">전체</option>
-              <option value="제목">제목</option>
-              <option value="작성자">작성자</option>
-            </select>
-            <span className="boardSearchDivider" aria-hidden="true" />
-            <input name="q" defaultValue={q} placeholder="검색어를 입력하세요" aria-label="게시글 검색" />
-            <button type="submit" aria-label="검색">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-            </button>
-          </form>
+
         </div>
-
-        <p className="boardCount">
-          총 <b>{total}</b>건{q && ` · "${q}" 검색 결과`}
-        </p>
-
+        <div className="pageBannerSub">
+        </div>
         {isGallery ? (
           galleryRows.length === 0 ? (
             <div className="boardEmpty">등록된 게시글이 없습니다.</div>
@@ -150,6 +152,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
             </div>
           )
         ) : (
+          <div className="boardTableWrap">
           <table className="boardTable">
             <thead>
               <tr>
@@ -197,6 +200,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
               )}
             </tbody>
           </table>
+          </div>
         )}
 
         {canWrite && (
@@ -207,7 +211,28 @@ export default async function BoardPage({ params, searchParams }: Props) {
           </div>
         )}
 
-        <Pagination page={page} totalPages={totalPages} basePath={`/board/${category}`} query={q} />
+
+        <div className="boardBottomBar">
+          <Pagination page={page} totalPages={totalPages} basePath={`/board/${category}`} query={q} />
+          
+          <form className="boardSearch" action={`/board/${category}`} method="get">
+            <select name="sf" defaultValue={sf} aria-label="검색 범위" className="boardSearchField">
+              <option value="전체">전체</option>
+              <option value="제목">제목</option>
+              <option value="작성자">작성자</option>
+            </select>
+            <span className="boardSearchDivider" aria-hidden="true" />
+            <input name="q" defaultValue={q} placeholder="검색어를 입력하세요" aria-label="게시글 검색" />
+            <button type="submit" aria-label="검색">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </button>
+          </form>
+        </div>
+         
+        
       </div>
     </>
   )

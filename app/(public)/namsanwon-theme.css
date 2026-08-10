@@ -866,15 +866,15 @@ button {
 
 .badgeNew {
   display: inline-grid;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   place-items: center;
   border-radius: 50%;
   background: var(--badge-notice);
   color: var(--surface);
   font-size: var(--font-b2);
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   line-height: var(--line-b2);
   letter-spacing: var(--tracking-default);
 }
@@ -1480,7 +1480,7 @@ button {
   width: min(1200px, calc(100% - 80px));
   min-height: 300px;
   margin: 0 auto;
-  padding: 48px 0;
+  padding: 45px 0px 45px 35px;
   padding-right: 42%;
   text-align: left;
 }
@@ -1490,12 +1490,13 @@ button {
   font-weight: 700;
   line-height: var(--line-display-sm);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+  margin-bottom: 8px;
 }
 .pageBanner p {
   max-width: 520px;
   margin: 12px 0 0;
   font-size: var(--font-h3);
-  font-weight: 500;
+  font-weight: 300;
   line-height: var(--line-h3);
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.24);
   opacity: 0.92;
@@ -1555,6 +1556,13 @@ button {
   content: "";
 }
 
+.pageBannerSub {
+  position: relative;
+  overflow: hidden;
+  background: #6f7a5a url("/namsanwon/page-banner.png") center / cover no-repeat;
+  color: var(--text-inverse);
+}
+
 /* 게시판 영역 컨테이너 */
 .boardArea {
   width: min(1200px, calc(100% - 80px));
@@ -1600,21 +1608,21 @@ button {
   display: flex;
   align-items: center;
   gap: 2px;
-  height: 48px;
+  height: 38px;
   padding: 4px 4px 4px 6px;
   border: 1px solid var(--line-muted);
   border-radius: var(--radius-full);
   background: var(--surface);
 }
 .boardSearch .boardSearchField {
-  height: 38px;
+  height: 34px;
   padding: 0 6px 0 12px;
   border: 0;
   border-radius: 0;
   background: none;
   color: var(--text);
   font-size: var(--font-h5);
-  font-weight: 500;
+  font-weight: 300;
   cursor: pointer;
   outline: none;
 }
@@ -1639,8 +1647,8 @@ button {
 .boardSearch input::placeholder { color: var(--text-sub); }
 .boardSearch button {
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   place-items: center;
   flex: 0 0 auto;
   border-radius: var(--radius-sm);
@@ -1659,18 +1667,43 @@ button {
 .boardCount b { color: var(--secondary); }
 
 /* 리스트형 테이블 (type2) */
+.boardTableWrap{
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-boardcard);
+  overflow: hidden;
+}
+.boardTableWrap .boardTable {
+  border: 0;
+}
+.boardTableWrap .boardTable thead th:first-child,
+.boardTableWrap .boardTable tbody td:first-child {
+  border-left: 0;
+}
+.boardTable tbody tr:last-child td {
+  border-bottom: 0; /* wrapper 하단 테두리와 마지막 행 구분선 중복 방지 */
+}
 .boardTable {
   width: 100%;
   border-collapse: collapse;
-  border-top: 2px solid var(--secondary);
+  border: 1px solid var(--line-muted);
+
+}
+.boardTable tbody tr:last-child td {
+  border-bottom: 0;
 }
 .boardTable thead th {
   padding: 14px 12px;
-  border-bottom: 1px solid var(--line-muted);
+  border-bottom: 1.5px solid var(--line-muted);
   background: var(--surface_boardtitle, #f9f8f8);
   color: var(--text-sub);
   font-size: var(--font-h5);
-  font-weight: 600;
+  font-weight: 300;
+  vertical-align: middle;
+  text-align: center;
+}
+.boardTable thead .colTitle {
+  text-align: center; /* 헤더 "제목" 라벨만 가운데 정렬 */
 }
 .boardTable tbody td {
   padding: 14px 12px;
@@ -1685,12 +1718,14 @@ button {
 .boardTable .colDate { width: 120px; color: var(--text-sub); font-size: var(--font-b1); }
 .boardTable .colViews { width: 80px; color: var(--text-sub); font-size: var(--font-b1); }
 .boardTable .colTitle { text-align: left; }
+.boardTable thead th .colTitle { text-align: center; }
+
 .boardTable .colTitle a {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--text);
-  font-weight: 500;
+  font-weight: 400;
 }
 .boardTable .colTitle a:hover { color: var(--secondary); }
 .boardTable .colTitle .titleText {
@@ -1703,6 +1738,110 @@ button {
   padding: 80px 0;
   color: var(--text-sub);
   text-align: center;
+}
+/* ===================== 게시판 타이틀 + 브레드크럼 (Figma: 로컬탭 아래, 표 위) ===================== */
+.boardTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--line-muted);
+}
+.boardTitle {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--font-h1);
+  font-weight: 700;
+  line-height: var(--line-h1);
+  letter-spacing: var(--tracking-default);
+}
+.boardBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+}
+.boardBreadcrumb svg {
+  display: block;
+  flex: 0 0 auto;
+}
+.boardBreadcrumb span + span::before {
+  margin-right: 6px;
+  content: "›";
+}
+
+/* 팀 소개 배너 박스 — 실제 콘텐츠(이미지/문구) 확정 전 placeholder */
+.boardIntroBox {
+  height: 180px;
+  margin-bottom: 24px;
+  border-radius: var(--radius-lg);
+  background: rgba(116, 121, 104, 0.35);
+}
+
+/* 공지 고정 행 */
+.boardTable tr.isNotice td {
+  background: rgba(136, 176, 75, 0.05);
+  font-weight: 600;
+}
+.boardTable .iconPin {
+  font-size: var(--font-h4);
+}
+.badgeNotice {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  margin-right: 6px;
+  border-radius: var(--radius-full);
+  background: var(--secondary);
+  color: var(--surface);
+  font-size: var(--font-b2);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 하단 바: 페이지네이션 + 검색을 한 줄에 배치 (Figma 기준) */
+.boardBottomBar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 30px;
+}
+.boardBottomBar .pagination {
+  grid-column: 2;
+  margin-top: 0;
+}
+.boardBottomBar .boardSearch {
+  grid-column: 3;
+  justify-self: end;
+  width: min(320px, 100%);
+  border-radius: var(--radius-sm);
+}
+
+.boardBottomBar .pagination .isActive {
+  border-color: var(--secondary);
+  background: var(--secondary);
+  color: var(--text-inverse);
+  font-weight: 500;
+}
+@media (max-width: 700px) {
+  .boardTitleRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .boardBottomBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .boardBottomBar .boardSearch {
+    margin-left: 0;
+  }
 }
 
 /* 갤러리형 (type: gallery) */
@@ -1732,26 +1871,38 @@ button {
   width: 36px;
   height: 36px;
   place-items: center;
-  border: 1px solid var(--line-muted);
   border-radius: var(--radius-sm);
   color: var(--text-sub);
   font-size: var(--font-h5);
   transition: all 0.18s ease;
 }
-.pagination a:hover { border-color: var(--primary); color: var(--secondary); }
+.pagination a:hover { border-color: var(--secondary); color: var(--secondary); }
 .pagination .isActive {
   border-color: var(--primary);
   background: var(--primary);
   color: var(--text-inverse);
   font-weight: 700;
 }
-
+.pagination a[aria-label="이전 묶음"],
+.pagination a[aria-label="다음 묶음"] {
+  border: 1px solid var(--line-muted);
+  font-size:large;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.pagination a[aria-label="이전 묶음"]:hover,
+.pagination a[aria-label="다음 묶음"]:hover {
+  border-color: var(--primary);
+  color: var(--secondary);
+  background: var(--surface);
+}
 /* 게시글 상세 */
 .postDetail {
-  border-top: 2px solid var(--secondary);
+  overflow: hidden;
+
 }
 .postDetailHead {
-  padding: 24px 4px;
+  padding: 10px 4px;
   border-bottom: 1px solid var(--line-muted);
 }
 .postDetailHead h2 {
@@ -1767,13 +1918,54 @@ button {
   color: var(--text-sub);
   font-size: var(--font-h5);
 }
+.postDetailMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.postDetailMeta span::before {
+  font-size: 0.95em;
+  line-height: 1;
+}
+.postDetailMeta span:nth-child(1)::before {
+    content: "";
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: var(--text-sub);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.postDetailMeta span:nth-child(2)::before {
+   content: "";
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: var(--text-sub);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.postDetailMeta span:nth-child(3)::before {
+    content: "";
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: var(--text-sub);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 .postDetailBody {
   min-height: 200px;
   padding: 32px 4px;
-  border-bottom: 1px solid var(--line-muted);
+  box-shadow: var(--shadow-boardcard);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-muted);
   color: var(--text);
   font-size: var(--font-h3);
   line-height: 1.8;
+  background: var(--surface);
+  box-shadow: var(--shadow-boardcard);
+  margin: 10 auto;
 }
 .postDetailBody img { max-width: 100%; height: auto; }
 .postImages {
@@ -1790,19 +1982,71 @@ button {
   margin: 0 auto;
 }
 .postNav {
+  display: flex;
+  gap: 16px;
   margin-top: 24px;
   border-top: 1px solid var(--line-muted);
 }
 .postNav a {
-  display: flex;
-  gap: 16px;
-  padding: 14px 4px;
-  border-bottom: 1px solid var(--line-muted);
-  font-size: var(--font-h5);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 16px;
+  flex: 1;
+  min-width: 0;
+  padding: 20px 24px;
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
-.postNav a:hover { background: rgba(136, 176, 75, 0.05); }
-.postNav .navLabel { width: 60px; flex: 0 0 auto; color: var(--text-sub); font-weight: 600; }
-.postNav .navTitle { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.postNav a:hover {
+  border-color: var(--primary);
+  background: rgba(136, 176, 75, 0.05);
+}
+/* 화살표 : 왼쪽 칸에서 두 줄(라벨+제목) 높이만큼 세로로 걸침 */
+.postNav a::before {
+  grid-row: 1 / 3;
+  grid-column: 1;
+  color: var(--text-sub);
+  font-size: 20px;
+  line-height: 1;
+}
+.postNav a:nth-child(1)::before {
+  content: "→"; /* 다음글 */
+  grid-column: 2;
+}
+.postNav a:nth-child(2)::before {
+  content: "←"; /* 이전글 */
+}
+.postNav a:nth-child(1) {
+  order: 2;
+  grid-template-columns: 1fr auto; /* 다음글: 텍스트가 왼쪽, 화살표가 오른쪽 */
+}
+.postNav a:nth-child(2) {
+  order: 1;
+}
+.postNav a:nth-child(1) .navLabel,
+.postNav a:nth-child(1) .navTitle {
+  grid-column: 1;
+  text-align: right;
+}
+.postNav .navLabel {
+  grid-row: 1;
+  grid-column: 2;
+  color: var(--text-sub);
+  font-size: var(--font-b1);
+  font-weight: 500;
+}
+.postNav .navTitle {
+  grid-row: 2;
+  grid-column: 2;
+  overflow: hidden;
+  color: var(--text);
+  font-size: var(--font-h5);
+  font-weight: 300;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .boardWriteRow {
   display: flex;
   justify-content: flex-end;
@@ -1816,7 +2060,7 @@ button {
 }
 .boardBackRow a {
   display: inline-flex;
-  height: 44px;
+  height: 38px;
   align-items: center;
   padding: 0 28px;
   border-radius: var(--radius-full);
@@ -2534,8 +2778,9 @@ button {
   align-items: center;
   justify-content: space-between;
   width: min(1200px, calc(100% - 80px));
-  margin: 0 auto;
-  padding: 32px 0 24px;
+  margin: 20 auto 18 auto;
+  padding: 5px 0px;
+  border-bottom: 1px solid var(--line-muted);
 }
 .memberPageHead h1 {
   margin: 0;
@@ -2558,7 +2803,10 @@ button {
   margin-right: 6px;
   content: "›";
 }
-
+.boardBreadcrumb span:last-child {
+  color: var(--secondary);
+  font-weight: 500;
+}
 .joinWrap {
   width: min(760px, calc(100% - 40px));
   margin: 0 auto;
@@ -2571,7 +2819,7 @@ button {
   flex-direction: column;
   gap: 48px;
   align-items: stretch;
-  margin: 0 auto;
+  margin: 15px auto 40px auto;
 }
 
 .joinSteps {
@@ -2647,7 +2895,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 49px;
+  padding: 45px;
   border: 1px solid var(--line-muted);
   border-radius: 12px;
   background: var(--surface);

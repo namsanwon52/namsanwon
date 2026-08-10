@@ -73,13 +73,34 @@ export default async function PostDetailPage({ params }: Props) {
       {ctx && <BoardLocalNav section={ctx.section} activeCode={ctx.localItem.code} />}
 
       <div className="boardArea">
+        <div className="boardTitleRow">
+          <h2 className="boardTitle">{ctx?.localItem.label ?? meta.label}</h2>
+          <nav className="boardBreadcrumb" aria-label="현재 위치">
+            <span aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 11.5 12 4l8 7.5M6 10v9h12v-9"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+            {crumbs.map((c, i) => (
+              <span key={i}>{c}</span>
+            ))}
+          </nav>
+        </div>
+
         <article className="postDetail">
           <div className="postDetailHead">
             <h2>{post.title}</h2>
             <div className="postDetailMeta">
-              <span>작성자 {post.author ?? '-'}</span>
-              <span>작성일 {post.createdAt.toLocaleDateString('ko-KR')}</span>
-              <span>조회 {post.views}</span>
+              <span>{post.createdAt.toLocaleDateString('ko-KR')}</span>
+              <span>{post.author ?? '-'}</span>
+              
+              <span> {post.views} views</span>
             </div>
           </div>
 
@@ -124,20 +145,20 @@ export default async function PostDetailPage({ params }: Props) {
         <div className="postNav">
           {nextPost && (
             <Link href={`/board/${category}/${nextPost.id}`}>
-              <span className="navLabel">다음글</span>
+              <span className="navLabel isNext">다음글</span>
               <span className="navTitle">{nextPost.title}</span>
             </Link>
           )}
           {prevPost && (
             <Link href={`/board/${category}/${prevPost.id}`}>
-              <span className="navLabel">이전글</span>
+              <span className="navLabel isPrev">이전글</span>
               <span className="navTitle">{prevPost.title}</span>
             </Link>
           )}
         </div>
 
         <div className="boardBackRow">
-          <Link href={`/board/${category}`}>목록으로</Link>
+          <Link href={`/board/${category}`}>목록</Link>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
