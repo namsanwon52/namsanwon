@@ -8,9 +8,9 @@ const RichEditor = dynamic(() => import('@/components/editor/RichEditor'), { ssr
 
 type BlockType = 'text' | 'full-image'
 
-export default function BlockForm({ page }: { page: string }) {
+export default function BlockForm({ page, imageOnly }: { page: string; imageOnly?: boolean }) {
   const router = useRouter()
-  const [blockType, setBlockType] = useState<BlockType>('text')
+  const [blockType, setBlockType] = useState<BlockType>(imageOnly ? 'full-image' : 'text')
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [imageMode, setImageMode] = useState<'url' | 'file'>('url')
@@ -52,10 +52,12 @@ export default function BlockForm({ page }: { page: string }) {
     setError('')
     try {
       if (blockType === 'full-image') {
-        const confirmed = window.confirm(
-          '배너 이미지로 변경시, 기존에 등록된 블럭이 모두 삭제 됩니다. 진행하시겠습니까?'
-        )
-        if (!confirmed) return
+        if (!imageOnly) {
+          const confirmed = window.confirm(
+            '배너 이미지로 변경시, 기존에 등록된 블럭이 모두 삭제 됩니다. 진행하시겠습니까?'
+          )
+          if (!confirmed) return
+        }
 
         const finalImageUrl = await resolveImageUrl()
         if (!finalImageUrl) {
@@ -103,23 +105,25 @@ export default function BlockForm({ page }: { page: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-4 space-y-3">
-      <div className="flex gap-4 text-sm">
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input type="radio" name="blockType" checked={blockType === 'text'} onChange={() => setBlockType('text')} />
-          콘텐츠 블럭
-        </label>
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input
-            type="radio"
-            name="blockType"
-            checked={blockType === 'full-image'}
-            onChange={() => setBlockType('full-image')}
-          />
-          배너 이미지
-        </label>
-      </div>
+      {!imageOnly && (
+        <div className="flex gap-4 text-sm">
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <input type="radio" name="blockType" checked={blockType === 'text'} onChange={() => setBlockType('text')} />
+            콘텐츠 블럭
+          </label>
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <input
+              type="radio"
+              name="blockType"
+              checked={blockType === 'full-image'}
+              onChange={() => setBlockType('full-image')}
+            />
+            배너 이미지
+          </label>
+        </div>
+      )}
 
-      {blockType === 'full-image' && (
+      {blockType === 'full-image' && !imageOnly && (
         <p className="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2">
           배너 이미지로 등록하면 기존에 등록된 모든 블럭이 삭제되고, 이 이미지가 페이지 내용 영역 전체를 차지합니다.
         </p>
@@ -132,7 +136,7 @@ export default function BlockForm({ page }: { page: string }) {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             placeholder="예: 자원봉사 신청 안내"
           />
         </div>
@@ -158,7 +162,7 @@ export default function BlockForm({ page }: { page: string }) {
               type="text"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
               placeholder="https://..."
             />
           ) : (
@@ -186,7 +190,7 @@ export default function BlockForm({ page }: { page: string }) {
       <button
         type="submit"
         disabled={submitting}
-        className="px-4 py-2 rounded-lg text-sm bg-[#E8863A] text-white hover:bg-[#d4762e] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg text-sm bg-[#88b04b] text-white hover:bg-[#456805] transition-colors disabled:opacity-50"
       >
         {submitting ? '추가 중...' : '추가'}
       </button>

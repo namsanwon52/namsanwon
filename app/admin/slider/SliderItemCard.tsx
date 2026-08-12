@@ -73,7 +73,7 @@ export default function SliderItemCard({ image }: { image: SliderImage }) {
               type="text"
               value={alt}
               onChange={(e) => setAlt(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#E8863A]"
+              className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#88b04b]"
             />
           </div>
           <div>
@@ -83,7 +83,7 @@ export default function SliderItemCard({ image }: { image: SliderImage }) {
               min={1}
               value={order}
               onChange={(e) => setOrder(Number(e.target.value))}
-              className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#E8863A]"
+              className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#88b04b]"
             />
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function SliderItemCard({ image }: { image: SliderImage }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             rows={2}
-            className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#88b04b]"
           />
         </div>
         <div>
@@ -102,7 +102,7 @@ export default function SliderItemCard({ image }: { image: SliderImage }) {
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             rows={2}
-            className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-[#88b04b]"
           />
         </div>
         {error && <p className="text-sm text-red-500">{error}</p>}
@@ -110,7 +110,7 @@ export default function SliderItemCard({ image }: { image: SliderImage }) {
           <button
             onClick={save}
             disabled={saving}
-            className="px-3 py-1.5 rounded-full text-xs bg-[#E8863A] text-white hover:bg-[#d4762e] transition-colors disabled:opacity-50"
+            className="px-3 py-1.5 rounded-full text-xs bg-[#88b04b] text-white hover:bg-[#456805] transition-colors disabled:opacity-50"
           >
             {saving ? '저장 중...' : '저장'}
           </button>

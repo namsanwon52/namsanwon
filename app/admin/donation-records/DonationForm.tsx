@@ -52,7 +52,7 @@ export default function DonationForm() {
       </div>
       <button
         type="submit"
-        className="bg-[#E8863A] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#d4762e]"
+        className="bg-[#88b04b] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#456805]"
       >
         저장
       </button>

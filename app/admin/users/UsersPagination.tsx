@@ -30,7 +30,7 @@ export default function UsersPagination({
       </Link>
       {Array.from({ length: end - start + 1 }, (_, i) => start + i).map((p) =>
         p === page ? (
-          <span key={p} className="px-3 py-1.5 rounded-lg bg-[#E8863A] text-white" aria-current="page">
+          <span key={p} className="px-3 py-1.5 rounded-lg bg-[#88b04b] text-white" aria-current="page">
             {p}
           </span>
         ) : (

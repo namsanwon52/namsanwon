@@ -50,7 +50,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
     : {}
   const where = { code: category, ...searchWhere }
 
-  const [total, listRows, galleryRows] = await Promise.all([
+  const [total, listRows, galleryRows, subBanner] = await Promise.all([
     prisma.post.count({ where }),
     isGallery
       ? Promise.resolve([])
@@ -79,6 +79,10 @@ export default async function BoardPage({ params, searchParams }: Props) {
           select: { id: true, title: true, files: { take: 1, select: { url: true } } },
         })
       : Promise.resolve([]),
+    prisma.contentBlock.findFirst({
+      where: { page: category, type: 'full-image', active: true },
+      select: { imageUrl: true, imageAlt: true },
+    }),
   ])
 
   const totalPages = Math.ceil(total / limit)
@@ -131,8 +135,12 @@ export default async function BoardPage({ params, searchParams }: Props) {
           )}
 
         </div>
-        <div className="pageBannerSub">
-        </div>
+        {subBanner && (
+          <div className="pageBannerSub">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={subBanner.imageUrl} alt={subBanner.imageAlt} />
+          </div>
+        )}
         {isGallery ? (
           galleryRows.length === 0 ? (
             <div className="boardEmpty">등록된 게시글이 없습니다.</div>

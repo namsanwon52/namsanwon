@@ -50,17 +50,17 @@ export default function AdminEditPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">게시글 수정</h1>
+      <h1 className="text-2xl font-bold text-[#1b1c1c]">게시글 수정</h1>
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-4">
         <input
-          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
           placeholder="제목"
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
         />
         <input
-          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+          className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
           placeholder="작성자"
           value={form.author}
           onChange={(e) => setForm({ ...form, author: e.target.value })}
@@ -80,7 +80,7 @@ export default function AdminEditPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 text-sm bg-[#E8863A] text-white rounded-lg hover:bg-[#d4762e] disabled:opacity-50"
+            className="px-4 py-2 text-sm bg-[#88b04b] text-white rounded-lg hover:bg-[#456805] disabled:opacity-50"
           >
             {loading ? '저장 중...' : '수정 완료'}
           </button>

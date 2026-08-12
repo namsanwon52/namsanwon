@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { MANAGED_PAGES } from '@/lib/managed-pages'
 
-export default async function AdminPagesList() {
-  const pages = MANAGED_PAGES.filter((p) => p.type === 'content')
+export default async function AdminBoardImagesList() {
+  const pages = MANAGED_PAGES.filter((p) => p.type === 'board')
   const rows = await prisma.contentBlock.groupBy({
     by: ['page'],
     _max: { updatedAt: true },
@@ -13,14 +13,14 @@ export default async function AdminPagesList() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#1b1c1c]">페이지 관리</h1>
-        <p className="text-sm text-gray-500 mt-1">남산원소개 하위 소개 페이지 및 후원/자원봉사 안내 페이지의 내용을 편집합니다.</p>
+        <h1 className="text-2xl font-bold text-[#1b1c1c]">게시판 이미지 관리</h1>
+        <p className="text-sm text-gray-500 mt-1">각 게시판 목록 상단에 노출되는 서브 배너 이미지를 관리합니다.</p>
       </div>
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">
           <thead className="text-gray-400 border-b bg-gray-50">
             <tr>
-              <th className="p-3 text-left">페이지</th>
+              <th className="p-3 text-left">게시판</th>
               <th className="p-3 text-left">공개 주소</th>
               <th className="p-3 text-right">최근 수정</th>
               <th className="p-3 text-right">관리</th>
@@ -44,7 +44,7 @@ export default async function AdminPagesList() {
                 </td>
                 <td className="p-3 text-right">
                   <Link
-                    href={`/admin/pages/${p.slug}`}
+                    href={`/admin/board-images/${p.slug}`}
                     className="inline-block px-3 py-1.5 text-xs bg-[#88b04b] text-white rounded-lg hover:bg-[#456805]"
                   >
                     편집

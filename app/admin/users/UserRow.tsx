@@ -36,7 +36,7 @@ export default function UserRow({ member }: { member: MemberRow }) {
       <td className="py-3 px-4 text-center">
         <span
           className={`px-2.5 py-1 rounded-full text-xs ${
-            member.isAdmin ? 'bg-[#fdecd8] text-[#854F0B]' : 'bg-gray-100 text-gray-500'
+            member.isAdmin ? 'bg-[#eaf4df] text-[#456805]' : 'bg-gray-100 text-gray-500'
           }`}
         >
           {member.isAdmin ? '관리자' : '일반'}
