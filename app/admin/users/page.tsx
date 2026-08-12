@@ -36,7 +36,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">회원 관리</h1>
+      <h1 className="text-2xl font-bold text-[#1b1c1c]">회원 관리</h1>
 
       <div className="flex items-center justify-between">
         <UsersSearchBar field={field} q={q ?? ''} />

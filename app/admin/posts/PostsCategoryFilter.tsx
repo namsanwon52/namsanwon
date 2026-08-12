@@ -33,7 +33,7 @@ export default function PostsCategoryFilter({
       <select
         value={groupKey}
         onChange={(e) => handleGroupChange(e.target.value)}
-        className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#E8863A]"
+        className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#88b04b]"
       >
         {groups.map((g) => (
           <option key={g.key} value={g.key}>
@@ -48,8 +48,8 @@ export default function PostsCategoryFilter({
             href={`/admin/posts?category=${item.code}`}
             className={`px-3 py-1.5 rounded-full text-sm ${
               item.code === activeItem?.code
-                ? 'bg-[#E8863A] text-white'
-                : 'bg-white border text-gray-600 hover:border-[#E8863A]'
+                ? 'bg-[#88b04b] text-white'
+                : 'bg-white border text-gray-600 hover:border-[#88b04b]'
             }`}
           >
             {item.label}
@@ -64,8 +64,8 @@ export default function PostsCategoryFilter({
               href={`/admin/posts?category=${tab.code}`}
               className={`px-3 py-1 rounded-full text-xs ${
                 tab.code === activeCategory
-                  ? 'bg-[#3D2B1F] text-white'
-                  : 'bg-gray-50 border text-gray-500 hover:border-[#3D2B1F]'
+                  ? 'bg-[#25190c] text-white'
+                  : 'bg-gray-50 border text-gray-500 hover:border-[#25190c]'
               }`}
             >
               {tab.label}

@@ -45,7 +45,7 @@ export default function UsersSearchBar({
         <select
           value={field}
           onChange={(e) => handleFieldChange(e.target.value)}
-          className="appearance-none border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-[#3D2B1F] bg-white cursor-pointer hover:border-[#E8863A] focus:outline-none focus:border-[#E8863A] focus:ring-1 focus:ring-[#E8863A]"
+          className="appearance-none border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm text-[#1b1c1c] bg-white cursor-pointer hover:border-[#88b04b] focus:outline-none focus:border-[#88b04b] focus:ring-1 focus:ring-[#88b04b]"
         >
           {FIELDS.map((f) => (
             <option key={f.value} value={f.value}>
@@ -53,7 +53,7 @@ export default function UsersSearchBar({
             </option>
           ))}
         </select>
-        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#E8863A]">
+        <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#88b04b]">
           ▼
         </span>
       </div>
@@ -62,12 +62,12 @@ export default function UsersSearchBar({
           type="text"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 bg-white text-[#3D2B1F] shadow-sm focus:outline-none focus:border-[#E8863A] focus:ring-1 focus:ring-[#E8863A]"
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-64 bg-white text-[#1b1c1c] shadow-sm focus:outline-none focus:border-[#88b04b] focus:ring-1 focus:ring-[#88b04b]"
         />
       )}
       <button
         type="submit"
-        className="bg-[#E8863A] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#d4762e]"
+        className="bg-[#88b04b] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#456805]"
       >
         조회
       </button>

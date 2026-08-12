@@ -18,7 +18,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">대시보드</h1>
+      <h1 className="text-2xl font-bold text-[#1b1c1c]">대시보드</h1>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {counts.map((c) => (
           <Link
@@ -27,12 +27,12 @@ export default async function AdminDashboard() {
             className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
           >
             <p className="text-sm text-gray-500">{c.label}</p>
-            <p className="text-3xl font-bold text-[#E8863A] mt-1">{c.count}</p>
+            <p className="text-3xl font-bold text-[#88b04b] mt-1">{c.count}</p>
           </Link>
         ))}
       </div>
       <div className="bg-white rounded-xl p-5 shadow-sm">
-        <h2 className="font-bold text-[#3D2B1F] mb-3">최근 게시글</h2>
+        <h2 className="font-bold text-[#1b1c1c] mb-3">최근 게시글</h2>
         <table className="w-full text-sm">
           <thead className="text-gray-400 border-b">
             <tr>

@@ -23,10 +23,12 @@ export default function BlockItem({
   block,
   prev,
   next,
+  imageOnly,
 }: {
   block: ContentBlockData
   prev?: { id: number; order: number }
   next?: { id: number; order: number }
+  imageOnly?: boolean
 }) {
   const router = useRouter()
   const [title, setTitle] = useState(block.title)
@@ -68,7 +70,7 @@ export default function BlockItem({
   }
 
   async function remove() {
-    if (!confirm('이 블럭을 삭제하시겠습니까?')) return
+    if (!confirm(imageOnly ? '이 서브이미지를 삭제하시겠습니까?' : '이 블럭을 삭제하시겠습니까?')) return
     await fetch(`/api/content-blocks/${block.id}`, { method: 'DELETE' })
     router.refresh()
     notifyBlockChanged()
@@ -85,36 +87,48 @@ export default function BlockItem({
     <div className="bg-white rounded-xl shadow-sm p-4 space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-gray-400">
-          {block.type === 'text' ? '콘텐츠 블럭' : '배너 이미지'} · 순서{' '}
-          {block.order}
+          {imageOnly ? '서브 이미지' : block.type === 'text' ? '콘텐츠 블럭' : '배너 이미지'}
+          {!imageOnly && <> · 순서 {block.order}</>}
         </span>
-        <div className="flex gap-1">
-          <button
-            onClick={() => swapWith(prev)}
-            disabled={!prev}
-            className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
-            title="위로"
-          >
-            ▲
-          </button>
-          <button
-            onClick={() => swapWith(next)}
-            disabled={!next}
-            className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
-            title="아래로"
-          >
-            ▼
-          </button>
-        </div>
+        {!imageOnly && (
+          <div className="flex gap-1">
+            <button
+              onClick={() => swapWith(prev)}
+              disabled={!prev}
+              className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
+              title="위로"
+            >
+              ▲
+            </button>
+            <button
+              onClick={() => swapWith(next)}
+              disabled={!next}
+              className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
+              title="아래로"
+            >
+              ▼
+            </button>
+          </div>
+        )}
       </div>
 
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
-        placeholder="제목 (선택)"
-      />
+      {imageOnly ? (
+        <input
+          type="text"
+          value={imageAlt}
+          onChange={(e) => setImageAlt(e.target.value)}
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
+          placeholder="이미지 설명(alt)"
+        />
+      ) : (
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
+          placeholder="제목 (선택)"
+        />
+      )}
 
       {block.type === 'text' ? (
         <RichEditor value={content} onChange={setContent} />
@@ -123,13 +137,15 @@ export default function BlockItem({
           <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-50">
             <Image src={block.imageUrl} alt={imageAlt} fill className="object-contain" unoptimized />
           </div>
-          <input
-            type="text"
-            value={imageAlt}
-            onChange={(e) => setImageAlt(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
-            placeholder="이미지 설명(alt)"
-          />
+          {!imageOnly && (
+            <input
+              type="text"
+              value={imageAlt}
+              onChange={(e) => setImageAlt(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
+              placeholder="이미지 설명(alt)"
+            />
+          )}
         </div>
       )}
 
@@ -139,7 +155,7 @@ export default function BlockItem({
         <button
           onClick={save}
           disabled={saving}
-          className="px-3 py-1.5 rounded-full text-xs bg-[#E8863A] text-white hover:bg-[#d4762e] transition-colors disabled:opacity-50"
+          className="px-3 py-1.5 rounded-full text-xs bg-[#88b04b] text-white hover:bg-[#456805] transition-colors disabled:opacity-50"
         >
           {saving ? '저장 중...' : '저장'}
         </button>

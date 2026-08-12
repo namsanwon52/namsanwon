@@ -92,7 +92,7 @@ export default function SliderForm() {
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
               placeholder="https://..."
               required
             />
@@ -121,7 +121,7 @@ export default function SliderForm() {
             type="text"
             value={alt}
             onChange={(e) => setAlt(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             placeholder="이미지 설명"
             required
           />
@@ -133,7 +133,7 @@ export default function SliderForm() {
             min={1}
             value={order}
             onChange={(e) => setOrder(Number(e.target.value))}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
           />
         </div>
       </div>
@@ -145,7 +145,7 @@ export default function SliderForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             rows={2}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             placeholder={'아이들의 들꽃 같은 미소가\n푸른 미래로 자라납니다'}
           />
         </div>
@@ -155,7 +155,7 @@ export default function SliderForm() {
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             rows={2}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             placeholder={'1952년부터 이어온 따뜻한 돌봄과 사랑으로...'}
           />
         </div>
@@ -163,7 +163,7 @@ export default function SliderForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="px-4 py-2 rounded-lg text-sm bg-[#E8863A] text-white hover:bg-[#d4762e] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg text-sm bg-[#88b04b] text-white hover:bg-[#456805] transition-colors disabled:opacity-50"
       >
         {submitting ? '추가 중...' : '추가'}
       </button>

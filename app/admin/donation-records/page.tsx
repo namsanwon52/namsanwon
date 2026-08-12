@@ -8,7 +8,7 @@ export default async function AdminDonationPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">후원금품현황 관리</h1>
+      <h1 className="text-2xl font-bold text-[#1b1c1c]">후원금품현황 관리</h1>
       <DonationForm />
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">

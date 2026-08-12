@@ -89,7 +89,7 @@ export default function AdminUserEditPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">회원 수정</h1>
+      <h1 className="text-2xl font-bold text-[#1b1c1c]">회원 수정</h1>
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-4 max-w-xl">
         <div>
           <label className="block text-xs text-gray-400 mb-1">아이디</label>
@@ -102,7 +102,7 @@ export default function AdminUserEditPage() {
         <div>
           <label className="block text-xs text-gray-400 mb-1">이름</label>
           <input
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
@@ -110,7 +110,7 @@ export default function AdminUserEditPage() {
         <div>
           <label className="block text-xs text-gray-400 mb-1">닉네임</label>
           <input
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             value={form.nick}
             onChange={(e) => setForm({ ...form, nick: e.target.value })}
           />
@@ -118,7 +118,7 @@ export default function AdminUserEditPage() {
         <div>
           <label className="block text-xs text-gray-400 mb-1">이메일</label>
           <input
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
@@ -126,7 +126,7 @@ export default function AdminUserEditPage() {
         <div>
           <label className="block text-xs text-gray-400 mb-1">전화</label>
           <input
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             value={form.hphone}
             onChange={(e) => setForm({ ...form, hphone: e.target.value })}
           />
@@ -134,7 +134,7 @@ export default function AdminUserEditPage() {
         <div>
           <label className="block text-xs text-gray-400 mb-1">주소</label>
           <input
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#E8863A]"
+            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-[#88b04b]"
             value={form.address1}
             onChange={(e) => setForm({ ...form, address1: e.target.value })}
           />
@@ -145,7 +145,7 @@ export default function AdminUserEditPage() {
             type="button"
             onClick={() => setForm({ ...form, isAdmin: !form.isAdmin })}
             className={`px-3 py-1.5 rounded-full text-xs ${
-              form.isAdmin ? 'bg-[#fdecd8] text-[#854F0B]' : 'bg-gray-100 text-gray-500'
+              form.isAdmin ? 'bg-[#eaf4df] text-[#456805]' : 'bg-gray-100 text-gray-500'
             }`}
           >
             {form.isAdmin ? '관리자' : '일반'}
@@ -164,7 +164,7 @@ export default function AdminUserEditPage() {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm bg-[#E8863A] text-white rounded-lg hover:bg-[#d4762e] disabled:opacity-50"
+              className="px-4 py-2 text-sm bg-[#88b04b] text-white rounded-lg hover:bg-[#456805] disabled:opacity-50"
             >
               {loading ? '처리 중...' : '수정'}
             </button>

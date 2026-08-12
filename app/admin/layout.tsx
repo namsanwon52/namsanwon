@@ -6,6 +6,7 @@ import Link from 'next/link'
 const ADMIN_MENU = [
   { label: '대시보드', href: '/admin' },
   { label: '페이지 관리', href: '/admin/pages' },
+  { label: '게시판 이미지 관리', href: '/admin/board-images' },
   { label: '게시글 관리', href: '/admin/posts' },
   { label: '슬라이더 관리', href: '/admin/slider' },
   { label: '사용자 관리', href: '/admin/users' },
@@ -16,10 +17,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await getServerSession(authOptions)
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      <aside className="w-56 bg-[#3D2B1F] text-white flex flex-col">
+    <div className="min-h-screen flex bg-[#fbfbf8]">
+      <aside className="w-56 bg-[#25190c] text-white flex flex-col">
         <div className="p-4 border-b border-white/10">
-          <h2 className="font-bold text-[#F5C842]">남산원 관리자</h2>
+          <h2 className="font-bold text-[#d4af37]">남산원 관리자</h2>
           <p className="text-xs text-gray-400 mt-1">{session?.user?.email}</p>
         </div>
         <nav className="flex-1 p-2">

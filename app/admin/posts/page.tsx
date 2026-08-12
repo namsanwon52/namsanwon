@@ -32,10 +32,10 @@ export default async function AdminPostsPage({ searchParams }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#3D2B1F]">게시글 관리</h1>
+        <h1 className="text-2xl font-bold text-[#1b1c1c]">게시글 관리</h1>
         <Link
           href={`/admin/posts/write?category=${category}`}
-          className="bg-[#E8863A] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#d4762e]"
+          className="bg-[#88b04b] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#456805]"
         >
           글쓰기
         </Link>

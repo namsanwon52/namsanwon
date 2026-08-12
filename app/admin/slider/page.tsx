@@ -9,7 +9,7 @@ export default async function AdminSliderPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">슬라이더 이미지 관리</h1>
+      <h1 className="text-2xl font-bold text-[#1b1c1c]">슬라이더 이미지 관리</h1>
       <SliderForm />
       {images.length === 0 && (
         <p className="text-sm text-gray-400 text-center py-8">등록된 슬라이더 이미지가 없습니다.</p>
@@ -21,7 +21,7 @@ export default async function AdminSliderPage() {
       </div>
 
       <div className="space-y-2 pt-4">
-        <h2 className="text-lg font-bold text-[#3D2B1F]">미리보기</h2>
+        <h2 className="text-lg font-bold text-[#1b1c1c]">미리보기</h2>
         {!hasActive ? (
           <p className="text-sm text-gray-400 text-center py-8 bg-white rounded-xl shadow-sm">
             활성화된 슬라이더 이미지가 없어 미리볼 수 없습니다.
