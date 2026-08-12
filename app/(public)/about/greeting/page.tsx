@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import PageBlocks from '@/components/namsanwon/PageBlocks'
+import PageTitle from '@/components/namsanwon/PageTitle'
+import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
+import { findBoardContext } from '@/lib/board'
 
 export const metadata: Metadata = { title: '인사말' }
 export const dynamic = 'force-dynamic'
+export const crumbs=['남산원소개', '인사말'];
+const ctx = findBoardContext('com6')
 
 export default function GreetingPage() {
   return (
@@ -11,10 +16,14 @@ export default function GreetingPage() {
       <PageBanner
         title="인사말"
         desc="남산원을 찾아주신 여러분을 진심으로 환영합니다."
-        crumbs={['남산원소개', '인사말']}
       />
-      <div className="subContent">
-        <PageBlocks page="greeting" />
+      {ctx && <BoardLocalNav section={ctx.section} activeCode={ctx.localItem.code} />}
+      <div className="boardArea">
+        <PageTitle title="인사말" crumbs={crumbs} />
+
+        <div className="subContent">
+          <PageBlocks page="greeting" />
+        </div>
       </div>
     </>
   )

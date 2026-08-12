@@ -14,7 +14,7 @@ export default function BoardLocalNav({
         {section.localNav.map((item) => (
           <Link
             key={item.code}
-            href={`/board/${item.code}`}
+            href={`/${section.key === 'namsanwon' ? 'about' : 'board'}/${item.code}`}
             className={item.code === activeCode ? 'isActive' : ''}
           >
             {item.label}

@@ -50,7 +50,14 @@ export const BOARD_SECTIONS: BoardSection[] = [
     key: 'namsanwon',
     title: '남산원',
     desc: '사회복지법인 남산원의 역사와 발자취를 사진으로 소개합니다.',
-    localNav: [{ label: '남산원 역사사진', code: 'com6', type: 'gallery' }],
+    localNav: [
+      { label: '인사말', code: 'greeting', type: 'list' },
+      { label: '연혁', code: 'history', type: 'list' },
+      { label: '현황', code: 'status', type: 'list' },
+      { label: '시설안내', code: 'facility', type: 'list' },
+      { label: '오시는 길', code: 'directions', type: 'list' },
+      { label: '남산원 역사사진', code: 'com6', type: 'gallery'}
+    ],
   },
   {
     key: 'business',

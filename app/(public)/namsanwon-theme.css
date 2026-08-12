@@ -2811,6 +2811,7 @@ button {
   width: min(760px, calc(100% - 40px));
   margin: 0 auto;
   padding: 0 0 88px;
+  margin-top: 30px;
 }
 
 .joinFlow {
@@ -3335,22 +3336,28 @@ button {
   background: var(--surface);
   box-shadow: var(--shadow-boardcard);
 }
-
+.loginFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: center; /* loginCard가 column flex라, 이걸 줘야 내용 크기만큼만 잡고 가운데로 옴 */
+}
 .loginFormRow {
   display: flex;
   align-items: stretch;
   gap: 16px;
+  justify-content: center;
 }
 .loginFields {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  flex: 1;
+  flex: 0 0 auto;
 }
 .loginFieldInline {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 .loginFieldInline label {
   width: 68px;
@@ -3358,19 +3365,20 @@ button {
   color: var(--text);
   font-size: var(--font-h5);
   font-weight: 700;
+  text-align: right;
 }
 .loginFieldInline .formField {
   width: 100%;
-  max-width: 280px;
+  max-width: 340px;
 }
 .loginSubmitBtn {
   display: flex;
-  width: 140px;
+  width: 110px;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  background: var(--primary);
+  background: var(--secondary);
   color: var(--text-inverse);
   font-size: var(--font-h4);
   font-weight: 700;
@@ -3419,6 +3427,15 @@ button {
   text-decoration: underline;
 }
 
+.loginFooterIcon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  background-color: var(--text-sub);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 /* ===================== 아이디/비밀번호 찾기 ===================== */
 .findAccountPanel {
   width: min(1104px, 100%);

@@ -47,47 +47,48 @@ export default function LoginForm() {
   return (
     <div className="joinWrap">
       <form className="loginCard" onSubmit={handleSubmit}>
-        <div className="loginFormRow">
-          <div className="loginFields">
-            <div className="loginFieldInline">
-              <label>아이디</label>
-              <input
-                className="formField"
-                placeholder="아이디 입력"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-                required
-              />
+         <div className="loginFormGroup">
+          <div className="loginFormRow">
+            <div className="loginFields">
+              <div className="loginFieldInline">
+                <label>아이디</label>
+                <input
+                  className="formField"
+                  placeholder="아이디 입력"
+                  value={id}
+                  onChange={(e) => setId(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="loginFieldInline">
+                <label>비밀번호</label>
+                <input
+                  type="password"
+                  className="formField"
+                  placeholder="비밀번호 입력"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <div className="loginFieldInline">
-              <label>비밀번호</label>
-              <input
-                type="password"
-                className="formField"
-                placeholder="비밀번호 입력"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            <button type="submit" className="loginSubmitBtn" disabled={submitting}>
+              {submitting ? '로그인 중...' : '로그인'}
+            </button>
           </div>
-          <button type="submit" className="loginSubmitBtn" disabled={submitting}>
-            {submitting ? '로그인 중...' : '로그인'}
-          </button>
+
+          {error && <p className="formError">{error}</p>}
+
+          <div className="loginLinksRow">
+            <Link href="/member/find-account">아이디 찾기</Link>
+            <span className="sep">|</span>
+            <Link href="/member/find-account">비밀번호 재설정</Link>
+          </div>
         </div>
-
-        {error && <p className="formError">{error}</p>}
-
-        <div className="loginLinksRow">
-          <Link href="/member/find-account">아이디 찾기</Link>
-          <span className="sep">|</span>
-          <Link href="/member/find-account">비밀번호 재설정</Link>
-        </div>
-
         <hr className="loginDivider" />
 
         <div className="loginFooterRow">
-          <span aria-hidden="true">🔎</span>
+          <span className="loginFooterIcon" aria-hidden="true" />
           <span>아이디가 없으신가요?</span>
           <Link href="/member/join">회원가입</Link>
         </div>
@@ -107,7 +108,7 @@ export default function LoginForm() {
             </p>
             <p>
               잠시만 함께해 주시면
-              <br />
+              <br />ㄹ
               앞으로 더 편안한 환경에서 남산원을 이용하실 수 있습니다.
             </p>
             <p>늘 회원님을 먼저 생각하는 남산원이 되겠습니다.</p>
