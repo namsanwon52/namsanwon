@@ -11,10 +11,11 @@ export default function BoardLocalNav({
   return (
     <nav className="boardLocalNav" aria-label={`${section.title} 메뉴`}>
       <div className="boardLocalNavInner">
+        
         {section.localNav.map((item) => (
           <Link
             key={item.code}
-            href={`/${section.key === 'namsanwon' ? 'about' : 'board'}/${item.code}`}
+            href={`${section.key === 'namsanwon' ? item.href : `/board/${item.code}`}`}
             className={item.code === activeCode ? 'isActive' : ''}
           >
             {item.label}

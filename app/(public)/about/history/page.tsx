@@ -7,7 +7,7 @@ import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 
 export const metadata: Metadata = { title: '연혁' }
 export const dynamic = 'force-dynamic'
-export const crumbs=['남산원소개', '연혁'];
+export const crumbs=['남산원', '연혁'];
 const ctx = findBoardContext('history')
 
 export default function HistoryPage() {

@@ -7,7 +7,7 @@ import { findBoardContext } from '@/lib/board'
 
 export const metadata: Metadata = { title: '현황' }
 export const dynamic = 'force-dynamic'
-export const crumbs=['남산원', '남산원 역사사진'];
+export const crumbs=['남산원', '현황'];
 const ctx = findBoardContext('status')
 
 

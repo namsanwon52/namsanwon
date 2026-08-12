@@ -37,6 +37,7 @@ export type BoardLocalItem = {
   code: string // 대표 code (해당 로컬탭 클릭 시 이동)
   type: 'list' | 'gallery'
   subTabs?: BoardSubTab[]
+  href?: string // 남산원 탭 href 설정
 }
 export type BoardSection = {
   key: string
@@ -51,12 +52,12 @@ export const BOARD_SECTIONS: BoardSection[] = [
     title: '남산원',
     desc: '사회복지법인 남산원의 역사와 발자취를 사진으로 소개합니다.',
     localNav: [
-      { label: '인사말', code: 'greeting', type: 'list' },
-      { label: '연혁', code: 'history', type: 'list' },
-      { label: '현황', code: 'status', type: 'list' },
-      { label: '시설안내', code: 'facility', type: 'list' },
-      { label: '오시는 길', code: 'directions', type: 'list' },
-      { label: '남산원 역사사진', code: 'com6', type: 'gallery'}
+      { label: '인사말', code: 'greeting', type: 'list',href:'/about/greeting' },
+      { label: '연혁', code: 'history', type: 'list',href:'/about/history' },
+      { label: '현황', code: 'status', type: 'list',href:'/about/status' },
+      { label: '시설안내', code: 'facility', type: 'list',href:'/about/facility' },
+      { label: '오시는 길', code: 'directions', type: 'list',href:'/about/directions' },
+      { label: '남산원 역사사진', code: 'com6', type: 'gallery',href:'/about/photos' }
     ],
   },
   {

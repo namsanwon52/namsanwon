@@ -7,8 +7,8 @@ import { findBoardContext } from '@/lib/board'
 
 export const metadata: Metadata = { title: '인사말' }
 export const dynamic = 'force-dynamic'
-export const crumbs=['남산원소개', '인사말'];
-const ctx = findBoardContext('com6')
+export const crumbs=['남산원', '인사말'];
+const ctx = findBoardContext('greeting')
 
 export default function GreetingPage() {
   return (

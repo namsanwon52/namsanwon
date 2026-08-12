@@ -7,7 +7,7 @@ import { findBoardContext } from '@/lib/board'
 
 export const metadata: Metadata = { title: '시설안내' }
 export const dynamic = 'force-dynamic'
-export const crumbs=['남산원소개', '시설안내'];
+export const crumbs=['남산원', '시설안내'];
 const ctx = findBoardContext('facility')
 
 export default function FacilityPage() {

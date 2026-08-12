@@ -5,12 +5,12 @@ import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import PageTitle from '@/components/namsanwon/PageTitle'
 import { prisma } from '@/lib/prisma'
-import { crumbs } from '../status/page'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 
 
 export const metadata: Metadata = { title: '남산원 역사사진' }
 export const dynamic = 'force-dynamic'
+export const crumbs=['남산원', '남산원 역사사진'];
 
 // File 썸네일이 없으면 본문 HTML의 첫 이미지 사용 (관리자 신규 등록 대비)
 function firstImageFromContent(html: string): string | null {
@@ -33,7 +33,6 @@ export default async function PhotosPage() {
       <PageBanner
         title="남산원 역사사진"
         desc="사진으로 만나는 남산원의 시간들입니다."
-        crumbs={crumbs}
       />
 
       {ctx && <BoardLocalNav section={ctx.section} activeCode={ctx.localItem.code} />}

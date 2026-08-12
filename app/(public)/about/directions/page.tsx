@@ -7,7 +7,7 @@ import { findBoardContext } from '@/lib/board'
 
 export const metadata: Metadata = { title: '오시는 길' }
 export const dynamic = 'force-dynamic'
-export const crumbs=['남산원소개', '오시는 길'];
+export const crumbs=['남산원', '오시는 길'];
 const ctx = findBoardContext('directions')
 
 const iframeStyle: React.CSSProperties = {
@@ -37,7 +37,6 @@ export default function DirectionsPage() {
       <PageBanner
         title="오시는 길"
         desc="남산원을 찾아오시는 방법을 안내해 드립니다."
-        crumbs={['남산원소개', '오시는 길']}
       />
       {ctx && <BoardLocalNav section={ctx.section} activeCode={ctx.localItem.code} />}
      <div className="boardArea">
