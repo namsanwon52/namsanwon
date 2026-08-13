@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@tiptap/core": "3.28.0",
     "@tiptap/extension-image": "3.28.0",
     "@tiptap/extension-link": "3.28.0",
     "@tiptap/extension-placeholder": "3.28.0",
@@ -63,12 +64,10 @@
     "tsx": "^4.23.0",
     "typescript": "^5"
   },
-  "allowScripts": {
-    "@prisma/client@5.22.0": true,
-    "@prisma/engines@5.22.0": true,
-    "esbuild@0.28.2": true,
-    "sharp@0.34.5": true,
-    "prisma@5.22.0": true,
-    "unrs-resolver@1.12.2": true
+  "overrides": {
+    "@tiptap/core": "3.28.0",
+    "@tiptap/extension-bubble-menu": "3.28.0",
+    "@tiptap/extension-floating-menu": "3.28.0",
+    "@tiptap/pm": "3.28.0"
   }
 }

@@ -22,8 +22,10 @@ const orderedCodes: string[] = []
 for (const section of BOARD_SECTIONS) {
   for (const item of section.localNav) {
     if (item.subTabs) {
-      for (const tab of item.subTabs) orderedCodes.push(tab.code)
-    } else {
+      for (const tab of item.subTabs) {
+        if (BOARD_META[tab.code]) orderedCodes.push(tab.code)
+      }
+    } else if (BOARD_META[item.code]) {
       orderedCodes.push(item.code)
     }
   }
