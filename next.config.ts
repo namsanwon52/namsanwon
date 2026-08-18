@@ -7,9 +7,15 @@ const nextConfig: NextConfig = {
       { pathname: '/uploads/**' },
     ],
     remotePatterns: [
+      // 이전 저장소(Vercel Blob) — 마이그레이션 잔존 URL 대비
       {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
+      },
+      // Cloudinary 배달 도메인
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       },
     ],
   },

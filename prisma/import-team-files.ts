@@ -3,7 +3,7 @@
  * File 레코드로 연결한다. 첨부는 wiz_bbs 의 upfile1..12 컬럼에 저장돼 있고,
  * 실제 파일은 http://namsanwon.or.kr/admin/data/bbs/<code>/<stored> 에 있다.
  *
- * - 이미지(jpg/png/…)는 sharp로 리사이즈(폭>1600 또는 >300KB 시 1600px/JPEG82).
+ * - 이미지는 확장자와 무관하게 매직바이트로 판별해 1600px/WebP q78로 재인코딩.
  * - 비이미지(pdf/hwp/…)는 원본 그대로 업로드.
  * - 서버에 없는 파일(404 등)은 스킵. 파일명(base) 기준 중복은 건너뜀 → 재실행 안전.
  *
@@ -13,19 +13,21 @@
 import fs from 'fs';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
-import { put } from '@vercel/blob';
-import sharp from 'sharp';
+import { put } from '../lib/storage';
+import { optimizeImage, IMAGE_MAX_WIDTH } from '../lib/image-optimize';
 
 const prisma = new PrismaClient();
 
 const DUMP = path.join(__dirname, '../docs/sql/260513_namsan.sql');
 const BASE = 'http://namsanwon.or.kr/admin/data/bbs';
-const MAX_WIDTH = 1600;
-const SIZE_THRESHOLD = 300 * 1024;
-const JPEG_QUALITY = 82;
+const MAX_WIDTH = Number(process.env.IMAGE_MAX_WIDTH) || IMAGE_MAX_WIDTH;
+const QUALITY = Number(process.env.IMAGE_QUALITY) || undefined;
 const CONCURRENCY = 5;
 
-const ALL_TEAM_CODES = ['bus1','bus2','bus3','bus7','cus1','cus2','cus11','cus21','dus1','dus2','eus1','schedule'];
+// teamfiles/ 접두사로 저장되는 모든 게시판. com6(남산원 역사사진)은 팀 게시판은 아니지만
+// 첨부 저장 방식이 같고 같은 접두사를 쓰므로 반드시 포함해야 한다 —
+// 빠지면 prefix 단위로 초기화 후 재임포트할 때 조용히 누락된다.
+const ALL_TEAM_CODES = ['bus1','bus2','bus3','bus7','cus1','cus2','cus11','cus21','dus1','dus2','eus1','schedule','com6'];
 const COL = { idx: 0, code: 1 };
 const UPFILE_START = 26; // upfile1..12 → 26..37
 const UPNAME_START = 38; // upfile1_name..12_name → 38..49
@@ -122,25 +124,6 @@ function contentTypeFor(ext: string): string {
   };
   return map[e] || 'application/octet-stream';
 }
-const isImage = (ext: string) => /^(jpe?g|png|gif|bmp|webp)$/i.test(ext);
-
-async function processImage(buffer: Buffer, ext: string) {
-  try {
-    const meta = await sharp(buffer).metadata();
-    const tooWide = (meta.width ?? 0) > MAX_WIDTH;
-    const tooBig = buffer.length > SIZE_THRESHOLD;
-    if (!tooWide && !tooBig) {
-      return { data: buffer, contentType: contentTypeFor(ext), resized: false };
-    }
-    let p = sharp(buffer).rotate();
-    if (tooWide) p = p.resize({ width: MAX_WIDTH, withoutEnlargement: true });
-    const outBuf = await p.jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toBuffer();
-    return { data: outBuf, contentType: 'image/jpeg', resized: true };
-  } catch {
-    return { data: buffer, contentType: contentTypeFor(ext), resized: false };
-  }
-}
-
 type Stats = { uploaded: number; missing: number; error: number };
 
 async function handlePost(p: PostFiles, existingBases: Set<string>, stats: Stats) {
@@ -154,19 +137,14 @@ async function handlePost(p: PostFiles, existingBases: Set<string>, stats: Stats
       if (buffer.length === 0) { stats.missing++; continue; }
 
       const ext = path.extname(f.display).slice(1) || path.extname(f.stored).slice(1);
-      let data: Buffer = buffer;
-      let contentType = contentTypeFor(ext);
-      let outName = f.display;
-      if (isImage(ext)) {
-        const pr = await processImage(buffer, ext);
-        data = pr.data; contentType = pr.contentType;
-        if (pr.resized) outName = f.display.replace(/\.[^.]+$/, '.jpg');
-      }
-      const safe = outName.replace(/\s+/g, '_');
-      const blobPath = `teamfiles/${p.code}/${p.idx}-${safe}`;
-      const blob = await put(blobPath, data, {
-        access: 'public', contentType, addRandomSuffix: false, allowOverwrite: true,
+      const { data, contentType, filename: outName } = await optimizeImage(buffer, f.display, {
+        maxWidth: MAX_WIDTH,
+        quality: QUALITY,
+        fallbackContentType: contentTypeFor(ext),
       });
+      const safe = outName.replace(/\s+/g, '_');
+      const key = `teamfiles/${p.code}/${p.idx}-${safe}`;
+      const blob = await put(key, data, { contentType });
       await prisma.file.create({ data: { postId: p.idx, url: blob.url, filename: outName } });
       existingBases.add(baseNoExt(f.display));
       stats.uploaded++;
@@ -178,8 +156,8 @@ async function handlePost(p: PostFiles, existingBases: Set<string>, stats: Stats
 }
 
 async function main() {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.error('❌ BLOB_READ_WRITE_TOKEN 없음'); process.exit(1);
+  for (const k of ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']) {
+    if (!process.env[k]) { console.error(`❌ ${k} 환경변수가 없습니다.`); process.exit(1); }
   }
   const onlyCode = process.argv[2];
   const limit = process.argv[3] ? parseInt(process.argv[3]) : undefined;

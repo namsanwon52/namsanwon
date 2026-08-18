@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { del } from '@vercel/blob'
-
-const isBlobUrl = (url: string) => /^https:\/\/.*\.public\.blob\.vercel-storage\.com\//.test(url)
+import { del, isManagedUrl } from '@/lib/storage'
 
 // 해당 page의 기존 블럭을 전부 삭제하고, 페이지 전체를 차지하는 단일 배너 이미지 블럭으로 교체한다.
 export async function POST(req: NextRequest) {
@@ -20,11 +18,11 @@ export async function POST(req: NextRequest) {
   await prisma.contentBlock.deleteMany({ where: { page } })
 
   for (const b of existing) {
-    if (isBlobUrl(b.imageUrl)) {
+    if (isManagedUrl(b.imageUrl)) {
       try {
         await del(b.imageUrl)
       } catch (err) {
-        console.error('Blob 파일 삭제 실패:', err)
+        console.error('스토리지 파일 삭제 실패:', err)
       }
     }
   }

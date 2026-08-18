@@ -1,18 +1,22 @@
 import fs from 'fs';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
-import { put } from '@vercel/blob';
-import sharp from 'sharp';
+import { put } from '../lib/storage';
+import { optimizeImage, sniffFormat, IMAGE_MAX_WIDTH } from '../lib/image-optimize';
 
 const prisma = new PrismaClient();
 
 // 대상 게시판 코드: 첫 번째 인자로 지정 (기본 com3)
 const CODE = process.argv[2] || 'com3';
-const IMAGE_DIR = path.join(__dirname, `../public/crawled/bbs_${CODE}`);
-const MAX_WIDTH = 1600; // 이보다 크면 리사이즈
-const SIZE_THRESHOLD = 300 * 1024; // 300KB 초과 시 재인코딩
-const JPEG_QUALITY = 82;
+// 크롤 원본 위치. 워크트리처럼 public/crawled 가 없는 체크아웃은 CRAWLED_DIR 로 지정한다.
+const CRAWLED_ROOT = process.env.CRAWLED_DIR || path.join(__dirname, '../public/crawled');
+const IMAGE_DIR = path.join(CRAWLED_ROOT, `bbs_${CODE}`);
+const MAX_WIDTH = Number(process.env.IMAGE_MAX_WIDTH) || IMAGE_MAX_WIDTH;
+const QUALITY = Number(process.env.IMAGE_QUALITY) || undefined;
 const CONCURRENCY = 6; // 동시 업로드 수
+
+/** 로컬 크롤 누락분을 받아오는 구 사이트 원본 위치 */
+const ORIGIN_BASE = 'http://namsanwon.or.kr/admin/data/bbs';
 
 /** 확장자를 뺀 기준 이름 (png→jpg 리사이즈 대비 중복 판정용) */
 function baseName(name: string): string {
@@ -39,35 +43,26 @@ function extractAllImages(content: string, code: string): string[] {
   return out;
 }
 
-/** 큰 이미지는 리사이즈/재인코딩, 작은 이미지는 원본 그대로 반환 */
-async function processImage(
-  buffer: Buffer,
-  ext: string
-): Promise<{ data: Buffer; contentType: string; resized: boolean }> {
-  const isImage = /^(jpe?g|png|bmp|webp)$/i.test(ext);
-  if (!isImage) {
-    // 이미지가 아니면 그대로 (방어적, 보통 발생 안 함)
-    return { data: buffer, contentType: 'application/octet-stream', resized: false };
+/**
+ * 이미지 원본을 확보한다. 로컬 크롤본 우선이되, **유효한 이미지인지 확인**한다.
+ * 크롤 당시 에러 페이지가 `.jpg` 이름으로 저장된 파일이 섞여 있어서
+ * (매직바이트가 `<scr...`) 로컬을 그대로 믿으면 깨진 파일을 올리게 된다.
+ * 그런 경우와 로컬에 아예 없는 경우 모두 구 사이트에서 받아온다.
+ */
+async function loadSource(filename: string): Promise<Buffer | null> {
+  const filePath = path.join(IMAGE_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    const buf = fs.readFileSync(filePath);
+    if (buf.length > 0 && sniffFormat(buf) !== 'unknown') return buf;
   }
-
   try {
-    const meta = await sharp(buffer).metadata();
-    const tooWide = (meta.width ?? 0) > MAX_WIDTH;
-    const tooBig = buffer.length > SIZE_THRESHOLD;
-
-    if (!tooWide && !tooBig) {
-      // 작고 폭도 적당하면 원본 유지
-      const ct = ext.toLowerCase() === 'png' ? 'image/png' : 'image/jpeg';
-      return { data: buffer, contentType: ct, resized: false };
-    }
-
-    let pipeline = sharp(buffer).rotate(); // EXIF 회전 보정
-    if (tooWide) pipeline = pipeline.resize({ width: MAX_WIDTH, withoutEnlargement: true });
-    const out = await pipeline.jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toBuffer();
-    return { data: out, contentType: 'image/jpeg', resized: true };
+    const res = await fetch(`${ORIGIN_BASE}/${CODE}/${encodeURI(filename)}`);
+    if (!res.ok) return null;
+    const buf = Buffer.from(new Uint8Array(await res.arrayBuffer()));
+    if (buf.length === 0 || sniffFormat(buf) === 'unknown') return null;
+    return buf;
   } catch {
-    // sharp 실패 시 원본 업로드
-    return { data: buffer, contentType: 'application/octet-stream', resized: false };
+    return null;
   }
 }
 
@@ -86,27 +81,20 @@ async function uploadPost(
   for (const filename of filenames) {
     if (existingBases.has(baseName(filename))) continue; // 이미 업로드됨
 
-    const filePath = path.join(IMAGE_DIR, filename);
-    if (!fs.existsSync(filePath)) {
-      stats.missing++;
-      continue;
-    }
-
     try {
-      const buffer = fs.readFileSync(filePath);
-      const ext = path.extname(filename).slice(1);
-      const { data, contentType, resized } = await processImage(buffer, ext);
-
-      // 리사이즈된 경우 확장자를 jpg로 통일
-      const outName = resized ? filename.replace(/\.[^.]+$/, '.jpg') : filename;
-      const blobPath = `gallery/${CODE}/${post.id}-${outName}`;
-
-      const blob = await put(blobPath, data, {
-        access: 'public',
-        contentType,
-        addRandomSuffix: false,
-        allowOverwrite: true,
+      const buffer = await loadSource(filename);
+      if (!buffer) {
+        stats.missing++;
+        continue;
+      }
+      // 확장자 무관하게 WebP로 재인코딩 (실패 시 원본 통과)
+      const { data, contentType, filename: outName } = await optimizeImage(buffer, filename, {
+        maxWidth: MAX_WIDTH,
+        quality: QUALITY,
       });
+      const key = `gallery/${CODE}/${post.id}-${outName}`;
+
+      const blob = await put(key, data, { contentType });
 
       await prisma.file.create({
         data: { postId: post.id, url: blob.url, filename: outName },
@@ -125,14 +113,15 @@ async function uploadPost(
 async function main() {
   console.log(`🖼️  [${CODE}] 갤러리 썸네일 업로드 시작...\n`);
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.error('❌ BLOB_READ_WRITE_TOKEN 환경변수가 없습니다.');
-    process.exit(1);
+  for (const k of ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']) {
+    if (!process.env[k]) {
+      console.error(`❌ ${k} 환경변수가 없습니다.`);
+      process.exit(1);
+    }
   }
 
   if (!fs.existsSync(IMAGE_DIR)) {
-    console.error(`❌ 이미지 디렉터리가 없습니다: ${IMAGE_DIR}`);
-    process.exit(1);
+    console.warn(`⚠️  로컬 이미지 디렉터리 없음: ${IMAGE_DIR} — 구 서버에서만 받아옵니다.`);
   }
 
   // 테스트용 limit (예: `npx tsx ... liv1 5` → 5개만)
