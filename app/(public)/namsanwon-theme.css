@@ -3926,3 +3926,124 @@ button {
     line-height: 24px;
   }
 }
+
+/* ===================== 연혁 타임라인 (관리자 등록 데이터) ===================== */
+.historyTimeline {
+  padding: 40px;
+}
+.historyYear + .historyYear {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-muted);
+}
+.historyYearHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+.historyYearDot {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+}
+.historyYearLabel {
+  color: var(--secondary);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-tight);
+}
+.historyYearCount {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(136, 176, 75, 0.16);
+  color: var(--text-point);
+  font-size: var(--font-b2);
+  font-weight: 600;
+  line-height: var(--line-b2);
+}
+.historyYearToggle {
+  margin-left: auto;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--text-sub);
+  border-bottom: 2px solid var(--text-sub);
+  transform: rotate(45deg) translate(-3px, -3px);
+  transition: transform 0.2s ease;
+}
+.historyYearToggle.isOpen {
+  transform: rotate(-135deg) translate(-3px, -3px);
+}
+.historyYearBody {
+  margin-left: 5px;
+  padding: 8px 0 16px 27px;
+  border-left: 2px solid rgba(136, 176, 75, 0.35);
+}
+.historyMonthRow {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.historyMonthRow + .historyMonthRow {
+  margin-top: 16px;
+}
+.historyMonth {
+  padding-top: 2px;
+  color: var(--text-point);
+  font-size: var(--font-h4);
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: right;
+}
+.historyItems {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.historyItems li {
+  position: relative;
+  padding-left: 14px;
+  color: var(--text);
+  font-size: var(--font-h3);
+  line-height: 1.6;
+}
+.historyItems li + li {
+  margin-top: 10px;
+}
+.historyItems li::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+}
+@media (max-width: 560px) {
+  .historyTimeline {
+    padding: 24px;
+  }
+  .historyYearLabel {
+    font-size: 22px;
+  }
+  .historyYearBody {
+    padding-left: 18px;
+  }
+  .historyMonthRow {
+    grid-template-columns: 68px 1fr;
+    gap: 10px;
+  }
+  .historyItems li {
+    font-size: var(--font-h4);
+  }
+}

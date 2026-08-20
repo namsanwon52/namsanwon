@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
+import HistoryTimeline from '@/components/namsanwon/HistoryTimeline'
 import PageBlocks from '@/components/namsanwon/PageBlocks'
 import PageTitle from '@/components/namsanwon/PageTitle'
 import { findBoardContext } from '@/lib/board'
@@ -23,7 +24,9 @@ export default function HistoryPage() {
         <PageTitle title="연혁" crumbs={crumbs} />
         
         <div className="subContent">
-          <PageBlocks page="history" />
+          {/* 연혁 본문은 관리자 > 연혁 관리에서 등록한다. 페이지 관리 블럭은 안내 문구 등 선택 사항. */}
+          <PageBlocks page="history" hideWhenEmpty />
+          <HistoryTimeline />
         </div>
 
     </div>

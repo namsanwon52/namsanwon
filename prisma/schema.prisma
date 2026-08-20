@@ -163,3 +163,19 @@ model ContentBlock {
 
   @@index([page])
 }
+
+// 남산원 연혁(발자취). 관리자 페이지에서 연도/월/내용 단위로 등록·수정하며,
+// /about/history 타임라인이 이 데이터를 연도별로 묶어 렌더한다.
+model HistoryEntry {
+  id        Int      @id @default(autoincrement())
+  year      Int
+  month     Int? // 월이 없는 항목은 null
+  day       Int? // 일자까지 표기하는 항목만 사용
+  content   String   @db.Text
+  order     Int      @default(0) // 같은 연/월 안에서의 정렬 순서
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([year])
+}
