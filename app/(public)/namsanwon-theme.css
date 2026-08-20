@@ -4047,3 +4047,115 @@ button {
     font-size: var(--font-h4);
   }
 }
+
+/* ===================== 시설안내 (층 탭 + 공간 목록 + 사진) ===================== */
+.facilityGuide {
+  padding: 32px 40px 40px;
+}
+.facilityFloorTabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line-muted);
+}
+.facilityFloorTabs button {
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--text-sub);
+  font-size: var(--font-h5);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.facilityFloorTabs button:hover {
+  border-color: var(--primary);
+  color: var(--secondary);
+}
+.facilityFloorTabs button.isActive {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+.facilityBody {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+  margin-top: 24px;
+  align-items: start;
+}
+.facilityRoomList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.facilityRoomList button {
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--font-h4);
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.facilityRoomList button:hover {
+  border-color: var(--primary);
+  color: var(--secondary);
+}
+.facilityRoomList button.isActive {
+  border-color: var(--primary);
+  background: rgba(136, 176, 75, 0.12);
+  color: var(--text-point);
+  font-weight: 700;
+}
+.facilityPhoto {
+  margin: 0;
+  padding: 6px;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.facilityPhoto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+.facilityPhoto figcaption {
+  padding: 12px 4px 4px;
+  color: var(--text-point);
+  font-size: var(--font-h4);
+  font-weight: 700;
+  text-align: center;
+}
+@media (max-width: 820px) {
+  .facilityBody {
+    grid-template-columns: 1fr;
+  }
+  .facilityRoomList {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .facilityRoomList button {
+    flex: 1 1 auto;
+    min-width: 110px;
+  }
+}
+@media (max-width: 560px) {
+  .facilityGuide {
+    padding: 24px;
+  }
+  .facilityFloorTabs button {
+    height: 34px;
+    padding: 0 12px;
+    font-size: var(--font-b1);
+  }
+}

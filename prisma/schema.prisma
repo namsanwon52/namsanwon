@@ -179,3 +179,28 @@ model HistoryEntry {
 
   @@index([year])
 }
+
+// 시설안내: 층 탭(FacilityFloor) 아래에 공간(FacilityRoom)이 있고, 공간마다 사진 1장.
+// 관리자 > 시설안내 관리에서 층/공간/사진을 등록한다.
+model FacilityFloor {
+  id        Int            @id @default(autoincrement())
+  name      String // '본관 지상1층'
+  order     Int            @default(0)
+  active    Boolean        @default(true)
+  updatedAt DateTime       @updatedAt
+  rooms     FacilityRoom[]
+}
+
+model FacilityRoom {
+  id        Int           @id @default(autoincrement())
+  floorId   Int
+  floor     FacilityFloor @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  name      String // '상담실'
+  imageUrl  String        @default("")
+  imageAlt  String        @default("")
+  order     Int           @default(0)
+  active    Boolean       @default(true)
+  updatedAt DateTime      @updatedAt
+
+  @@index([floorId])
+}

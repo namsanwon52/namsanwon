@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import PageBlocks from '@/components/namsanwon/PageBlocks'
+import FacilityGuide from '@/components/namsanwon/FacilityGuide'
 import PageTitle from '@/components/namsanwon/PageTitle'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import { findBoardContext } from '@/lib/board'
@@ -23,7 +24,9 @@ export default function FacilityPage() {
         <PageTitle title="시설안내" crumbs={crumbs} />
 
         <div className="subContent">
-          <PageBlocks page="facility" />
+          {/* 시설 사진은 관리자 > 시설안내 관리에서 등록한다. 페이지 관리 블럭은 안내 문구 등 선택 사항. */}
+          <PageBlocks page="facility" hideWhenEmpty />
+          <FacilityGuide />
         </div>
       </div>
     </>

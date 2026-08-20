@@ -9,6 +9,7 @@ const ADMIN_MENU = [
   { label: '게시판 이미지 관리', href: '/admin/board-images' },
   { label: '게시글 관리', href: '/admin/posts' },
   { label: '연혁 관리', href: '/admin/history' },
+  { label: '시설안내 관리', href: '/admin/facility' },
   { label: '슬라이더 관리', href: '/admin/slider' },
   { label: '사용자 관리', href: '/admin/users' },
   { label: '후원금품현황', href: '/admin/donation-records' },

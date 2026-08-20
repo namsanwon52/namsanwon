@@ -20,6 +20,7 @@
     "db:studio": "prisma studio",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:seed-history": "npx tsx prisma/seed-history.ts",
+    "db:seed-facility": "npx tsx prisma/seed-facility.ts",
     "db:import": "npx tsx prisma/parse-and-import.ts",
     "db:import-gallery": "npx tsx prisma/import-gallery-thumbnails.ts",
     "db:check": "npx tsx prisma/check-import.ts"
