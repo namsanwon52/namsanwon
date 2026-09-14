@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Cloudinary가 f_auto,q_auto로 변환·캐시하므로 Vercel 이미지 최적화를 거치지 않는다
+    loader: 'custom',
+    loaderFile: './lib/cloudinary-loader.ts',
+    // srcset 너비를 lib/cloudinary-url.ts의 WIDTHS 버킷과 맞춰 변환 조합이 늘지 않게 한다
+    deviceSizes: [640, 960, 1280, 1600],
+    imageSizes: [320],
     localPatterns: [
       { pathname: '/images/**' },
       { pathname: '/uploads/**' },

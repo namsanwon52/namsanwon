@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { cldImage } from '@/lib/cloudinary-url'
 
 type Room = { id: number; name: string; imageUrl: string; imageAlt: string }
 type Floor = { id: number; name: string; rooms: Room[] }
@@ -53,7 +54,7 @@ export default function FacilityViewer({ floors }: { floors: Floor[] }) {
         <figure className="facilityPhoto">
           {/* 사진 비율이 제각각이라 next/image 대신 자연 비율을 유지한다 */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={room.imageUrl} alt={room.imageAlt || `${floor.name} ${room.name}`} />
+          <img src={cldImage(room.imageUrl, 1280)} alt={room.imageAlt || `${floor.name} ${room.name}`} />
           <figcaption>{room.name}</figcaption>
         </figure>
       </div>

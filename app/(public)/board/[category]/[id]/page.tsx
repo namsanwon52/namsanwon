@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getBoardMeta, findBoardContext } from '@/lib/board'
 import { rewritePostContent } from '@/lib/content'
+import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import PostActionsPublic from '@/components/board/PostActionsPublic'
@@ -110,14 +111,14 @@ export default async function PostDetailPage({ params }: Props) {
             <>
               <div
                 className="postDetailBody"
-                dangerouslySetInnerHTML={{ __html: rewritePostContent(post.content, category, post.files) }}
+                dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(rewritePostContent(post.content, category, post.files)) }}
               />
 
               {inlineImages.length > 0 && (
                 <div className="postImages">
                   {inlineImages.map((f) => (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img key={f.id} src={f.url} alt={f.filename} loading="lazy" />
+                    <img key={f.id} src={cldImage(f.url, 1280)} alt={f.filename} loading="lazy" />
                   ))}
                 </div>
               )}

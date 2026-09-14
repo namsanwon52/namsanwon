@@ -3,12 +3,10 @@
  *
  * Vercel Blob 무료 한도(1GB) 초과로 스토어가 정지되면서 이전했다. Cloudinary 무료는
  * 카드 등록 없이 월 25 크레딧(저장·변환·대역폭 공용)이고, 저장 1GB = 1 크레딧이다.
- * 우리는 업로드 전에 이미 WebP로 인코딩하므로(`lib/image-optimize.ts`)
- * **배달 시 변환 파라미터를 붙이지 않는다** — 그래야 변환 크레딧이 발생하지 않는다.
- *
- * ⚠️ Cloudinary 콘솔의 "Default delivery optimization"이 켜져 있으면 원본 배달에도
- *    f_auto/q_auto가 적용돼 변환 크레딧을 먹는다. 이미 최적화된 자산이라 이득도 없으니
- *    Settings → Optimization 에서 꺼두는 편이 맞다.
+ * 업로드 전에 WebP로 줄여 저장하고, 화면에 배달할 때는 `lib/cloudinary-url.ts`의
+ * cldImage()로 f_auto,q_auto,c_limit,w_N 을 붙인다. 변환 결과는 Cloudinary가 한 번 만들어
+ * 저장·캐시하므로 같은 URL은 다시 연산하지 않는다 — 너비를 고정 버킷으로만 쓰는 이유.
+ * DB에는 변환 파라미터가 없는 원본 URL만 저장한다 (아래 keyFromUrl이 원본 형태를 기대).
  *
  * 앱/스크립트는 `@vercel/blob` 대신 이 모듈만 쓴다.
  *

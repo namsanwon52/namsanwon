@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { cldImage, responsiveSrcSet } from '@/lib/cloudinary-url'
 
 export type HeroSlide = {
   id: number
@@ -47,7 +48,13 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       {slides.map((slide, i) => (
         <div key={slide.id} className={`heroImage${active === i ? ' isActive' : ''}`} aria-hidden="true">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="heroBase" src={slide.url} alt={slide.alt} />
+          <img
+            className="heroBase"
+            src={cldImage(slide.url, 1600)}
+            srcSet={responsiveSrcSet(slide.url)}
+            sizes="100vw"
+            alt={slide.alt}
+          />
         </div>
       ))}
       <div className="heroDim" aria-hidden="true"></div>

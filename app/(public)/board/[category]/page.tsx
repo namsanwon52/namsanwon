@@ -7,6 +7,7 @@ import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import Pagination from '@/components/namsanwon/Pagination'
+import { cldImage, responsiveSrcSet } from '@/lib/cloudinary-url'
 
 type Props = {
   params: Promise<{ category: string }>
@@ -138,7 +139,12 @@ export default async function BoardPage({ params, searchParams }: Props) {
         {subBanner && (
           <div className="pageBannerSub">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={subBanner.imageUrl} alt={subBanner.imageAlt} />
+            <img
+              src={cldImage(subBanner.imageUrl, 1600)}
+              srcSet={responsiveSrcSet(subBanner.imageUrl)}
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              alt={subBanner.imageAlt}
+            />
           </div>
         )}
         {isGallery ? (
@@ -151,7 +157,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
                   <span className="thumb" aria-hidden="true">
                     {p.files[0]?.url && (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.files[0].url} alt="" loading="lazy" />
+                      <img src={cldImage(p.files[0].url, 640)} alt="" loading="lazy" />
                     )}
                   </span>
                   <strong>{p.title}</strong>

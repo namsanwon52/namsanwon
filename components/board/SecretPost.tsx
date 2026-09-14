@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { rewritePostContent } from '@/lib/content'
+import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
 import Comments from './Comments'
 
 type FileRow = { id: number; url: string; filename: string }
@@ -69,13 +70,13 @@ export default function SecretPost({ id, category }: { id: number; category: str
     <>
       <div
         className="postDetailBody"
-        dangerouslySetInnerHTML={{ __html: rewritePostContent(post.content, category, post.files) }}
+        dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(rewritePostContent(post.content, category, post.files)) }}
       />
       {inlineImages.length > 0 && (
         <div className="postImages">
           {inlineImages.map((f) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={f.id} src={f.url} alt={f.filename} loading="lazy" />
+            <img key={f.id} src={cldImage(f.url, 1280)} alt={f.filename} loading="lazy" />
           ))}
         </div>
       )}

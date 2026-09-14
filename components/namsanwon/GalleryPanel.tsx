@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { cldImage } from '@/lib/cloudinary-url'
 
 export type GalleryItem = {
   id: number
@@ -20,7 +21,7 @@ export default function GalleryPanel({ items }: { items: GalleryItem[] }) {
             <span className="thumb" aria-hidden="true">
               {item.thumbUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.thumbUrl} alt="" loading="lazy" />
+                <img src={cldImage(item.thumbUrl, 640)} alt="" loading="lazy" />
               )}
             </span>
             <strong>{item.title}</strong>
