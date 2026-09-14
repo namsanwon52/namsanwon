@@ -84,3 +84,5 @@ yarn.lock
 dist/
 
 docs/db_backup_*.sql
+# 게시글 복구 스크립트 원본 백업
+restore-gallery-text-backup-*.json
