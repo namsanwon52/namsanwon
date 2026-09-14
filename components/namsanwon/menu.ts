@@ -17,10 +17,9 @@ export const MENU: MenuGroup[] = [
   {
     label: '사업소개',
     items: [
-      { label: '행정지원팀', href: '/board/bus1' },
-      { label: '자립지원팀', href: '/board/eus1' },
-      { label: '교육지원팀', href: '/board/dus1' },
-      { label: '보육지원팀', href: '/board/cus11' },
+      { label: '행정팀', href: '/board/bus1' },
+      { label: '자립팀', href: '/board/eus1' },
+      { label: '교육팀', href: '/board/dus1' },
     ],
   },
   {
@@ -41,8 +40,8 @@ export const MENU: MenuGroup[] = [
     label: '커뮤니티',
     items: [
       { label: '공지사항', href: '/board/nt1' },
-      { label: '자유게시판', href: '/board/com1' },
       { label: '갤러리', href: '/board/com3' },
+      { label: '자유게시판', href: '/board/com1' },
     ],
   },
 ]
