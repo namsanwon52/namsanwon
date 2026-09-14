@@ -7,6 +7,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import Placeholder from '@tiptap/extension-placeholder'
 import Image from '@tiptap/extension-image'
 import { useEffect, useCallback, useRef, useState } from 'react'
+import { uploadImage } from '@/lib/upload-client'
 
 interface Props {
   value: string
@@ -168,15 +169,10 @@ export default function RichEditor({ value, onChange, placeholder = '내용을 �
       if (!editor) return
       setUploading(true)
       try {
-        const fd = new FormData()
-        fd.append('file', file)
-        const res = await fetch('/api/upload', { method: 'POST', body: fd })
-        if (!res.ok) {
-          alert('이미지 업로드에 실패했습니다.')
-          return
-        }
-        const { url } = await res.json()
+        const { url } = await uploadImage(file)
         editor.chain().focus().setImage({ src: url }).run()
+      } catch (e) {
+        alert((e as Error).message)
       } finally {
         setUploading(false)
       }

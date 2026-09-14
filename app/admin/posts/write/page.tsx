@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { BOARD_META } from '@/lib/board'
 import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import AttachmentField from '@/components/editor/AttachmentField'
+import type { UploadedFile } from '@/lib/upload-client'
 
 const RichEditor = dynamic(() => import('@/components/editor/RichEditor'), { ssr: false })
 
@@ -14,6 +16,7 @@ function AdminWriteForm() {
   const meta = BOARD_META[category] ?? BOARD_META['nt1']
 
   const [form, setForm] = useState({ title: '', content: '', author: '관리자' })
+  const [files, setFiles] = useState<UploadedFile[]>([])
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,10 +25,13 @@ function AdminWriteForm() {
     const res = await fetch('/api/posts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, category, isAdmin: true }),
+      body: JSON.stringify({ ...form, category, files, isAdmin: true }),
     })
     if (res.ok) {
       router.push(`/admin/posts?category=${category}`)
+    } else {
+      const { error } = await res.json().catch(() => ({}))
+      alert(error ?? '저장에 실패했습니다.')
     }
     setLoading(false)
   }
@@ -52,6 +58,7 @@ function AdminWriteForm() {
           onChange={(html) => setForm({ ...form, content: html })}
           placeholder="내용을 입력하세요."
         />
+        <AttachmentField files={files} onChange={setFiles} />
         <div className="flex gap-3 justify-end">
           <button
             type="button"

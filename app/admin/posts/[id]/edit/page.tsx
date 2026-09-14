@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { rewritePostContent } from '@/lib/content'
+import AttachmentField from '@/components/editor/AttachmentField'
+import type { UploadedFile } from '@/lib/upload-client'
 
 const RichEditor = dynamic(() => import('@/components/editor/RichEditor'), { ssr: false })
 
@@ -11,6 +13,7 @@ export default function AdminEditPage() {
   const { id } = useParams<{ id: string }>()
 
   const [form, setForm] = useState({ title: '', content: '', author: '' })
+  const [files, setFiles] = useState<UploadedFile[]>([])
   const [category, setCategory] = useState('')
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -21,6 +24,7 @@ export default function AdminEditPage() {
       .then((post) => {
         const content = rewritePostContent(post.content, post.code, post.files ?? [])
         setForm({ title: post.title, content, author: post.author })
+        setFiles((post.files ?? []).map((f: UploadedFile) => ({ url: f.url, filename: f.filename })))
         setCategory(post.code)
       })
       .finally(() => setFetching(false))
@@ -32,10 +36,13 @@ export default function AdminEditPage() {
     const res = await fetch(`/api/posts/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, files }),
     })
     if (res.ok) {
       router.push(`/admin/posts?category=${category}`)
+    } else {
+      const { error } = await res.json().catch(() => ({}))
+      alert(error ?? '저장에 실패했습니다.')
     }
     setLoading(false)
   }
@@ -69,6 +76,7 @@ export default function AdminEditPage() {
           value={form.content}
           onChange={(html) => setForm({ ...form, content: html })}
         />
+        <AttachmentField files={files} onChange={setFiles} />
         <div className="flex gap-3 justify-end">
           <button
             type="button"

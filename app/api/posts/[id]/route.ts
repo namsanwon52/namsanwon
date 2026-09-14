@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { toFileRows } from '@/lib/post-files'
 
 export async function GET(
   req: NextRequest,
@@ -41,11 +42,18 @@ export async function PATCH(
   if (isNaN(id)) return NextResponse.json({ error: '잘못된 ID' }, { status: 400 })
 
   const body = await req.json()
-  const { title, content, author } = body
+  const { title, content, author, files } = body
 
+  // files가 오면 첨부 목록 전체를 그 내용으로 교체한다 (안 오면 기존 첨부 유지)
   const post = await prisma.post.update({
     where: { id },
-    data: { title, content, author, updatedAt: new Date() },
+    data: {
+      title,
+      content,
+      author,
+      updatedAt: new Date(),
+      ...(files !== undefined && { files: { deleteMany: {}, create: toFileRows(files) } }),
+    },
   })
 
   return NextResponse.json(post)

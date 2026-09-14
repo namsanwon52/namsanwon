@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { getMemberSession } from '@/lib/memberSession'
 import { hashPassword } from '@/lib/hash'
 import { getBoardMeta } from '@/lib/board'
+import { toFileRows } from '@/lib/post-files'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -41,7 +42,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const { category, title, content, author, password, isSecret } = body
+  const { category, title, content, author, password, isSecret, files } = body
 
   if (!category || !title || !content) {
     return NextResponse.json({ error: '필수 항목 누락' }, { status: 400 })
@@ -75,6 +76,8 @@ export async function POST(req: NextRequest) {
       password: hashedPassword,
       isAdmin: !!session,
       isSecret: !!isSecret,
+      // 첨부파일은 관리자 화면에서만 올린다
+      ...(session && { files: { create: toFileRows(files) } }),
     },
   })
 
