@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { uploadImage } from '@/lib/upload-client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
@@ -41,15 +42,14 @@ export default function RoomCard({ room }: { room: Room }) {
   async function replacePhoto(file: File) {
     setSaving(true)
     setError('')
-    const formData = new FormData()
-    formData.append('file', file)
-    const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
-    if (!uploadRes.ok) {
+    let uploaded
+    try {
+      uploaded = await uploadImage(file)
+    } catch (e) {
       setSaving(false)
-      setError('사진 업로드에 실패했습니다.')
+      setError((e as Error).message)
       return
     }
-    const uploaded = await uploadRes.json()
     await patch({ imageUrl: uploaded.url })
   }
 

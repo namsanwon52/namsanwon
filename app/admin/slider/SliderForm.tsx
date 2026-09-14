@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { uploadImage } from '@/lib/upload-client'
 import { useRouter } from 'next/navigation'
 import { notifySliderChanged } from './sliderEvents'
 
@@ -29,11 +30,7 @@ export default function SliderForm() {
       let imageUrl = url
       if (mode === 'file') {
         if (!file) return
-        const formData = new FormData()
-        formData.append('file', file)
-        const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
-        const uploaded = await uploadRes.json()
-        imageUrl = uploaded.url
+        imageUrl = (await uploadImage(file)).url
       }
 
       const res = await fetch('/api/slider', {
@@ -56,6 +53,8 @@ export default function SliderForm() {
       setOrder(1)
       router.refresh()
       notifySliderChanged()
+    } catch (e) {
+      setError((e as Error).message)
     } finally {
       setSubmitting(false)
     }

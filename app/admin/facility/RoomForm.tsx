@@ -1,8 +1,9 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { uploadImage } from '@/lib/upload-client'
 
-// 공간 추가: 사진 파일을 /api/upload로 올린 뒤(WebP 재인코딩) 그 URL로 공간을 만든다.
+// 공간 추가: 사진을 WebP로 줄여 Cloudinary에 올린 뒤 그 URL로 공간을 만든다.
 export default function RoomForm({ floorId }: { floorId: number }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -21,14 +22,13 @@ export default function RoomForm({ floorId }: { floorId: number }) {
     setSaving(true)
     setError('')
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
-      if (!uploadRes.ok) {
-        setError('사진 업로드에 실패했습니다.')
+      let uploaded
+      try {
+        uploaded = await uploadImage(file)
+      } catch (e) {
+        setError((e as Error).message)
         return
       }
-      const uploaded = await uploadRes.json()
 
       const res = await fetch('/api/facility/rooms', {
         method: 'POST',

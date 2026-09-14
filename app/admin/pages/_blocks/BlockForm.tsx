@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { uploadImage } from '@/lib/upload-client'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { notifyBlockChanged } from './blockEvents'
@@ -37,11 +38,7 @@ export default function BlockForm({ page, imageOnly }: { page: string; imageOnly
   async function resolveImageUrl() {
     if (imageMode === 'file') {
       if (!file) return null
-      const formData = new FormData()
-      formData.append('file', file)
-      const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
-      const uploaded = await uploadRes.json()
-      return uploaded.url as string
+      return (await uploadImage(file)).url
     }
     return imageUrl || null
   }
@@ -98,6 +95,8 @@ export default function BlockForm({ page, imageOnly }: { page: string; imageOnly
       resetForm()
       router.refresh()
       notifyBlockChanged()
+    } catch (e) {
+      setError((e as Error).message)
     } finally {
       setSubmitting(false)
     }
