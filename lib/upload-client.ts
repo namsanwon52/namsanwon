@@ -27,7 +27,11 @@ export async function uploadImage(file: File): Promise<UploadedFile> {
   const fd = new FormData()
   fd.append('file', await shrinkImage(file))
   const res = await fetch('/api/upload', { method: 'POST', body: fd })
-  if (!res.ok) throw new Error(res.status === 413 ? '파일이 너무 큽니다.' : '이미지 업로드에 실패했습니다.')
+  if (!res.ok) {
+    if (res.status === 413) throw new Error('파일이 너무 큽니다.')
+    const data = await res.json().catch(() => null)
+    throw new Error(data?.error ?? `이미지 업로드에 실패했습니다. (${res.status})`)
+  }
   return res.json()
 }
 
