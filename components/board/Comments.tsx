@@ -10,7 +10,16 @@ type Comment = {
   hasPassword: boolean
 }
 
-export default function Comments({ postId, isAdmin }: { postId: number; isAdmin: boolean }) {
+// postPassword: 비밀글에서 확인된 글 비밀번호. 비밀글 댓글 목록 조회에 필요하다.
+export default function Comments({
+  postId,
+  isAdmin,
+  postPassword,
+}: {
+  postId: number
+  isAdmin: boolean
+  postPassword?: string
+}) {
   const [comments, setComments] = useState<Comment[]>([])
   const [loaded, setLoaded] = useState(false)
   const [form, setForm] = useState({ author: '', password: '', content: '' })
@@ -18,10 +27,12 @@ export default function Comments({ postId, isAdmin }: { postId: number; isAdmin:
   const [error, setError] = useState('')
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/posts/${postId}/comments`)
+    const res = await fetch(`/api/posts/${postId}/comments`, {
+      headers: postPassword ? { 'x-post-password': encodeURIComponent(postPassword) } : undefined,
+    })
     if (res.ok) setComments(await res.json())
     setLoaded(true)
-  }, [postId])
+  }, [postId, postPassword])
 
   useEffect(() => {
     load()

@@ -22,5 +22,6 @@ export async function POST(
   const valid = await verifyPassword(password, post.password)
   if (!valid) return NextResponse.json({ error: '비밀번호 불일치' }, { status: 403 })
 
-  return NextResponse.json({ ok: true, post })
+  const { password: _hash, ...safe } = post
+  return NextResponse.json({ ok: true, post: safe })
 }

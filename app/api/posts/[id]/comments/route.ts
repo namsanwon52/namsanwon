@@ -2,13 +2,27 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { hashPassword } from '@/lib/hash'
+import { hashPassword, verifyPassword } from '@/lib/hash'
 
 // 게시글 댓글 목록
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: idStr } = await params
   const postId = Number(idStr)
   if (isNaN(postId)) return NextResponse.json({ error: '잘못된 ID' }, { status: 400 })
+
+  // 비밀글 댓글(관리자 답변 등)은 관리자이거나 글 비밀번호를 확인한 경우에만 보여준다
+  const post = await prisma.post.findUnique({ where: { id: postId }, select: { isSecret: true, password: true } })
+  if (!post) return NextResponse.json({ error: '없는 게시글' }, { status: 404 })
+  if (post.isSecret && !(await getServerSession(authOptions))) {
+    const raw = req.headers.get('x-post-password')
+    let pw = ''
+    try {
+      pw = raw ? decodeURIComponent(raw) : ''
+    } catch {}
+    if (!pw || !post.password || !(await verifyPassword(pw, post.password))) {
+      return NextResponse.json({ error: '비밀글입니다.' }, { status: 403 })
+    }
+  }
 
   const comments = await prisma.comment.findMany({
     where: { postId },

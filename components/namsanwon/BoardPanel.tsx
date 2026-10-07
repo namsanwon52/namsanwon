@@ -8,7 +8,7 @@ export type BoardPost = { id: number; title: string; createdAt: string }
 const TABS = [
   { key: 'notice', label: '공지사항', code: 'nt1', moreHref: '/board/nt1' },
   { key: 'budget', label: '예산게시판', code: 'nt2', moreHref: '/board/nt2' },
-  { key: 'qna', label: '질문과 답변', code: 'com1', moreHref: '/board/com1' },
+  { key: 'qna', label: '자유게시판', code: 'com1', moreHref: '/board/com1' },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']

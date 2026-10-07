@@ -94,7 +94,7 @@ export default function SecretPost({ id, category }: { id: number; category: str
           </ul>
         </div>
       )}
-      <Comments postId={id} isAdmin={false} />
+      <Comments postId={id} isAdmin={false} postPassword={password} />
     </>
   )
 }

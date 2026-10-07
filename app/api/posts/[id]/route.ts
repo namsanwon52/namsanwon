@@ -23,11 +23,14 @@ export async function GET(
 
   // 비밀글은 관리자가 아니면 본문/첨부를 숨긴다 (비밀번호 확인은 verify 경유)
   const session = await getServerSession(authOptions)
+  // 비밀번호 해시는 어떤 경우에도 응답에 포함하지 않는다
+  const { password, ...rest } = post
+  const safe = { ...rest, hasPassword: !!password }
   if (post.isSecret && !session) {
-    return NextResponse.json({ ...post, content: '', files: [], locked: true })
+    return NextResponse.json({ ...safe, content: '', files: [], locked: true })
   }
 
-  return NextResponse.json(post)
+  return NextResponse.json(safe)
 }
 
 export async function PATCH(
