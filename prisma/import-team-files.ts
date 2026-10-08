@@ -25,9 +25,9 @@ const QUALITY = Number(process.env.IMAGE_QUALITY) || undefined;
 const CONCURRENCY = 5;
 
 // teamfiles/ 접두사로 저장되는 모든 게시판. com6(남산원 역사사진)은 팀 게시판은 아니지만
-// 첨부 저장 방식이 같고 같은 접두사를 쓰므로 반드시 포함해야 한다 —
+// 첨부 저장 방식이 같고 같은 접두사를 쓰므로 반드시 포함해야 한다 (com5 소식지도 동일) —
 // 빠지면 prefix 단위로 초기화 후 재임포트할 때 조용히 누락된다.
-const ALL_TEAM_CODES = ['bus1','bus2','bus3','bus7','cus1','cus2','cus11','cus21','dus1','dus2','eus1','schedule','com6'];
+const ALL_TEAM_CODES = ['bus1','bus2','bus3','bus7','cus1','cus2','cus11','cus21','dus1','dus2','eus1','schedule','com6','com5'];
 const COL = { idx: 0, code: 1 };
 const UPFILE_START = 26; // upfile1..12 → 26..37
 const UPNAME_START = 38; // upfile1_name..12_name → 38..49

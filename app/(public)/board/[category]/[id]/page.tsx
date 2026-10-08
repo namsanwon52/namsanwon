@@ -1,9 +1,10 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getBoardMeta, findBoardContext } from '@/lib/board'
+import { canViewBoard, loginRedirectPath } from '@/lib/boardAccess'
 import { rewritePostContent } from '@/lib/content'
 import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
 import PageBanner from '@/components/namsanwon/PageBanner'
@@ -27,6 +28,7 @@ export default async function PostDetailPage({ params }: Props) {
   const { category, id: idStr } = await params
   const id = Number(idStr)
   if (isNaN(id)) notFound()
+  if (!(await canViewBoard(category))) redirect(loginRedirectPath(`/board/${category}/${id}`))
 
   const post = await prisma.post.findUnique({
     where: { id },

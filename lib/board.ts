@@ -1,5 +1,6 @@
 // 크롤링 데이터의 code 값을 게시판 카테고리로 직접 사용
-export const BOARD_META: Record<string, { label: string; adminOnly: boolean }> = {
+// loginRequired: 회원(또는 관리자) 로그인한 사람만 목록/본문 열람 가능
+export const BOARD_META: Record<string, { label: string; adminOnly: boolean; loginRequired?: boolean }> = {
   nt1:  { label: '공지사항',   adminOnly: true },
   nt2:  { label: '예산공고',   adminOnly: true },
   nt3:  { label: '결산공고',   adminOnly: true },
@@ -7,6 +8,7 @@ export const BOARD_META: Record<string, { label: string; adminOnly: boolean }> =
   nt5:  { label: '채용',       adminOnly: true },
   com1: { label: '자유게시판', adminOnly: false },
   com3: { label: '갤러리',     adminOnly: true },
+  com5: { label: '소식지',     adminOnly: true, loginRequired: true },
   com6: { label: '남산원 역사사진', adminOnly: true },
   liv1: { label: '아동생활',   adminOnly: true },
   liv2: { label: '영아방',     adminOnly: true },
@@ -119,6 +121,7 @@ export const BOARD_SECTIONS: BoardSection[] = [
         ],
       },
       { label: '갤러리', code: 'com3', type: 'gallery' },
+      { label: '소식지', code: 'com5', type: 'gallery' },
       { label: '자유게시판', code: 'com1', type: 'list' },
     ],
   },

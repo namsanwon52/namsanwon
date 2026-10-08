@@ -41,6 +41,7 @@ export const MENU: MenuGroup[] = [
     items: [
       { label: '공지사항', href: '/board/nt1' },
       { label: '갤러리', href: '/board/com3' },
+      { label: '소식지', href: '/board/com5' },
       { label: '자유게시판', href: '/board/com1' },
     ],
   },

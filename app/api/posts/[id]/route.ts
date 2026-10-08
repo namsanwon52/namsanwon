@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { toFileRows } from '@/lib/post-files'
+import { canViewBoard } from '@/lib/boardAccess'
 
 export async function GET(
   req: NextRequest,
@@ -17,6 +18,7 @@ export async function GET(
     include: { files: true },
   })
   if (!post) return NextResponse.json({ error: '없는 게시글' }, { status: 404 })
+  if (!(await canViewBoard(post.code))) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
 
   // 조회수 증가 (await 생략으로 응답 속도 최적화)
   prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})

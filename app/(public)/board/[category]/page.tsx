@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getMemberSession } from '@/lib/memberSession'
 import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
+import { canViewBoard, loginRedirectPath } from '@/lib/boardAccess'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import Pagination from '@/components/namsanwon/Pagination'
@@ -27,6 +28,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
   const { category } = await params
   const sp = await searchParams
   if (!BOARD_META[category]) notFound()
+  if (!(await canViewBoard(category))) redirect(loginRedirectPath(`/board/${category}`))
 
   const page = Math.max(1, Number(sp.page ?? '1'))
   const q = (sp.q ?? '').trim()

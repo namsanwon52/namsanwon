@@ -6,10 +6,12 @@ import { getMemberSession } from '@/lib/memberSession'
 import { hashPassword } from '@/lib/hash'
 import { getBoardMeta } from '@/lib/board'
 import { toFileRows } from '@/lib/post-files'
+import { canViewBoard } from '@/lib/boardAccess'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const category = searchParams.get('category') ?? 'nt1'
+  if (!(await canViewBoard(category))) return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   const page = Math.max(1, Number(searchParams.get('page') ?? '1'))
   const limit = 10
   const skip = (page - 1) * limit
