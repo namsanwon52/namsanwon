@@ -13,12 +13,11 @@ const TABS = [
 
 type TabKey = (typeof TABS)[number]['key']
 
+// 서버(Vercel, UTC)에서 렌더링해도 한국 날짜로 보이도록 시간대를 고정한다
 function formatDate(iso: string) {
-  const d = new Date(iso)
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}.${m}.${day}`
+  const parts = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date(iso))
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? ''
+  return `${get('year')}.${get('month')}.${get('day')}`
 }
 
 export default function BoardPanel({ data }: { data: Record<TabKey, BoardPost[]> }) {

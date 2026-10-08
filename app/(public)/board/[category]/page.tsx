@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 function formatDate(d: Date) {
-  return d.toLocaleDateString('ko-KR').replace(/\.$/, '')
+  return d.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\.$/, '')
 }
 
 export default async function BoardPage({ params, searchParams }: Props) {

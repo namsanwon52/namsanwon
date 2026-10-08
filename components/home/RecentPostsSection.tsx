@@ -56,7 +56,7 @@ function PostCard({
                     {p.title}
                   </span>
                   <span className="text-xs text-slate-400 whitespace-nowrap flex-shrink-0 bg-slate-50 px-2 py-0.5 rounded-full">
-                    {p.createdAt.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
+                    {p.createdAt.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit', timeZone: 'Asia/Seoul' })}
                   </span>
                 </Link>
               </li>

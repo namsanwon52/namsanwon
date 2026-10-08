@@ -57,7 +57,7 @@ export default async function AdminPostsPage({ searchParams }: Props) {
                 <td className="py-3 px-4">{p.title}</td>
                 <td className="py-3 px-4 text-center text-gray-500">{p.author}</td>
                 <td className="py-3 px-4 text-center text-gray-400">
-                  {p.createdAt.toLocaleDateString('ko-KR')}
+                  {p.createdAt.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })}
                 </td>
                 <td className="py-3 px-4 text-center">
                   <PostActions id={p.id} />

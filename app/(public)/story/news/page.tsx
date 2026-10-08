@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: '아동 소식' }
 export const revalidate = 600
 
 function formatDate(d: Date) {
-  return d.toLocaleDateString('ko-KR').replace(/\.$/, '')
+  return d.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\.$/, '')
 }
 
 export default async function StoryNewsPage() {

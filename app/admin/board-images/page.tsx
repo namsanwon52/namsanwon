@@ -40,7 +40,7 @@ export default async function AdminBoardImagesList() {
                   </Link>
                 </td>
                 <td className="p-3 text-right text-gray-400">
-                  {updatedByPage.get(p.slug)?.toLocaleDateString('ko-KR') ?? '-'}
+                  {updatedByPage.get(p.slug)?.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }) ?? '-'}
                 </td>
                 <td className="p-3 text-right">
                   <Link

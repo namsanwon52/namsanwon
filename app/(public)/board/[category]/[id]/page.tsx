@@ -100,7 +100,7 @@ export default async function PostDetailPage({ params }: Props) {
           <div className="postDetailHead">
             <h2>{post.title}</h2>
             <div className="postDetailMeta">
-              <span>{post.createdAt.toLocaleDateString('ko-KR')}</span>
+              <span>{post.createdAt.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })}</span>
               <span>{post.author ?? '-'}</span>
               
               <span> {post.views} views</span>

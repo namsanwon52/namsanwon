@@ -31,7 +31,7 @@ export default function UserRow({ member }: { member: MemberRow }) {
       <td className="py-3 px-4 text-gray-500">{member.email || '-'}</td>
       <td className="py-3 px-4 text-gray-500">{member.hphone || '-'}</td>
       <td className="py-3 px-4 text-center text-gray-400">
-        {member.wdate ? new Date(member.wdate).toLocaleDateString('ko-KR') : '-'}
+        {member.wdate ? new Date(member.wdate).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }) : '-'}
       </td>
       <td className="py-3 px-4 text-center">
         <span

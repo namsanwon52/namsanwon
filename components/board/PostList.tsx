@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 type Props = { category: string; page: number }
 
 function formatDate(d: Date) {
-  return new Date(d).toLocaleDateString('ko-KR').replace(/\.$/, '')
+  return new Date(d).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\.$/, '')
 }
 
 export default async function PostList({ category, page }: Props) {

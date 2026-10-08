@@ -96,7 +96,7 @@ export default function Comments({
                 {c.isAdmin && <em className="adminBadge">관리자</em>}
                 {c.author}
               </span>
-              <span className="commentDate">{new Date(c.createdAt).toLocaleDateString('ko-KR')}</span>
+              <span className="commentDate">{new Date(c.createdAt).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })}</span>
               {(isAdmin || c.hasPassword) && (
                 <button type="button" className="commentDelete" onClick={() => handleDelete(c)}>
                   삭제

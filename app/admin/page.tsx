@@ -56,7 +56,7 @@ export default async function AdminDashboard() {
                 </td>
                 <td className="py-2 text-right text-gray-400">
                   <Link href={`/admin/posts/${p.id}/edit`} className="block">
-                    {p.createdAt.toLocaleDateString('ko-KR')}
+                    {p.createdAt.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })}
                   </Link>
                 </td>
               </tr>
