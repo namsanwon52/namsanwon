@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // 마이그레이션 전용 직접 연결 (앱은 풀링 연결 사용)
 }
 
 model Admin {
