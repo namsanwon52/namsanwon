@@ -7,6 +7,8 @@ import { getBoardMeta, findBoardContext } from '@/lib/board'
 import { canViewBoard, loginRedirectPath } from '@/lib/boardAccess'
 import { rewritePostContent } from '@/lib/content'
 import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
+import { fileHref, isPdfFile } from '@/lib/file-url'
+import PdfPreviews from '@/components/board/PdfPreviews'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import PostActionsPublic from '@/components/board/PostActionsPublic'
@@ -125,13 +127,21 @@ export default async function PostDetailPage({ params }: Props) {
                 </div>
               )}
 
+              {inlineImages.length === 0 && <PdfPreviews files={docFiles} />}
+
               {docFiles.length > 0 && (
                 <div style={{ padding: '16px 4px', borderBottom: '1px solid var(--line-muted)' }}>
                   <h3 style={{ fontSize: 'var(--font-h5)', fontWeight: 700, margin: '0 0 8px' }}>첨부파일</h3>
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 4 }}>
                     {docFiles.map((f) => (
                       <li key={f.id}>
-                        <a href={f.url} download={f.filename} style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}>
+                        <a
+                          href={fileHref(f)}
+                          download={isPdfFile(f) ? undefined : f.filename}
+                          target={isPdfFile(f) ? '_blank' : undefined}
+                          rel={isPdfFile(f) ? 'noopener' : undefined}
+                          style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}
+                        >
                           📎 {f.filename}
                         </a>
                       </li>

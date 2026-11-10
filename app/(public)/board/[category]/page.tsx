@@ -9,6 +9,7 @@ import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import Pagination from '@/components/namsanwon/Pagination'
 import { cldImage, responsiveSrcSet } from '@/lib/cloudinary-url'
+import { fileThumbUrl } from '@/lib/file-url'
 
 type Props = {
   params: Promise<{ category: string }>
@@ -79,7 +80,8 @@ export default async function BoardPage({ params, searchParams }: Props) {
           orderBy: { createdAt: 'desc' },
           skip,
           take: limit,
-          select: { id: true, title: true, files: { take: 1, select: { url: true } } },
+          // 썸네일: 첫 이미지, 없으면 PDF 1페이지 (첫 첨부가 PDF·문서일 수 있어 여러 개 조회)
+          select: { id: true, title: true, files: { take: 10, orderBy: { id: 'asc' }, select: { url: true, filename: true } } },
         })
       : Promise.resolve([]),
     prisma.contentBlock.findFirst({
@@ -157,9 +159,9 @@ export default async function BoardPage({ params, searchParams }: Props) {
               {galleryRows.map((p) => (
                 <Link href={`/board/${category}/${p.id}`} className="galleryCard" key={p.id}>
                   <span className="thumb" aria-hidden="true">
-                    {p.files[0]?.url && (
+                    {fileThumbUrl(p.files, 640) && (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={cldImage(p.files[0].url, 640)} alt="" loading="lazy" />
+                      <img src={fileThumbUrl(p.files, 640)!} alt="" loading="lazy" />
                     )}
                   </span>
                   <strong>{p.title}</strong>

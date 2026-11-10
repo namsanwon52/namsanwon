@@ -34,7 +34,7 @@ async function toWebp(file: File): Promise<File> {
   }
 }
 
-async function directUpload(file: File, kind: 'image' | 'raw'): Promise<string> {
+async function directUpload(file: File, kind: 'image' | 'raw' | 'pdf'): Promise<string> {
   const signRes = await fetch('/api/upload/sign', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -58,8 +58,12 @@ export async function uploadImage(file: File): Promise<UploadedFile> {
   return { url: await directUpload(optimized, 'image'), filename: optimized.name }
 }
 
-/** 게시글 첨부: 이미지는 WebP로, 문서는 원본 그대로 (표시 이름은 원래 파일명) */
+const isPdf = (file: File) => file.type === 'application/pdf' || /\.pdf$/i.test(file.name)
+
+/** 게시글 첨부: 이미지는 WebP로, PDF는 썸네일용 image 리소스로, 그 외 문서는 원본 그대로 (표시 이름은 원래 파일명) */
 export async function uploadAttachment(file: File): Promise<UploadedFile> {
-  const url = isImage(file) ? (await uploadImage(file)).url : await directUpload(file, 'raw')
+  const url = isImage(file)
+    ? (await uploadImage(file)).url
+    : await directUpload(file, isPdf(file) ? 'pdf' : 'raw')
   return { url, filename: file.name }
 }

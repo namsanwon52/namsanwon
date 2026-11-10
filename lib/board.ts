@@ -74,7 +74,6 @@ export const BOARD_SECTIONS: BoardSection[] = [
         type: 'list',
         subTabs: [
           { label: '행정팀 소식', code: 'bus1' },
-          { label: '자원봉사 소식', code: 'schedule' },
           { label: '후원·금품현황', code: 'cus1' },
           { label: '위생·영양 소식', code: 'bus2' },
           { label: '안전관리 소식', code: 'bus3' },

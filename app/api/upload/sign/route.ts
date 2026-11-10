@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: '로그인이 만료되었습니다. 다시 로그인해주세요.' }, { status: 401 })
 
-  const { filename, kind } = (await req.json()) as { filename?: string; kind?: 'image' | 'raw' }
+  const { filename, kind } = (await req.json()) as { filename?: string; kind?: 'image' | 'raw' | 'pdf' }
   if (!filename) return NextResponse.json({ error: '파일명 없음' }, { status: 400 })
 
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME
@@ -22,13 +22,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Cloudinary 설정 없음' }, { status: 500 })
   }
 
-  const resourceType = kind === 'image' ? 'image' : 'raw'
+  // PDF는 image 리소스로 올린다: 첫 페이지를 썸네일(JPG)로 변환할 수 있다.
+  // (원본 PDF 배달은 계정 설정상 막혀 있어 다운로드는 /api/files/<id> 가 서명 URL로 처리)
+  const resourceType = kind === 'image' || kind === 'pdf' ? 'image' : 'raw'
   // 이미지는 확장자를 뺀 public_id(형식은 Cloudinary가 관리),
   // raw 리소스는 public_id가 곧 다운로드 파일명이 되므로 원래 이름을 살린다.
   const publicId =
-    resourceType === 'image'
-      ? sanitizeKey(`editor/${Date.now()}-${filename.replace(/\.[^./]+$/, '')}`)
-      : sanitizeKey(`attachments/${Date.now()}/${filename}`)
+    kind === 'pdf'
+      ? sanitizeKey(`attachments/${Date.now()}/${filename.replace(/\.[^./]+$/, '')}`)
+      : resourceType === 'image'
+        ? sanitizeKey(`editor/${Date.now()}-${filename.replace(/\.[^./]+$/, '')}`)
+        : sanitizeKey(`attachments/${Date.now()}/${filename}`)
   const timestamp = Math.floor(Date.now() / 1000)
   const signature = cloudinary.utils.api_sign_request({ public_id: publicId, timestamp }, apiSecret)
 

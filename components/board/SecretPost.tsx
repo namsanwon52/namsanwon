@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { rewritePostContent } from '@/lib/content'
 import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
+import { fileHref, isPdfFile } from '@/lib/file-url'
 import Comments from './Comments'
 
 type FileRow = { id: number; url: string; filename: string }
@@ -86,7 +87,13 @@ export default function SecretPost({ id, category }: { id: number; category: str
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 4 }}>
             {docFiles.map((f) => (
               <li key={f.id}>
-                <a href={f.url} download={f.filename} style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}>
+                <a
+                  href={fileHref(f)}
+                  download={isPdfFile(f) ? undefined : f.filename}
+                  target={isPdfFile(f) ? '_blank' : undefined}
+                  rel={isPdfFile(f) ? 'noopener' : undefined}
+                  style={{ color: 'var(--secondary)', fontSize: 'var(--font-h5)' }}
+                >
                   📎 {f.filename}
                 </a>
               </li>

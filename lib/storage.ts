@@ -151,13 +151,13 @@ export async function put(
 export async function del(target: string | string[]): Promise<void> {
   const cld = configured();
   const items = Array.isArray(target) ? target : [target];
-  const keys = items.map((t) => keyFromUrl(t) ?? t).filter(Boolean);
-  if (keys.length === 0) return;
-
-  // resource_type 별로 나눠 호출해야 한다
+  // resource_type 별로 나눠 호출해야 한다. URL이면 경로의 /image/·/raw/로 판별한다
+  // (PDF는 image 리소스로 올라가므로 확장자만으로는 판별할 수 없다)
   const groups: Record<'image' | 'raw', string[]> = { image: [], raw: [] };
-  for (const k of keys) {
-    const rt = resourceTypeForKey(k);
+  for (const t of items) {
+    const k = keyFromUrl(t) ?? t;
+    if (!k) continue;
+    const rt = /\/image\/upload\//.test(t) ? 'image' : /\/raw\/upload\//.test(t) ? 'raw' : resourceTypeForKey(k);
     groups[rt].push(rt === 'image' ? k.replace(/\.[^./]+$/, '') : k);
   }
 
