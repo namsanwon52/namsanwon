@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getBoardMeta, findBoardContext } from '@/lib/board'
 import { canViewBoard, loginRedirectPath } from '@/lib/boardAccess'
-import { rewritePostContent } from '@/lib/content'
+import { rewritePostContent, imagesNotInContent } from '@/lib/content'
 import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
 import { fileHref, isPdfFile } from '@/lib/file-url'
 import PdfPreviews from '@/components/board/PdfPreviews'
@@ -61,10 +61,8 @@ export default async function PostDetailPage({ params }: Props) {
 
   // 첨부 분류: 이미지 중 본문에 아직 삽입되지 않은 것은 인라인으로, 문서 첨부는 다운로드 링크로
   const isImg = (n: string) => /\.(jpe?g|png|gif|bmp|webp)$/i.test(n)
-  const baseNoExt = (n: string) => n.replace(/^.*[\\/]/, '').replace(/\.[^.]+$/, '')
-  const inlineImages = post.files.filter(
-    (f) => isImg(f.filename) && !post.content.includes(baseNoExt(f.filename)),
-  )
+  const renderedContent = rewritePostContent(post.content, category, post.files)
+  const inlineImages = imagesNotInContent(renderedContent, post.files)
   const docFiles = post.files.filter((f) => !isImg(f.filename))
 
   // 비밀글은 관리자 세션 여부와 무관하게 공개 게시판에서는 비밀번호를 입력해야 본문 열람 가능.
@@ -115,7 +113,7 @@ export default async function PostDetailPage({ params }: Props) {
             <>
               <div
                 className="postDetailBody"
-                dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(rewritePostContent(post.content, category, post.files)) }}
+                dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(renderedContent) }}
               />
 
               {inlineImages.length > 0 && (

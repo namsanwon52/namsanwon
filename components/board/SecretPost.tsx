@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { rewritePostContent } from '@/lib/content'
+import { rewritePostContent, imagesNotInContent } from '@/lib/content'
 import { cldImage, optimizeHtmlImages } from '@/lib/cloudinary-url'
 import { fileHref, isPdfFile } from '@/lib/file-url'
 import Comments from './Comments'
@@ -9,7 +9,6 @@ type FileRow = { id: number; url: string; filename: string }
 type Post = { id: number; code: string; content: string; files: FileRow[] }
 
 const isImg = (n: string) => /\.(jpe?g|png|gif|bmp|webp)$/i.test(n)
-const baseNoExt = (n: string) => n.replace(/^.*[\\/]/, '').replace(/\.[^.]+$/, '')
 
 // 비밀글: 비밀번호 확인 후 본문/첨부/댓글 표시 (비관리자용)
 export default function SecretPost({ id, category }: { id: number; category: string }) {
@@ -62,16 +61,15 @@ export default function SecretPost({ id, category }: { id: number; category: str
     )
   }
 
-  const inlineImages = post.files.filter(
-    (f) => isImg(f.filename) && !post.content.includes(baseNoExt(f.filename)),
-  )
+  const renderedContent = rewritePostContent(post.content, category, post.files)
+  const inlineImages = imagesNotInContent(renderedContent, post.files)
   const docFiles = post.files.filter((f) => !isImg(f.filename))
 
   return (
     <>
       <div
         className="postDetailBody"
-        dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(rewritePostContent(post.content, category, post.files)) }}
+        dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(renderedContent) }}
       />
       {inlineImages.length > 0 && (
         <div className="postImages">

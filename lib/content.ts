@@ -36,3 +36,14 @@ export function rewritePostContent(content: string, code: string, files: FileRef
 
   return html;
 }
+
+const IMAGE_RE = /\.(jpe?g|png|gif|bmp|webp)$/i;
+
+/**
+ * 본문에 아직 들어가지 않은 이미지 첨부 (본문 아래에 따로 보여줄 것).
+ * rewritePostContent 를 거친 HTML에 그 파일 URL이 있는지로 판단한다.
+ * 파일명 글자로 비교하면 "1.webp" 같은 이름이 본문의 "1971년"에 걸려 사진이 숨겨진다.
+ */
+export function imagesNotInContent<T extends FileRef>(renderedHtml: string, files: T[]): T[] {
+  return files.filter((f) => IMAGE_RE.test(f.filename) && !renderedHtml.includes(f.url));
+}
