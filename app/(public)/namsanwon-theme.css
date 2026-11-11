@@ -2,7 +2,7 @@
   /* Color */
   --primary: #88b04b;
   --secondary: #456805;
-  --bg: #fbfbf8;
+  --bg: #ffffff;
   --surface: #ffffff;
   --surface-inverse: #25190c;
   --text: #1b1c1c;
@@ -1936,8 +1936,7 @@ button {
 }
 .postDetailBody {
   min-height: 200px;
-  padding: 32px 4px;
-  box-shadow: var(--shadow-boardcard);
+  padding: 32px 28px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line-muted);
   color: var(--text);
@@ -1945,21 +1944,24 @@ button {
   line-height: 1.8;
   background: var(--surface);
   box-shadow: var(--shadow-boardcard);
-  margin: 10 auto;
 }
 .postDetailBody img { max-width: 100%; height: auto; }
+/* 첨부 이미지·PDF 미리보기: 본문 박스 안, 글 아래에 왼쪽 정렬 */
 .postImages {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 16px;
-  padding: 8px 4px 24px;
-  border-bottom: 1px solid var(--line-muted);
+  margin-top: 24px;
 }
 .postImages img {
+  display: block;
   max-width: 100%;
   height: auto;
   border-radius: 8px;
-  margin: 0 auto;
+}
+@media (max-width: 820px) {
+  .postDetailBody { padding: 24px 16px; }
 }
 .postNav {
   display: flex;

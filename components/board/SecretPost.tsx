@@ -67,18 +67,20 @@ export default function SecretPost({ id, category }: { id: number; category: str
 
   return (
     <>
-      <div
-        className="postDetailBody"
-        dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(renderedContent) }}
-      />
-      {inlineImages.length > 0 && (
-        <div className="postImages">
-          {inlineImages.map((f) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={f.id} src={cldImage(f.url, 1280)} alt={f.filename} loading="lazy" />
-          ))}
-        </div>
-      )}
+      <div className="postDetailBody">
+        <div
+          className="postDetailText"
+          dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(renderedContent) }}
+        />
+        {inlineImages.length > 0 && (
+          <div className="postImages">
+            {inlineImages.map((f) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={f.id} src={cldImage(f.url, 1280)} alt={f.filename} loading="lazy" />
+            ))}
+          </div>
+        )}
+      </div>
       {docFiles.length > 0 && (
         <div style={{ padding: '16px 4px', borderBottom: '1px solid var(--line-muted)' }}>
           <h3 style={{ fontSize: 'var(--font-h5)', fontWeight: 700, margin: '0 0 8px' }}>첨부파일</h3>

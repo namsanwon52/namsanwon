@@ -2,7 +2,7 @@
  * Cloudinary 배달 URL에 자동 최적화 파라미터를 붙인다 (서버·클라이언트 공용, SDK 불필요).
  *
  * - f_auto: 브라우저가 지원하면 AVIF/WebP로 배달
- * - q_auto: 화질을 눈에 띄지 않는 선에서 자동 압축 (640px 이하 썸네일은 q_auto:eco)
+ * - q_auto: 화질을 눈에 띄지 않는 선에서 자동 압축
  * - c_limit,w_N: 표시 크기에 맞춰 줄이되 원본보다 키우지 않음
  *
  * Cloudinary는 변환 결과(derived)를 한 번 만들어 저장·CDN 캐시하므로, URL이 같으면 다시
@@ -31,8 +31,8 @@ export function cldImage(url: string | null | undefined, width: number): string 
   const firstSeg = rest.split('/')[0]
   if (/^[a-z]{1,3}_/.test(firstSeg) && !/^v\d+$/.test(firstSeg)) return url
   const w = bucketWidth(width)
-  // 작은 썸네일은 이미 압축된 WebP라 q_auto(good)로는 오히려 커져서 eco 품질을 쓴다 (실측 -8%)
-  const quality = w <= 640 ? 'q_auto:eco' : 'q_auto'
+  // 썸네일도 q_auto(good). eco는 용량이 8% 작지만 화면이 흐려 보인다는 피드백으로 쓰지 않는다
+  const quality = 'q_auto'
   return `${url.slice(0, idx)}f_auto,${quality},c_limit,w_${w}/${rest}`
 }
 

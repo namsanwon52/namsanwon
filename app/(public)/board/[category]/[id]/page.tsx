@@ -111,21 +111,24 @@ export default async function PostDetailPage({ params }: Props) {
             <SecretPost id={id} category={category} />
           ) : (
             <>
-              <div
-                className="postDetailBody"
-                dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(renderedContent) }}
-              />
+              {/* 본문 글과 첨부 이미지를 한 박스 안에 넣는다 (모든 게시판 공통) */}
+              <div className="postDetailBody">
+                <div
+                  className="postDetailText"
+                  dangerouslySetInnerHTML={{ __html: optimizeHtmlImages(renderedContent) }}
+                />
 
-              {inlineImages.length > 0 && (
-                <div className="postImages">
-                  {inlineImages.map((f) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img key={f.id} src={cldImage(f.url, 1280)} alt={f.filename} loading="lazy" />
-                  ))}
-                </div>
-              )}
+                {inlineImages.length > 0 && (
+                  <div className="postImages">
+                    {inlineImages.map((f) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img key={f.id} src={cldImage(f.url, 1280)} alt={f.filename} loading="lazy" />
+                    ))}
+                  </div>
+                )}
 
-              {inlineImages.length === 0 && <PdfPreviews files={docFiles} />}
+                {inlineImages.length === 0 && <PdfPreviews files={docFiles} />}
+              </div>
 
               {docFiles.length > 0 && (
                 <div style={{ padding: '16px 4px', borderBottom: '1px solid var(--line-muted)' }}>

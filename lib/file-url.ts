@@ -22,7 +22,7 @@ export function pdfThumbUrl(url: string, width: number): string | null {
   const seg = '/image/upload/'
   const i = url.indexOf(seg) + seg.length
   const rest = url.slice(i).replace(/\.pdf$/i, '.jpg')
-  return `${url.slice(0, i)}pg_1,q_auto:eco,c_limit,w_${bucketWidth(width)}/${rest}`
+  return `${url.slice(0, i)}pg_1,q_auto,c_limit,w_${bucketWidth(width)}/${rest}`
 }
 
 /** 목록 썸네일: 첫 이미지 첨부 → 없으면 PDF 1페이지 */
