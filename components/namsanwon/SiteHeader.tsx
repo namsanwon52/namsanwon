@@ -77,7 +77,7 @@ export default function SiteHeader({ member }: { member: Member | null }) {
       <div className="globalNavInner">
         <Link className="logo" href="/" aria-label="남산원 홈">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="logoImg" src="/logo-namsanwon.svg" alt="사회복지법인 아동복지시설 남산원" />
+          <img className="logoImg" src="/logo-namsanwon.png" alt="사회복지법인 아동복지시설 남산원" />
         </Link>
 
         <button

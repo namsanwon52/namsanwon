@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { uploadImage } from '@/lib/upload-client'
+import { uploadOriginalImage } from '@/lib/upload-client'
 import { useRouter } from 'next/navigation'
 import { notifySliderChanged } from './sliderEvents'
 
@@ -30,7 +30,7 @@ export default function SliderForm() {
       let imageUrl = url
       if (mode === 'file') {
         if (!file) return
-        imageUrl = (await uploadImage(file)).url
+        imageUrl = (await uploadOriginalImage(file)).url // 메인 롤링은 원본 화질 유지
       }
 
       const res = await fetch('/api/slider', {

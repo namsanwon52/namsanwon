@@ -124,6 +124,16 @@ export const BOARD_SECTIONS: BoardSection[] = [
       { label: '자유게시판', code: 'com1', type: 'list' },
     ],
   },
+  {
+    // 게시판이 아닌 안내 페이지 묶음 — 중간 메뉴(BoardLocalNav) 표시용
+    key: 'support',
+    title: '후원/자원봉사',
+    desc: '여러분의 따뜻한 나눔이 아이들의 내일을 밝힙니다.',
+    localNav: [
+      { label: '후원신청 안내', code: 'donation', type: 'list', href: '/support/donation' },
+      { label: '자원봉사신청 안내', code: 'volunteer', type: 'list', href: '/support/volunteer' },
+    ],
+  },
 ]
 
 export type BoardContext = {
@@ -153,7 +163,10 @@ export function findBoardContext(code: string): BoardContext | null {
 export type AdminBoardGroup = { key: string; title: string; items: BoardLocalItem[] }
 
 export function getAdminBoardGroups(): AdminBoardGroup[] {
-  const groups: AdminBoardGroup[] = BOARD_SECTIONS.map((section) => ({
+  // 게시판이 하나도 없는 섹션(후원/자원봉사 같은 안내 페이지 묶음)은 게시글 관리 대상이 아니다
+  const groups: AdminBoardGroup[] = BOARD_SECTIONS.filter((section) =>
+    section.localNav.some((i) => BOARD_META[i.code] || i.subTabs?.some((t) => BOARD_META[t.code])),
+  ).map((section) => ({
     key: section.key,
     title: section.title,
     items: section.localNav,

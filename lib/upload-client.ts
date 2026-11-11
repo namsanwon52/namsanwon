@@ -58,6 +58,14 @@ export async function uploadImage(file: File): Promise<UploadedFile> {
   return { url: await directUpload(optimized, 'image'), filename: optimized.name }
 }
 
+/**
+ * 이미지 원본 그대로 업로드 (줄이거나 다시 압축하지 않는다).
+ * 메인 롤링 이미지처럼 화면 전체 폭에 크게 보이는 이미지는 1600px WebP로 줄이면 흐려진다.
+ */
+export async function uploadOriginalImage(file: File): Promise<UploadedFile> {
+  return { url: await directUpload(file, 'image'), filename: file.name }
+}
+
 const isPdf = (file: File) => file.type === 'application/pdf' || /\.pdf$/i.test(file.name)
 
 /** 게시글 첨부: 이미지는 WebP로, PDF는 썸네일용 image 리소스로, 그 외 문서는 원본 그대로 (표시 이름은 원래 파일명) */
