@@ -56,7 +56,6 @@ export default function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           />
         </div>
       ))}
-      <div className="heroDim" aria-hidden="true"></div>
 
       <div className="heroSlides">
         {slides.map((slide, i) => (

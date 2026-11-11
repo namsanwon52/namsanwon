@@ -515,53 +515,34 @@ button {
   background: var(--text);
 }
 
+/* 메인 롤링 이미지: 업로드한 이미지를 그대로 보여준다.
+   (어둡게 덮는 dim·확대 효과·꽉 채우기 잘림 없음 — 영역 높이는 이미지 비율을 따른다)
+   모든 슬라이드를 같은 칸에 겹쳐 두고 활성 슬라이드만 페이드로 보인다. */
 .heroSection {
   position: relative;
-  display: flex;
-  min-height: 520px;
-  align-items: center;
-  justify-content: center;
+  display: grid;
   overflow: hidden;
   background: #2e3328;
 }
 
 .heroImage,
-.heroDim {
-  position: absolute;
-  inset: 0;
+.heroSlides {
+  grid-area: 1 / 1;
 }
 
 .heroImage {
   opacity: 0;
-  transform: scale(1.04);
-  transition: opacity 0.7s ease, transform 4.2s ease;
+  transition: opacity 0.7s ease;
 }
 
 .heroImage.isActive {
   opacity: 1;
-  transform: scale(1);
 }
 
 .heroImage img {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.heroDim {
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 100%),
-    rgba(0, 0, 0, 0.2);
-  transition: background 0.7s ease;
-}
-
-.heroSection[data-hero-active="1"] .heroDim {
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 56%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 100%),
-    rgba(0, 0, 0, 0.3);
+  height: auto;
 }
 
 .heroContent {
@@ -1313,10 +1294,6 @@ button {
     top: 68px;
   }
 
-  .heroSection {
-    min-height: 470px;
-  }
-
   .heroContent h1 {
     font-size: var(--font-display-sm);
     line-height: var(--line-display-sm);
@@ -1389,10 +1366,6 @@ button {
   .localNav a.isActive::after {
     right: var(--space-16);
     left: var(--space-16);
-  }
-
-  .heroSection {
-    min-height: 430px;
   }
 
   .heroContent h1 {
