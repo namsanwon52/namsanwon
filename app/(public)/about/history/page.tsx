@@ -16,7 +16,7 @@ export default function HistoryPage() {
     <>
       <PageBanner
         title="연혁"
-        desc="1953년부터 이어온 남산원의 발자취입니다."
+        desc="1952년부터 이어온 남산원의 발자취입니다."
         crumbs={crumbs}
       />
       {ctx && <BoardLocalNav section={ctx.section} activeCode={ctx.localItem.code} />}
