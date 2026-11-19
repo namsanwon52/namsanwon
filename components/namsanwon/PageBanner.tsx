@@ -5,7 +5,7 @@ import { findBoardContext } from '@/lib/board'
 
 // 대분류(상단 메뉴)별 배너 이미지. 페이지 주소로 대분류를 판단한다.
 const BANNERS: Record<string, string> = {
-  namsanwon: '/namsanwon/banner-namsanwon.webp',
+  namsanwon: '/namsanwon/banner-namsanwon.jpg',
   business: '/namsanwon/banner-business.webp',
   support: '/namsanwon/banner-support.webp',
   children: '/namsanwon/banner-children.webp',
