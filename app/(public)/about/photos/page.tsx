@@ -5,11 +5,19 @@ import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import PageTitle from '@/components/namsanwon/PageTitle'
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 
 
 export const metadata: Metadata = { title: '남산원 역사사진' }
-export const dynamic = 'force-dynamic'
+const getPhotos = cachedQuery('about-photos', [CACHE_TAGS.posts], () =>
+  prisma.post.findMany({
+    where: { code: 'com6' },
+    orderBy: { createdAt: 'desc' },
+    take: 60,
+    include: { files: { take: 1 } },
+  })
+)
 export const crumbs=['남산원', '남산원 역사사진'];
 
 // File 썸네일이 없으면 본문 HTML의 첫 이미지 사용 (관리자 신규 등록 대비)
@@ -19,12 +27,7 @@ function firstImageFromContent(html: string): string | null {
 }
 
 export default async function PhotosPage() {
-  const posts = await prisma.post.findMany({
-    where: { code: 'com6' },
-    orderBy: { createdAt: 'desc' },
-    take: 60,
-    include: { files: { take: 1 } },
-  })
+  const posts = await getPhotos()
 
   const ctx = findBoardContext('com6')
 

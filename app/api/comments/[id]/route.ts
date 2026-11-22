@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { verifyPassword } from '@/lib/hash'
@@ -16,6 +17,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const session = await getServerSession(authOptions)
   if (session) {
     await prisma.comment.delete({ where: { id } })
+    invalidateCache(CACHE_TAGS.posts)
     return NextResponse.json({ ok: true })
   }
 
@@ -30,6 +32,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const valid = await verifyPassword(body.password, comment.password)
     if (!valid) return NextResponse.json({ error: '비밀번호 불일치' }, { status: 403 })
     await prisma.comment.delete({ where: { id } })
+    invalidateCache(CACHE_TAGS.posts)
     return NextResponse.json({ ok: true })
   }
 

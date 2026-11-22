@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { toFileRows } from '@/lib/post-files'
@@ -64,6 +65,7 @@ export async function PATCH(
     },
   })
 
+  invalidateCache(CACHE_TAGS.posts)
   return NextResponse.json(post)
 }
 
@@ -82,6 +84,7 @@ export async function DELETE(
   // 관리자 세션이 있으면 바로 삭제
   if (session) {
     await prisma.post.delete({ where: { id } })
+    invalidateCache(CACHE_TAGS.posts)
     return NextResponse.json({ ok: true })
   }
 
@@ -98,6 +101,7 @@ export async function DELETE(
     const valid = await verifyPassword(body.password, post.password)
     if (!valid) return NextResponse.json({ error: '비밀번호 불일치' }, { status: 403 })
     await prisma.post.delete({ where: { id } })
+    invalidateCache(CACHE_TAGS.posts)
     return NextResponse.json({ ok: true })
   }
 

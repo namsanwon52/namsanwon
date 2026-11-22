@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
@@ -34,5 +35,6 @@ export async function POST(req: NextRequest) {
       order,
     },
   })
+  invalidateCache(CACHE_TAGS.contentBlocks)
   return NextResponse.json(block, { status: 201 })
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 
 type Props = { category: string; page: number }
 
@@ -7,16 +8,15 @@ function formatDate(d: Date) {
   return new Date(d).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\.$/, '')
 }
 
-export default async function PostList({ category, page }: Props) {
-  const limit = 10
-  const skip = (page - 1) * limit
+const LIMIT = 10
 
-  const [posts, total] = await Promise.all([
+const getPostList = cachedQuery('post-list', [CACHE_TAGS.posts], (category: string, page: number) =>
+  Promise.all([
     prisma.post.findMany({
       where: { code: category },
       orderBy: { createdAt: 'desc' },
-      skip,
-      take: limit,
+      skip: (page - 1) * LIMIT,
+      take: LIMIT,
       select: {
         id: true,
         title: true,
@@ -28,6 +28,12 @@ export default async function PostList({ category, page }: Props) {
     }),
     prisma.post.count({ where: { code: category } }),
   ])
+)
+
+export default async function PostList({ category, page }: Props) {
+  const limit = LIMIT
+  const skip = (page - 1) * limit
+  const [posts, total] = await getPostList(category, page)
 
   const totalPages = Math.ceil(total / limit)
 

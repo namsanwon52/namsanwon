@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { parseHistoryInput } from '@/lib/history'
@@ -19,5 +20,6 @@ export async function POST(req: NextRequest) {
   if ('error' in parsed) return NextResponse.json({ error: parsed.error }, { status: 400 })
 
   const entry = await prisma.historyEntry.create({ data: parsed.data })
+  invalidateCache(CACHE_TAGS.history)
   return NextResponse.json(entry, { status: 201 })
 }

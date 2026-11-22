@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { del, isManagedUrl } from '@/lib/storage'
@@ -26,6 +27,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (typeof body.active === 'boolean') data.active = body.active
 
   const floor = await prisma.facilityFloor.update({ where: { id: Number(idStr) }, data })
+  invalidateCache(CACHE_TAGS.facility)
   return NextResponse.json(floor)
 }
 
@@ -49,5 +51,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     }
   }
 
+  invalidateCache(CACHE_TAGS.facility)
   return NextResponse.json({ ok: true })
 }

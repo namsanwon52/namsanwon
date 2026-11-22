@@ -1,15 +1,18 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 
 export const metadata: Metadata = { title: '후원금품현황' }
-export const revalidate = 3600
-
-export default async function DonationStatusPage() {
-  const records = await prisma.donationRecord.findMany({
+const getRecords = cachedQuery('donation-records', [CACHE_TAGS.donation], () =>
+  prisma.donationRecord.findMany({
     orderBy: [{ year: 'desc' }, { month: 'desc' }],
     take: 24,
   })
+)
+
+export default async function DonationStatusPage() {
+  const records = await getRecords()
 
   return (
     <>

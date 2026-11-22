@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 import { getMemberSession } from '@/lib/memberSession'
 import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
 import { canViewBoard, loginRedirectPath } from '@/lib/boardAccess'
@@ -21,6 +22,62 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: getBoardMeta(category).label }
 }
 
+type SearchField = '전체' | '제목' | '작성자'
+
+// 목록 조회 결과 캐시. 조건은 모두 인자로 받아 캐시 키에 들어가게 한다.
+const getBoardList = cachedQuery(
+  'board-list',
+  [CACHE_TAGS.posts, CACHE_TAGS.contentBlocks],
+  (category: string, isGallery: boolean, page: number, limit: number, q: string, sf: SearchField) => {
+    const skip = (page - 1) * limit
+    const like = (v: string) => ({ contains: v, mode: 'insensitive' as const })
+    const searchWhere = q
+      ? sf === '제목'
+        ? { title: like(q) }
+        : sf === '작성자'
+          ? { author: like(q) }
+          : { OR: [{ title: like(q) }, { author: like(q) }] }
+      : {}
+    const where = { code: category, ...searchWhere }
+
+    return Promise.all([
+      prisma.post.count({ where }),
+      isGallery
+        ? Promise.resolve([])
+        : prisma.post.findMany({
+            where,
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit,
+            select: {
+              id: true,
+              title: true,
+              author: true,
+              createdAt: true,
+              views: true,
+              isSecret: true,
+              _count: { select: { files: true } },
+              comments: { where: { isAdmin: true }, take: 1, select: { id: true } },
+            },
+          }),
+      isGallery
+        ? prisma.post.findMany({
+            where,
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit,
+            // 썸네일: 첫 이미지, 없으면 PDF 1페이지 (첫 첨부가 PDF·문서일 수 있어 여러 개 조회)
+            select: { id: true, title: true, files: { take: 10, orderBy: { id: 'asc' }, select: { url: true, filename: true } } },
+          })
+        : Promise.resolve([]),
+      prisma.contentBlock.findFirst({
+        where: { page: category, type: 'full-image', active: true },
+        select: { imageUrl: true, imageAlt: true },
+      }),
+    ] as const)
+  }
+)
+
 function formatDate(d: Date) {
   return d.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\.$/, '')
 }
@@ -33,7 +90,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
 
   const page = Math.max(1, Number(sp.page ?? '1'))
   const q = (sp.q ?? '').trim()
-  const sf = (sp.sf ?? '전체') as '전체' | '제목' | '작성자'
+  const sf = (sp.sf ?? '전체') as SearchField
   const ctx = findBoardContext(category)
   const meta = getBoardMeta(category)
   // 자유게시판 등 공개 게시판(비관리자 전용 아님)은 로그인한 회원만 글쓰기 가능
@@ -43,52 +100,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
   const showStatus = category === 'com1' // 자유게시판: 처리현황(문의 답변) 표시
   const limit = isGallery ? 12 : 15
   const skip = (page - 1) * limit
-
-  const like = (v: string) => ({ contains: v, mode: 'insensitive' as const })
-  const searchWhere = q
-    ? sf === '제목'
-      ? { title: like(q) }
-      : sf === '작성자'
-        ? { author: like(q) }
-        : { OR: [{ title: like(q) }, { author: like(q) }] }
-    : {}
-  const where = { code: category, ...searchWhere }
-
-  const [total, listRows, galleryRows, subBanner] = await Promise.all([
-    prisma.post.count({ where }),
-    isGallery
-      ? Promise.resolve([])
-      : prisma.post.findMany({
-          where,
-          orderBy: { createdAt: 'desc' },
-          skip,
-          take: limit,
-          select: {
-            id: true,
-            title: true,
-            author: true,
-            createdAt: true,
-            views: true,
-            isSecret: true,
-            _count: { select: { files: true } },
-            comments: { where: { isAdmin: true }, take: 1, select: { id: true } },
-          },
-        }),
-    isGallery
-      ? prisma.post.findMany({
-          where,
-          orderBy: { createdAt: 'desc' },
-          skip,
-          take: limit,
-          // 썸네일: 첫 이미지, 없으면 PDF 1페이지 (첫 첨부가 PDF·문서일 수 있어 여러 개 조회)
-          select: { id: true, title: true, files: { take: 10, orderBy: { id: 'asc' }, select: { url: true, filename: true } } },
-        })
-      : Promise.resolve([]),
-    prisma.contentBlock.findFirst({
-      where: { page: category, type: 'full-image', active: true },
-      select: { imageUrl: true, imageAlt: true },
-    }),
-  ])
+  const [total, listRows, galleryRows, subBanner] = await getBoardList(category, isGallery, page, limit, q, sf)
 
   const totalPages = Math.ceil(total / limit)
   const crumbs = ctx ? [ctx.section.title, ctx.localItem.label] : [meta.label]

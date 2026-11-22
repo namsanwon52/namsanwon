@@ -1,6 +1,6 @@
 # 남산원 홈페이지 운영·개발 매뉴얼
 
-사회복지법인 아동복지시설 남산원 홈페이지(신규 사이트)의 사용법, 관리자 기능, 개발 환경, 배포(GitHub · Vercel), 저장소(Cloudinary), DB(Prisma Postgres) 설정과 장애 대응을 정리한 문서입니다.
+사회복지법인 아동복지시설 남산원 홈페이지(신규 사이트)의 사용법, 관리자 기능, 개발 환경, 배포(GitHub · Vercel), 저장소(Cloudinary), DB(Neon Postgres) 설정과 장애 대응을 정리한 문서입니다.
 
 > 작성 기준일: 2026-11-20
 > 이 문서에는 비밀번호·API 키 같은 **비밀값을 적지 않습니다.** 값은 각 서비스 콘솔과 로컬 `.env`에서 확인하세요.
@@ -17,7 +17,7 @@
 6. [환경변수](#6-환경변수)
 7. [형상관리(GitHub)](#7-형상관리github)
 8. [배포(Vercel)](#8-배포vercel)
-9. [DB(Prisma Postgres)](#9-dbprisma-postgres)
+9. [DB(Neon Postgres)](#9-dbneon-postgres)
 10. [이미지·파일 저장소(Cloudinary)](#10-이미지파일-저장소cloudinary)
 11. [구 사이트 데이터 이관](#11-구-사이트-데이터-이관)
 12. [장애 대응(자주 겪은 문제)](#12-장애-대응자주-겪은-문제)
@@ -31,7 +31,7 @@
 |---|---|---|
 | 프레임워크 | Next.js 16 (App Router, Turbopack), React 19, TypeScript | |
 | 스타일 | `app/(public)/namsanwon-theme.css` (공개 사이트), Tailwind 4 (관리자 화면) | |
-| DB | Vercel Postgres(Prisma Postgres) + Prisma ORM 5 | `prisma/schema.prisma` |
+| DB | Neon Postgres(Vercel Storage 연동, 2026-11-22 Prisma Postgres에서 이전) + Prisma ORM 5 | `prisma/schema.prisma` |
 | 인증 | 관리자: NextAuth(이메일+비밀번호) / 회원: 자체 쿠키 세션 | |
 | 파일 저장소 | Cloudinary (이미지·첨부파일) | 이전: Vercel Blob(용량 초과로 이전) |
 | 에디터 | Tiptap | 관리자 글쓰기·페이지 편집 |
@@ -40,7 +40,7 @@
 | 호스팅 | Vercel (main 푸시 시 자동 배포) | 운영 주소: https://namsanwon.vercel.app |
 
 ```
-[브라우저] ──▶ [Vercel: Next.js] ──▶ [Prisma Postgres (풀링 연결)]
+[브라우저] ──▶ [Vercel: Next.js] ──▶ [Neon Postgres (풀링 연결)]
      │                │
      │                └──▶ [Cloudinary API: 서명 발급, PDF 서명 다운로드]
      └──(이미지 직접 업로드/표시)──▶ [Cloudinary CDN]
@@ -170,8 +170,8 @@ npm run dev          # http://localhost:3000
 
 | 이름 | 필수 | 용도 | 값 얻는 곳 |
 |---|---|---|---|
-| `DATABASE_URL` | ✅ | 앱·스크립트용 **풀링 연결** | Prisma Console 연결 문자열에서 호스트를 `pooled.db.prisma.io`로, 끝에 `&pgbouncer=true` |
-| `DIRECT_URL` | ✅ | 마이그레이션·Studio용 **직접 연결** | 같은 연결 문자열(호스트 `db.prisma.io`) |
+| `DATABASE_URL` | ✅ | 앱·스크립트용 **풀링 연결** | Vercel 변수 `NAMSANWONDB_DATABASE_URL`(호스트에 `-pooler`) 값 끝에 `&pgbouncer=true` |
+| `DIRECT_URL` | ✅ | 마이그레이션·Studio용 **직접 연결** | Vercel 변수 `NAMSANWONDB_DATABASE_URL_UNPOOLED`(호스트에 `-pooler` 없음) |
 | `NEXTAUTH_SECRET` | ✅ | 관리자 로그인 + 회원 세션 서명 | 임의의 긴 랜덤 문자열 (`openssl rand -base64 32`) |
 | `NEXTAUTH_URL` | 권장 | NextAuth 기준 주소 (없으면 경고) | 운영: `https://namsanwon.vercel.app` (도메인 연결 시 그 주소) |
 | `CLOUDINARY_CLOUD_NAME` | ✅ | Cloudinary 계정 이름 | Cloudinary Console → Dashboard |
@@ -246,7 +246,9 @@ git push origin main            # → Vercel 자동 배포
 
 ---
 
-## 9. DB(Prisma Postgres)
+## 9. DB(Neon Postgres)
+
+> 2026-11-22 Prisma Postgres 무료 플랜 월 사용량(20만 operations) 초과로 DB 접속이 막혀 전 페이지 500이 났고, 데이터 전체를 Neon으로 옮겼습니다. 원인은 11-21 새벽 크롤러가 게시글 상세 1.5만 건을 훑은 것입니다. 이후 `robots.txt`, 봇 조회수 제외, 조회 캐시(아래)를 적용했습니다.
 
 - 스키마: `prisma/schema.prisma`
   주요 테이블: `Post`(게시글, `code`로 게시판 구분), `File`(첨부), `Comment`, `Member`, `Admin`, `SliderImage`, `ContentBlock`·`PageContent`(소개 페이지), `HistoryEntry`(연혁), `FacilityFloor`·`FacilityRoom`(시설), `DonationRecord`(후원금품), `PasswordResetCode`
@@ -255,10 +257,10 @@ git push origin main            # → Vercel 자동 배포
 ### 연결 방식 (중요)
 | 연결 | 호스트 | 쓰는 곳 |
 |---|---|---|
-| 풀링(PgBouncer) | `pooled.db.prisma.io` + `pgbouncer=true` | 앱(Vercel), 로컬 개발, 이관 스크립트 → `DATABASE_URL` |
-| 직접 | `db.prisma.io` | `prisma migrate`, Prisma Studio → `DIRECT_URL` |
+| 풀링(PgBouncer) | `...-pooler....neon.tech` + `pgbouncer=true` | 앱(Vercel), 로컬 개발, 이관 스크립트 → `DATABASE_URL` |
+| 직접 | `....neon.tech` (`-pooler` 없음) | `prisma migrate`, Prisma Studio → `DIRECT_URL` |
 
-직접 연결은 동시 연결 수 한도가 작아(무료 기준 10개 안팎) 서버리스에서 금방 고갈됩니다. 2026-10 운영 장애(전 페이지 500, `too many connections`)가 이 때문이었고, 풀링 연결로 바꿔 해결했습니다.
+직접 연결은 동시 연결 수 한도가 작아 서버리스에서 금방 고갈됩니다. (Prisma Postgres 시절) 2026-10 운영 장애(전 페이지 500, `too many connections`)가 이 때문이었고, 풀링 연결로 바꿔 해결했습니다.
 
 ### 스키마 변경
 ```bash
@@ -269,6 +271,11 @@ npm run db:deploy
 ```
 - 로컬과 운영이 같은 DB이므로 `db:migrate`도 운영 DB에 적용됩니다. **신중히** 실행하세요.
 - 과거 일부 변경(`PageContent`)은 `prisma db push`로 반영되어 마이그레이션 기록에 없습니다. 마이그레이션 이력 리셋(`migrate reset`)은 **절대 실행하지 마세요**(데이터 전체 삭제).
+
+### 조회 캐시 (`lib/cache.ts`)
+- 공개 화면의 DB 조회 결과는 Vercel Data Cache에 최대 1시간 저장되고, 관리자·회원이 API로 데이터를 바꾸면 해당 태그(`posts`, `slider`, `content-blocks`, `history`, `facility`, `donation`)가 즉시 무효화됩니다.
+- 공개 레이아웃이 회원 쿠키를 읽어 페이지 단위 캐시(`export const revalidate`)는 동작하지 않으므로, 새 조회를 추가할 때는 `cachedQuery()`로 감싸고, 데이터를 바꾸는 API에는 `invalidateCache()`를 넣으세요.
+- 게시판 목록의 조회수는 최대 1시간 늦게 반영될 수 있습니다(조회수 자체는 사람 방문마다 바로 저장).
 
 ### 게시글 번호(id)
 - 구 사이트 글은 구 사이트 글번호(idx)를 그대로 id로 씁니다.
@@ -349,6 +356,8 @@ npx tsx prisma/import-live-crawl.ts C:/temp/crawl.json --apply
 | 소식지가 로그인 없이 보임 | 관리자 로그인 상태(관리자는 열람 허용) | 시크릿 창에서 확인 |
 | 업로드 실패 "로그인이 만료" | 관리자 세션 만료 | 관리자 다시 로그인 |
 | Vercel 빌드 실패 | 타입 오류, 환경변수 누락 | Build Logs 확인, 로컬 `npm run type-check` / `npm run build` |
+| 운영 전 페이지 500, 로그에 `Can't reach database server` | DB 서비스 월 사용량 한도 초과로 접속 차단 (2026-11 Prisma Postgres) | DB 콘솔의 Usage 확인. 플랜 업그레이드 또는 다른 DB로 이전 (9장 참고) |
+| 스크립트로 DB를 고쳤는데 화면에 반영 안 됨 | 공개 화면 조회 캐시(최대 1시간) | 1시간 기다리거나 Vercel 프로젝트 설정의 Data Cache 비우기(Purge). 관리자 화면에서 고친 내용은 즉시 반영됨 (`lib/cache.ts`) |
 
 ---
 

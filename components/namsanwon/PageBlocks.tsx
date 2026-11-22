@@ -1,4 +1,12 @@
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
+
+const getBlocks = cachedQuery('content-blocks', [CACHE_TAGS.contentBlocks], (page: string) =>
+  prisma.contentBlock.findMany({
+    where: { page, active: true },
+    orderBy: { order: 'asc' },
+  })
+)
 import { cldImage, optimizeHtmlImages, responsiveSrcSet } from '@/lib/cloudinary-url'
 
 // ContentBlock(page)의 관리자 편집 블럭들을 contentCard 목록으로 렌더.
@@ -11,10 +19,7 @@ export default async function PageBlocks({
   page: string
   hideWhenEmpty?: boolean
 }) {
-  const blocks = await prisma.contentBlock.findMany({
-    where: { page, active: true },
-    orderBy: { order: 'asc' },
-  })
+  const blocks = await getBlocks(page)
 
   if (blocks.length === 0) {
     if (hideWhenEmpty) return null

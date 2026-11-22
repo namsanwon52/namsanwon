@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
@@ -24,5 +25,6 @@ export async function POST(req: NextRequest) {
   const order = Number.isInteger(body.order) ? body.order : (last?.order ?? 0) + 1
 
   const floor = await prisma.facilityFloor.create({ data: { name, order } })
+  invalidateCache(CACHE_TAGS.facility)
   return NextResponse.json(floor, { status: 201 })
 }

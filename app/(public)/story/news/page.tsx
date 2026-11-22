@@ -1,22 +1,25 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: '아동 소식' }
-export const revalidate = 600
+const getNews = cachedQuery('story-news', [CACHE_TAGS.posts], () =>
+  prisma.post.findMany({
+    where: { code: 'liv1' },
+    orderBy: { createdAt: 'desc' },
+    take: 15,
+    select: { id: true, title: true, author: true, createdAt: true, views: true },
+  })
+)
 
 function formatDate(d: Date) {
   return d.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' }).replace(/\.$/, '')
 }
 
 export default async function StoryNewsPage() {
-  const posts = await prisma.post.findMany({
-    where: { code: 'liv1' },
-    orderBy: { createdAt: 'desc' },
-    take: 15,
-    select: { id: true, title: true, author: true, createdAt: true, views: true },
-  })
+  const posts = await getNews()
 
   return (
     <>

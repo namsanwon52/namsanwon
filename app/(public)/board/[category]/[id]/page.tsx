@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { isBotUserAgent } from '@/lib/bot'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getBoardMeta, findBoardContext } from '@/lib/board'
@@ -20,12 +21,36 @@ import SecretPost from '@/components/board/SecretPost'
 
 type Props = { params: Promise<{ category: string; id: string }> }
 
-// generateMetadata와 페이지 본문이 같은 요청 안에서 한 번만 조회하도록 메모이즈한다.
-const getPost = cache((id: number) =>
-  prisma.post.findUnique({
-    where: { id },
-    include: { files: true },
-  })
+// 게시글은 Data Cache에 저장하고(목록에 표시되는 조회수는 최대 1시간 늦게 반영될 수 있음),
+// generateMetadata와 페이지 본문이 같은 요청 안에서 캐시를 한 번만 읽도록 React cache로 감싼다.
+const getPost = cache(
+  cachedQuery('post', [CACHE_TAGS.posts], (id: number) =>
+    prisma.post.findUnique({
+      where: { id },
+      include: { files: true },
+    })
+  )
+)
+
+// 이전·다음 글. createdAt은 캐시 키에 들어가도록 ISO 문자열로 받는다.
+const getAdjacentPosts = cachedQuery(
+  'post-adjacent',
+  [CACHE_TAGS.posts],
+  (code: string, id: number, createdAtIso: string) => {
+    const createdAt = new Date(createdAtIso)
+    return Promise.all([
+      prisma.post.findFirst({
+        where: { code, createdAt: { lt: createdAt }, id: { not: id } },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, title: true },
+      }),
+      prisma.post.findFirst({
+        where: { code, createdAt: { gt: createdAt }, id: { not: id } },
+        orderBy: { createdAt: 'asc' },
+        select: { id: true, title: true },
+      }),
+    ])
+  }
 )
 
 export async function generateMetadata({ params }: Props) {
@@ -50,18 +75,7 @@ export default async function PostDetailPage({ params }: Props) {
     prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})
   }
 
-  const [prevPost, nextPost] = await Promise.all([
-    prisma.post.findFirst({
-      where: { code: category, createdAt: { lt: post.createdAt }, id: { not: id } },
-      orderBy: { createdAt: 'desc' },
-      select: { id: true, title: true },
-    }),
-    prisma.post.findFirst({
-      where: { code: category, createdAt: { gt: post.createdAt }, id: { not: id } },
-      orderBy: { createdAt: 'asc' },
-      select: { id: true, title: true },
-    }),
-  ])
+  const [prevPost, nextPost] = await getAdjacentPosts(category, id, post.createdAt.toISOString())
 
   const session = await getServerSession(authOptions)
   const ctx = findBoardContext(category)

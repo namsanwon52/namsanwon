@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { hashPassword, verifyPassword } from '@/lib/hash'
@@ -72,5 +73,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     },
     select: { id: true, author: true, content: true, isAdmin: true, createdAt: true },
   })
+  invalidateCache(CACHE_TAGS.posts)
   return NextResponse.json({ ...comment, hasPassword: !session }, { status: 201 })
 }

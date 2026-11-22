@@ -1,19 +1,22 @@
 import type { Metadata } from 'next'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import { prisma } from '@/lib/prisma'
+import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: '아동 사진첩' }
-export const revalidate = 600
-
-export default async function AlbumPage() {
-  const posts = await prisma.post.findMany({
+const getAlbum = cachedQuery('story-album', [CACHE_TAGS.posts], () =>
+  prisma.post.findMany({
     where: { code: 'com3' },
     orderBy: { createdAt: 'desc' },
     take: 12,
     include: { files: { take: 1 } },
   })
+)
+
+export default async function AlbumPage() {
+  const posts = await getAlbum()
 
   return (
     <>
