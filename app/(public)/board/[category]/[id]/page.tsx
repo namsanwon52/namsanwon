@@ -1,6 +1,9 @@
+import { cache } from 'react'
+import { headers } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { isBotUserAgent } from '@/lib/bot'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getBoardMeta, findBoardContext } from '@/lib/board'
@@ -17,12 +20,19 @@ import SecretPost from '@/components/board/SecretPost'
 
 type Props = { params: Promise<{ category: string; id: string }> }
 
+// generateMetadata와 페이지 본문이 같은 요청 안에서 한 번만 조회하도록 메모이즈한다.
+const getPost = cache((id: number) =>
+  prisma.post.findUnique({
+    where: { id },
+    include: { files: true },
+  })
+)
+
 export async function generateMetadata({ params }: Props) {
   const { id: idStr } = await params
-  const post = await prisma.post.findUnique({
-    where: { id: Number(idStr) },
-    select: { title: true },
-  })
+  const id = Number(idStr)
+  if (!Number.isInteger(id)) return { title: '게시글' }
+  const post = await getPost(id)
   return { title: post?.title ?? '게시글' }
 }
 
@@ -32,14 +42,13 @@ export default async function PostDetailPage({ params }: Props) {
   if (isNaN(id)) notFound()
   if (!(await canViewBoard(category))) redirect(loginRedirectPath(`/board/${category}/${id}`))
 
-  const post = await prisma.post.findUnique({
-    where: { id },
-    include: { files: true },
-  })
+  const post = await getPost(id)
   if (!post || post.code !== category) notFound()
 
-  // 조회수 증가
-  prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})
+  // 조회수 증가 (검색엔진·크롤러 요청은 세지 않는다)
+  if (!isBotUserAgent((await headers()).get('user-agent'))) {
+    prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})
+  }
 
   const [prevPost, nextPost] = await Promise.all([
     prisma.post.findFirst({
