@@ -9,7 +9,7 @@ type Props = { params: Promise<{ category: string }> }
 export default async function WritePage({ params }: Props) {
   const { category } = await params
   const meta = getBoardMeta(category)
-  const writer = await getWriter()
+  const writer = await getWriter({ includeAdminSession: false }) // 앞 화면은 회원 로그인 기준
   const asAdmin = isAdminWriter(writer)
   const banner = <PageBanner title={`${meta.label} 글쓰기`} crumbs={[meta.label, '글쓰기']} />
 

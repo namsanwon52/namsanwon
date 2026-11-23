@@ -93,7 +93,7 @@ export default async function BoardPage({ params, searchParams }: Props) {
   const ctx = findBoardContext(category)
   const meta = getBoardMeta(category)
   // 공개 게시판은 로그인한 회원, 관리자 전용 게시판은 관리자·관리자 등급 회원만 글쓰기 가능
-  const canWrite = !!(await getBoardWriter(category))
+  const canWrite = !!(await getBoardWriter(category, { memberOnly: true }))
   const isGallery = ctx?.localItem.type === 'gallery'
   const showStatus = category === 'com1' // 자유게시판: 처리현황(문의 답변) 표시
   const limit = isGallery ? 12 : 15
