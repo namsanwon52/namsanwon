@@ -3,9 +3,8 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
-import { getMemberSession } from '@/lib/memberSession'
 import { BOARD_META, getBoardMeta, findBoardContext } from '@/lib/board'
-import { canViewBoard, loginRedirectPath } from '@/lib/boardAccess'
+import { canViewBoard, getBoardWriter, loginRedirectPath } from '@/lib/boardAccess'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import BoardLocalNav from '@/components/namsanwon/BoardLocalNav'
 import Pagination from '@/components/namsanwon/Pagination'
@@ -93,9 +92,8 @@ export default async function BoardPage({ params, searchParams }: Props) {
   const sf = (sp.sf ?? '전체') as SearchField
   const ctx = findBoardContext(category)
   const meta = getBoardMeta(category)
-  // 자유게시판 등 공개 게시판(비관리자 전용 아님)은 로그인한 회원만 글쓰기 가능
-  const member = meta.adminOnly ? null : await getMemberSession()
-  const canWrite = !meta.adminOnly && !!member
+  // 공개 게시판은 로그인한 회원, 관리자 전용 게시판은 관리자·관리자 등급 회원만 글쓰기 가능
+  const canWrite = !!(await getBoardWriter(category))
   const isGallery = ctx?.localItem.type === 'gallery'
   const showStatus = category === 'com1' // 자유게시판: 처리현황(문의 답변) 표시
   const limit = isGallery ? 12 : 15

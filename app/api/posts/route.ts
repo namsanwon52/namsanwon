@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { invalidateCache, CACHE_TAGS } from '@/lib/cache'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { getMemberSession } from '@/lib/memberSession'
 import { hashPassword } from '@/lib/hash'
 import { getBoardMeta } from '@/lib/board'
 import { toFileRows } from '@/lib/post-files'
-import { canViewBoard } from '@/lib/boardAccess'
+import { canViewBoard, getBoardWriter, isAdminWriter } from '@/lib/boardAccess'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -51,24 +48,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: '필수 항목 누락' }, { status: 400 })
   }
 
-  const meta = getBoardMeta(category)
-  const session = await getServerSession(authOptions)
-
-  if (meta.adminOnly) {
-    if (!session) {
-      return NextResponse.json({ error: '관리자 권한 필요' }, { status: 401 })
-    }
+  const writer = await getBoardWriter(category)
+  if (!writer) {
+    const meta = getBoardMeta(category)
+    return meta.adminOnly
+      ? NextResponse.json({ error: '관리자 권한 필요' }, { status: 401 })
+      : NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
   }
-
-  // 공개 게시판(자유게시판 등)은 로그인한 회원(또는 관리자)만 작성 가능
-  const member = meta.adminOnly ? null : await getMemberSession()
-  if (!meta.adminOnly && !session && !member) {
-    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
-  }
+  const asAdmin = isAdminWriter(writer)
 
   const hashedPassword = password ? await hashPassword(password) : null
-  // 작성자명은 세션을 신뢰(회원 도용 방지). 관리자는 입력값 허용.
-  const authorName = session ? author || '관리자' : member?.name || '회원'
+  // 작성자명: 관리자 화면 로그인은 입력값 허용, 회원(관리자 등급 포함)은 세션의 이름(도용 방지)
+  const authorName = writer.kind === 'admin' ? author || '관리자' : writer.name || '회원'
 
   const post = await prisma.post.create({
     data: {
@@ -77,10 +68,10 @@ export async function POST(req: NextRequest) {
       content,
       author: authorName,
       password: hashedPassword,
-      isAdmin: !!session,
+      isAdmin: asAdmin,
       isSecret: !!isSecret,
-      // 첨부파일은 관리자 화면에서만 올린다
-      ...(session && { files: { create: toFileRows(files) } }),
+      // 첨부파일은 관리자(관리자 등급 회원 포함)만 올린다
+      ...(asAdmin && { files: { create: toFileRows(files) } }),
     },
   })
 

@@ -2,20 +2,26 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import AttachmentField from '@/components/editor/AttachmentField'
+import type { UploadedFile } from '@/lib/upload-client'
 
 const RichEditor = dynamic(() => import('@/components/editor/RichEditor'), { ssr: false })
 
 export default function WriteForm({
   category,
   authorName,
+  asAdmin = false,
 }: {
   category: string
   authorName: string
+  /** 관리자·관리자 등급 회원: 첨부파일 업로드 가능, 비밀번호 불필요 */
+  asAdmin?: boolean
 }) {
   const router = useRouter()
   const [form, setForm] = useState({ title: '', content: '', password: '', isSecret: false })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [files, setFiles] = useState<UploadedFile[]>([])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -25,7 +31,7 @@ export default function WriteForm({
       const res = await fetch('/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, author: authorName, category }),
+        body: JSON.stringify({ ...form, author: authorName, category, files: asAdmin ? files : undefined }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -53,10 +59,10 @@ export default function WriteForm({
         <input
           type="password"
           className="formField"
-          placeholder="비밀번호 * (수정/삭제 시 필요)"
+          placeholder={asAdmin ? '비밀번호 (선택)' : '비밀번호 * (수정/삭제 시 필요)'}
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
+          required={!asAdmin}
         />
       </div>
       <RichEditor
@@ -64,6 +70,7 @@ export default function WriteForm({
         onChange={(html) => setForm({ ...form, content: html })}
         placeholder="내용을 입력하세요."
       />
+      {asAdmin && <AttachmentField files={files} onChange={setFiles} />}
       <label className="secretCheck">
         <input
           type="checkbox"

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import PageBanner from '@/components/namsanwon/PageBanner'
 import { getBoardMeta } from '@/lib/board'
-import { getMemberSession } from '@/lib/memberSession'
+import { getWriter, isAdminWriter } from '@/lib/boardAccess'
 import WriteForm from './WriteForm'
 
 type Props = { params: Promise<{ category: string }> }
@@ -9,22 +9,14 @@ type Props = { params: Promise<{ category: string }> }
 export default async function WritePage({ params }: Props) {
   const { category } = await params
   const meta = getBoardMeta(category)
+  const writer = await getWriter()
+  const asAdmin = isAdminWriter(writer)
+  const banner = <PageBanner title={`${meta.label} 글쓰기`} crumbs={[meta.label, '글쓰기']} />
 
-  if (meta.adminOnly) {
-    return (
-      <div className="subContent">
-        <div className="contentCard">
-          <p className="emptyNote">관리자만 작성할 수 있는 게시판입니다.</p>
-        </div>
-      </div>
-    )
-  }
-
-  const member = await getMemberSession()
-  if (!member) {
+  if (!writer) {
     return (
       <>
-        <PageBanner title={`${meta.label} 글쓰기`} crumbs={[meta.label, '글쓰기']} />
+        {banner}
         <div className="subContent">
           <div className="contentCard">
             <p className="emptyNote">로그인한 회원만 글을 작성할 수 있습니다.</p>
@@ -42,11 +34,24 @@ export default async function WritePage({ params }: Props) {
     )
   }
 
+  if (meta.adminOnly && !asAdmin) {
+    return (
+      <>
+        {banner}
+        <div className="subContent">
+          <div className="contentCard">
+            <p className="emptyNote">관리자만 작성할 수 있는 게시판입니다.</p>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
-      <PageBanner title={`${meta.label} 글쓰기`} crumbs={[meta.label, '글쓰기']} />
+      {banner}
       <div className="subContent">
-        <WriteForm category={category} authorName={member.name} />
+        <WriteForm category={category} authorName={writer.name} asAdmin={asAdmin} />
       </div>
     </>
   )
