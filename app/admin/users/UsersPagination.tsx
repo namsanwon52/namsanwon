@@ -6,16 +6,19 @@ export default function UsersPagination({
   page,
   totalPages,
   qs,
+  basePath = '/admin/users',
 }: {
   page: number
   totalPages: number
   qs: string
+  /** 목록 주소 (게시글 관리 등 다른 관리자 목록에서도 재사용) */
+  basePath?: string
 }) {
   if (totalPages <= 1) return null
 
   const start = Math.floor((page - 1) / GROUP) * GROUP + 1
   const end = Math.min(start + GROUP - 1, totalPages)
-  const href = (p: number) => `/admin/users?page=${p}${qs}`
+  const href = (p: number) => `${basePath}?page=${p}${qs}`
 
   const arrowClass = (disabled: boolean) =>
     `px-2.5 py-1.5 rounded-lg text-gray-500 ${disabled ? 'opacity-30 pointer-events-none' : 'hover:bg-gray-100'}`

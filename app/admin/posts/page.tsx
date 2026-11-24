@@ -3,13 +3,14 @@ import { getAdminBoardGroups } from '@/lib/board'
 import Link from 'next/link'
 import PostActions from './PostActions'
 import PostsCategoryFilter from './PostsCategoryFilter'
+import UsersPagination from '../users/UsersPagination'
 
 type Props = { searchParams: Promise<{ category?: string; page?: string }> }
 
 export default async function AdminPostsPage({ searchParams }: Props) {
   const { category: rawCategory, page: rawPage } = await searchParams
   const category = rawCategory ?? 'nt1'
-  const page = Number(rawPage ?? '1')
+  const page = Math.max(1, Math.floor(Number(rawPage ?? '1')) || 1)
   const limit = 20
   const skip = (page - 1) * limit
 
@@ -67,6 +68,12 @@ export default async function AdminPostsPage({ searchParams }: Props) {
           </tbody>
         </table>
       </div>
+      <UsersPagination
+        page={page}
+        totalPages={Math.ceil(total / limit)}
+        basePath="/admin/posts"
+        qs={`&category=${encodeURIComponent(category)}`}
+      />
       <p className="text-sm text-gray-400">총 {total}개</p>
     </div>
   )
