@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { isBotUserAgent } from '@/lib/bot'
+import { countView } from '@/lib/view-counter'
 import { cachedQuery, CACHE_TAGS } from '@/lib/cache'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -72,7 +73,7 @@ export default async function PostDetailPage({ params }: Props) {
 
   // 조회수 증가 (검색엔진·크롤러 요청은 세지 않는다)
   if (!isBotUserAgent((await headers()).get('user-agent'))) {
-    prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})
+    countView(id) // 메모리에 모았다가 몰아서 반영 (lib/view-counter.ts)
   }
 
   const [prevPost, nextPost] = await getAdjacentPosts(category, id, post.createdAt.toISOString())

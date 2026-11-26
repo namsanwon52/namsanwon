@@ -6,6 +6,7 @@ import { authOptions } from '@/lib/auth'
 import { toFileRows } from '@/lib/post-files'
 import { canViewBoard } from '@/lib/boardAccess'
 import { isBotUserAgent } from '@/lib/bot'
+import { countView } from '@/lib/view-counter'
 
 export async function GET(
   req: NextRequest,
@@ -24,7 +25,7 @@ export async function GET(
 
   // 조회수 증가 (await 생략으로 응답 속도 최적화, 검색엔진·크롤러 요청은 세지 않는다)
   if (!isBotUserAgent(req.headers.get('user-agent'))) {
-    prisma.post.update({ where: { id }, data: { views: { increment: 1 } } }).catch(() => {})
+    countView(id) // 메모리에 모았다가 몰아서 반영 (lib/view-counter.ts)
   }
 
   // 비밀글은 관리자가 아니면 본문/첨부를 숨긴다 (비밀번호 확인은 verify 경유)
